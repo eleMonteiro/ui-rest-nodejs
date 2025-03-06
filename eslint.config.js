@@ -14,4 +14,10 @@ export default [
 
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
+
+  {
+    env: {
+      node: true,
+    },
+  },
 ]
