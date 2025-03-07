@@ -35,15 +35,16 @@ const onSubmit = () => {
         </div>
         <v-card class="mx-auto px-6 py-8 mt-12 form-container" width="500" height="auto">
           <v-form v-model="form" @submit.prevent="onSubmit">
-            <v-text-field v-model="email" :readonly="loading" :rules="[rules.required]" class="mb-2 form-input"
-              label="Email" clearable></v-text-field>
+            <v-text-field v-model="email" :readonly="loading" :rules="[rules.required]" class="mb-2" label="Email"
+              bg-color="#ffffff"></v-text-field>
 
-            <v-text-field v-model="password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            <v-text-field v-model="password" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required, rules.min]" :type="showPassword ? 'text' : 'password'"
-              hint="Pelo menos 8 caracteres" label="Senha" counter @click:append="showPassword = !showPassword"
-              class="form-input"></v-text-field>
+              hint="Pelo menos 8 caracteres" label="Senha" counter @click:append-inner="showPassword = !showPassword"
+              bg-color="#ffffff">
+            </v-text-field>
 
-            <v-checkbox label="Manter-me logado" class="form-label"></v-checkbox>
+            <v-checkbox label="Manter-me conectado" style="color: var(--bronze);"></v-checkbox>
 
             <v-row>
               <v-col>
@@ -136,7 +137,19 @@ const onSubmit = () => {
   font-weight: 700;
 }
 
+.text-button:hover {
+  text-decoration: underline;
+}
+
 .form-container {
   background-color: var(--white);
+}
+
+.v-card {
+  background-color: transparent !important;
+}
+
+.v-form {
+  background-color: transparent;
 }
 </style>
