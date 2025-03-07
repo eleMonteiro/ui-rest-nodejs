@@ -5,7 +5,8 @@
   --brown: #a44200;
   --bronze: #d58936;
   --vanilla: #f2f3ae;
-
+  --white: #ffffff;
+  
   --color-primary: var(--black-bean);
   --color-secondary: var(--blood-red);
   --color-accent: var(--bronze);
@@ -34,7 +35,7 @@
 body {
   min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-background);
+  background: var(--color-accent);
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family:
