@@ -1,12 +1,19 @@
-<script>
-export default {
-  name: 'Home',
-  methods: {
-    handleClick() {
-      this.$router.push('/login');
-    }
+<script setup>
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
+const store = useStore()
+const router = useRouter()
+
+const handleClick = () => {
+  if (store.getters['auth/isAuthenticated']) {
+    console.log(store.getters['auth/roleUser'])
+    store.getters['auth/roleUser'] === 'admin' ? router.push('/home') : router.push('/')
+  } else {
+    router.push('/login')
   }
-};
+}
 </script>
 
 <template>

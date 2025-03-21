@@ -1,48 +1,11 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-
-const props = defineProps({
-  to: String,
-  invalidToken: Boolean
-})
+import { ref } from 'vue'
 
 const form = ref(false)
-const valid = ref(true)
-const loading = ref(false)
+const name = ref('')
 const email = ref('')
 const password = ref('')
-const error = ref('')
-
-const store = useStore()
-const router = useRouter()
-
-const token = computed(() => store.state.auth.token)
-
-const onSubmit = async () => {
-  loading.value = true
-  if (valid.value) {
-    try {
-      await store.dispatch('auth/login', { email: email.value, password: password.value })
-      if (store.getters['auth/isAuthenticated']) {
-        store.getters['auth/roleUser'] === 'admin' ? router.push('/home') : router.push('/')
-      } else {
-        error.value = 'Usuário e/ou senha inválidos'
-      }
-    } catch (err) {
-      error.value = 'Erro ao fazer login'
-    } finally {
-      loading.value = false
-    }
-  }
-}
-
-onMounted(() => {
-  if (props.invalidToken) {
-    error.value = 'Sua sessão expirou. Faça login novamente'
-  }
-})
+const loading = ref(false)
 
 const rules = {
   required: v => !!v || 'Campo obrigatório.',
@@ -50,44 +13,43 @@ const rules = {
 }
 
 const showPassword = ref(false)
+
+const onSubmit = () => {
+  if (!form.value) return
+  loading.value = true
+  setTimeout(() => (loading.value = false), 2000)
+}
 </script>
 
 <template>
   <div>
     <div class="container login">
       <div class="left">
-        <img src="../assets/icon-primary.svg" alt="Imagem da Tela de Login">
+        <v-icon class="mdi mdi-account" color="white" size="500"></v-icon>
       </div>
       <div class="right">
-        <div>
-          <h1>Bem-vindo de volta!</h1>
+        <div class="text-center">
+          <h1>Cadastre-se</h1>
         </div>
-        <div>
-          <h2>Ainda não tem uma conta? <router-link to="/account">Cadastre-se</router-link></h2>
-        </div>
-        <v-card class="mx-auto px-6 py-8 mt-12 form-container" width="500" height="auto">
+        <v-card class="mx-auto px-6 py-8 mt-2 form-container" width="500" height="auto">
           <v-form v-model="form" @submit.prevent="onSubmit">
-            <v-text-field v-model="email" :readonly="loading" :rules="[rules.required]" class="mb-2" label="Email"
+            <v-text-field v-model="name" :readonly="loading" :rules="[rules.required]" class="mb-4" label="Nome"
+              bg-color="#ffffff"></v-text-field>
+
+            <v-text-field v-model="email" :readonly="loading" :rules="[rules.required]" class="mb-4" label="Email"
               bg-color="#ffffff"></v-text-field>
 
             <v-text-field v-model="password" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required, rules.min]" :type="showPassword ? 'text' : 'password'"
               hint="Pelo menos 8 caracteres" label="Senha" counter @click:append-inner="showPassword = !showPassword"
-              bg-color="#ffffff">
+              bg-color="#ffffff" class="mb-12">
             </v-text-field>
 
-            <v-checkbox label="Manter-me conectado" style="color: var(--bronze);"></v-checkbox>
-
             <v-row>
-              <v-col>
+              <v-col cols="6">
                 <v-btn :disabled="!form" :loading="loading" size="large" type="submit" variant="elevated" block
                   class="submit-button">
-                  Acessar
-                </v-btn>
-              </v-col>
-              <v-col>
-                <v-btn size="large" type="submit" variant="text" block class="text-button">
-                  Esqueceu a senha?
+                  Criar Conta
                 </v-btn>
               </v-col>
             </v-row>
@@ -107,11 +69,11 @@ const showPassword = ref(false)
 
 .left {
   flex: 1;
+  background-color: var(--color-primary);
 }
 
 .right {
   flex: 1;
-  background-color: var(--color-primary);
 }
 
 .left,
@@ -132,20 +94,25 @@ const showPassword = ref(false)
   width: 500px;
   height: 500px;
   border-radius: 50%;
+  position: absolute;
+  z-index: 1;
 }
 
 .right h1 {
   font-family: "Be Vietnam Pro", sans-serif;
-  font-size: 25px;
-  font-weight: 700;
+  font-size: 50px;
+  font-weight: 200;
   margin-bottom: 20px;
-  color: var(--white);
+  color: var(--color-primary);
 }
 
-.right h2 {
-  font-family: "Be Vietnam Pro", sans-serif;
-  font-size: 18px;
-  color: var(--white);
+.text-center {
+  width: 50%;
+  height: auto;
+  position: relative;
+  display: flex;
+  justify-content: left;
+  align-items: center;
 }
 
 .right a {
@@ -153,8 +120,8 @@ const showPassword = ref(false)
 }
 
 .submit-button {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-accent);
   font-family: "Be Vietnam Pro", sans-serif;
   font-size: 18px;
   font-weight: 700;

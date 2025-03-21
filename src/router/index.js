@@ -1,21 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../views/Login.vue";
-import Home from "../views/Home.vue";
+import paths from "./paths";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: "/",
-      name: "home",
-      component: Home,
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: Login,
-    },
-  ],
+  linkActiveClass: "active",
+  routes: paths,
+});
+
+router.afterEach((to, from) => {});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!localStorage.getItem("token")) {
+      next("/login");
+      return;
+    }
+  }
+  next();
 });
 
 export default router;
