@@ -1,5 +1,4 @@
-import axios from "axios";
-import auth from "./auth";
+import api from "@/api";
 
 const state = {
   users: [],
@@ -8,8 +7,8 @@ const state = {
 
 const actions = {
   getUsers({ commit }) {
-    axios
-      .get("/users", { headers: { Authorization: auth.state.token } })
+    api
+      .get("/users")
       .then((res) => {
         commit("SET_USERS", res.data);
       })
@@ -17,8 +16,8 @@ const actions = {
   },
 
   getUser({ commit }, id) {
-    axios
-      .get(`/users/${id}`, { headers: { Authorization: auth.state.token } })
+    api
+      .get(`/users/${id}`)
       .then((res) => {
         commit("SET_USER", res.data);
       })
@@ -26,37 +25,35 @@ const actions = {
   },
 
   getUserByCPF({ commit }, cpf) {
-    axios
+    api
       .get("/users/cpf", {
         params: { cpf },
-        headers: { Authorization: auth.state.token },
       })
       .then((res) => {
         commit("SET_USER", res.data);
       })
       .catch((error) => {
-        console.error("Error fetching user:", error);
-        commit("SET_USER_ERROR", error.response?.data?.message || "Unknown error");
+        return error || "Unknown error";
       });
   },
 
   createUser({ dispatch }, userData) {
-    axios
-      .post("/users", userData, { headers: { Authorization: auth.state.token } })
+    api
+      .post("/users", userData)
       .then(() => dispatch("getUsers"))
       .catch((error) => error);
   },
 
   updateUser({ dispatch }, userData) {
-    axios
-      .put(`/users/${userData.id}`, userData, { headers: { Authorization: auth.state.token } })
+    get
+      .put(`/users/${userData.id}`, userData)
       .then(() => dispatch("getUsers"))
       .catch((error) => error);
   },
 
   deleteUser({ dispatch }, id) {
-    axios
-      .delete(`/users/${id}`, { headers: { Authorization: auth.state.token } })
+    api
+      .delete(`/users/${id}`)
       .then(() => dispatch("getUsers"))
       .catch((error) => error);
   },

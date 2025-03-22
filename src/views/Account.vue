@@ -1,24 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
-const form = ref(false)
-const name = ref('')
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
+const form = ref(false);
+const name = ref("");
+const email = ref("");
+const password = ref("");
+const loading = ref(false);
 
 const rules = {
-  required: v => !!v || 'Campo obrigatório.',
-  min: v => v.length >= 8 || 'Minimo 8 caracteres',
-}
+  required: (v) => !!v || "Campo obrigatório.",
+  min: (v) => v.length >= 8 || "Minimo 8 caracteres",
+};
 
-const showPassword = ref(false)
+const showPassword = ref(false);
 
 const onSubmit = () => {
-  if (!form.value) return
-  loading.value = true
-  setTimeout(() => (loading.value = false), 2000)
-}
+  if (!form.value) return;
+  loading.value = true;
+  setTimeout(() => (loading.value = false), 2000);
+};
 </script>
 
 <template>
@@ -33,22 +33,49 @@ const onSubmit = () => {
         </div>
         <v-card class="mx-auto px-6 py-8 mt-2 form-container" width="500" height="auto">
           <v-form v-model="form" @submit.prevent="onSubmit">
-            <v-text-field v-model="name" :readonly="loading" :rules="[rules.required]" class="mb-4" label="Nome"
-              bg-color="#ffffff"></v-text-field>
+            <v-text-field
+              v-model="name"
+              :readonly="loading"
+              :rules="[rules.required]"
+              class="mb-4"
+              label="Nome"
+              bg-color="#ffffff"
+            ></v-text-field>
 
-            <v-text-field v-model="email" :readonly="loading" :rules="[rules.required]" class="mb-4" label="Email"
-              bg-color="#ffffff"></v-text-field>
+            <v-text-field
+              v-model="email"
+              :readonly="loading"
+              :rules="[rules.required]"
+              class="mb-4"
+              label="Email"
+              bg-color="#ffffff"
+            ></v-text-field>
 
-            <v-text-field v-model="password" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="[rules.required, rules.min]" :type="showPassword ? 'text' : 'password'"
-              hint="Pelo menos 8 caracteres" label="Senha" counter @click:append-inner="showPassword = !showPassword"
-              bg-color="#ffffff" class="mb-12">
+            <v-text-field
+              v-model="password"
+              :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min]"
+              :type="showPassword ? 'text' : 'password'"
+              hint="Pelo menos 8 caracteres"
+              label="Senha"
+              counter
+              @click:append-inner="showPassword = !showPassword"
+              bg-color="#ffffff"
+              class="mb-12"
+            >
             </v-text-field>
 
             <v-row>
               <v-col cols="6">
-                <v-btn :disabled="!form" :loading="loading" size="large" type="submit" variant="elevated" block
-                  class="submit-button">
+                <v-btn
+                  :disabled="!form"
+                  :loading="loading"
+                  size="large"
+                  type="submit"
+                  variant="elevated"
+                  block
+                  class="submit-button"
+                >
                   Criar Conta
                 </v-btn>
               </v-col>

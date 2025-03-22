@@ -1,105 +1,95 @@
-import axios from "axios";
+import api from "@/api";
 
 const state = {
-  user: null,
-  token: localStorage.getItem("token"),
-  nome: localStorage.getItem("nome"),
-  role: localStorage.getItem("role"),
-  token_update_date: new Date(localStorage.getItem("token_update_date")),
-  tokenExpirado: false,
-  permissoes: null,
+  user: JSON.parse(localStorage.getItem("user")) || null, // Carrega do localStorage, ou usa null como valor padrão
+  name: JSON.parse(localStorage.getItem("name")) || null,
+  role: JSON.parse(localStorage.getItem("role")) || null,
 };
 
 const actions = {
-  login({ commit, dispatch }, authData) {
-    return new Promise((resolve, reject) => {
-      axios
-        .post("/login", {
-          email: authData.email,
-          password: authData.password,
-        })
-        .then((res) => {
-          const date = new Date();
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("token_update_date", date);
-          localStorage.setItem("nome", res.data.user.name);
-          localStorage.setItem("role", res.data.user.role);
+  async login({ commit }, authData) {
+    try {
+      const response = await api.post("/login", authData);
+      const userData = response.data.user;
 
-          commit("AUTHENTICATE", { token: res.data.token, date });
-          commit("UPDATE_USER", { ...res.data.user });
-        })
-        .catch((error) => error)
-        .finally(() => resolve());
-    });
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("name", JSON.stringify(userData?.name));
+      localStorage.setItem("role", JSON.stringify(userData?.role));
+
+      commit("UPDATE_USER", userData);
+    } catch (error) {
+      throw new Error("Login failed");
+    }
   },
 
-  logout() {
-    return new Promise((resolve, reject) => {
-      axios
-        .post("/logout", { headers: { Authorization: auth.state.token } })
-        .then(localStorage.clear())
-        .catch((error) => error)
-        .finally(() => resolve());
-    });
+  async logout({ commit }) {
+    try {
+      await api.post("/logout", {}, { withCredentials: true });
+
+      localStorage.removeItem("user");
+      localStorage.removeItem("name");
+      localStorage.removeItem("role");
+
+      commit("CLEAR_USER");
+    } catch (error) {
+      throw new Error("Logout failed");
+    }
   },
 
-  updateToken({ commit }, tokenData) {
-    const date = new Date();
-    localStorage.setItem("token", tokenData.token);
-    localStorage.setItem("token_update_date", date);
-    commit("UPDATE_AUTH_DATA", { token: tokenData.token, date });
+  async fetchUser({ commit }) {
+    try {
+      const response = await api.get("/profile", { withCredentials: true });
+      const userData = response.data.user;
+
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("name", JSON.stringify(userData?.name));
+      localStorage.setItem("role", JSON.stringify(userData?.role));
+
+      commit("UPDATE_USER", userData);
+    } catch (error) {
+      throw new Error("Failed to fetch user data");
+    }
   },
 
-  removeToken({ commit }) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("token_update_date");
-    commit("CLEAR_AUTH_DATA");
+  async checkTokenValidity() {
+    try {
+      const response = await api.get("/validate-token", { withCredentials: true });
+      return response.data.valid;
+    } catch (error) {
+      return false;
+    }
   },
 };
 
 const getters = {
   isAuthenticated(state) {
-    return state.token !== null;
-  },
-
-  token(state) {
-    return state.token ? state.token : null;
-  },
-
-  isValidDateToken(state) {
-    const MINUTOS_VALIDADE_TOKEN = 60;
-    const minutos = parseInt((new Date() - state.token_update_date) / 1000 / 60);
-    return minutos < MINUTOS_VALIDADE_TOKEN;
+    return state.user !== null;
   },
 
   roleUser(state) {
-    return state.role ? state.role : null;
+    return state.role || null;
   },
 
   user(state) {
-    return state.user ? state.user : null;
+    return state.user || null;
+  },
+
+  nameUser(state) {
+    return state.name || null;
   },
 };
 
 const mutations = {
-  AUTHENTICATE: (state, authUser) => {
-    state.token = authUser.token;
-    state.token_update_date = authUser.date;
-  },
-  CLEAR_AUTH_DATA: (state) => {
-    state.token = null;
-    state.token_update_date = null;
-  },
-  UPDATE_AUTH_DATA: (state, tokenData) => {
-    state.token = tokenData.token;
-    state.token_update_date = tokenData.date;
-  },
   UPDATE_USER: (state, data) => {
     state.user = data;
     state.role = data?.role;
+    state.name = data?.name;
   },
+
   CLEAR_USER: (state) => {
     state.user = null;
+    state.role = null;
+    state.name = null;
   },
 };
 

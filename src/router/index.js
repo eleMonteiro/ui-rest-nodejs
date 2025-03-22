@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import paths from "./paths";
+import paths from "@/router/paths";
+import store from "@/store";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,9 +10,10 @@ const router = createRouter({
 
 router.afterEach((to, from) => {});
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!localStorage.getItem("token")) {
+    const isValid = await store.dispatch("auth/checkTokenValidity");
+    if (!isValid && to.path !== "/login") {
       next("/login");
       return;
     }

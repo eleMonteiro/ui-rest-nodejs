@@ -1,15 +1,15 @@
 <script setup>
-import { computed, ref, defineProps } from 'vue';
+import { computed, ref, defineProps } from "vue";
 
 const props = defineProps({
   menuItems: {
     type: Object,
-    required: true
+    required: true,
   },
   user: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const itemMenu = ref(Object.keys(props.menuItems)[0]);
@@ -18,9 +18,7 @@ const activeComponent = computed(() => props.menuItems[itemMenu.value]);
 </script>
 
 <template>
-
   <div class="container">
-
     <div class="user-section">
       <div class="avatar">A</div>
       <div class="user-info">
@@ -33,10 +31,17 @@ const activeComponent = computed(() => props.menuItems[itemMenu.value]);
       <div class="sidebar">
         <nav>
           <ul>
-            <li v-for="(item, key) in props.menuItems" :key="key" :class="{ active: activeComponent.name === key }"
-              @click="itemMenu = key">
-              <v-icon :class="item.icon" :color="activeComponent.name === key ? '#d58936' : '#69140e'"
-                size="35"></v-icon>
+            <li
+              v-for="(item, key) in props.menuItems"
+              :key="key"
+              :class="{ active: activeComponent.name === key }"
+              @click="itemMenu = key"
+            >
+              <v-icon
+                :class="item.icon"
+                :color="activeComponent.name === key ? '#d58936' : '#69140e'"
+                size="35"
+              ></v-icon>
             </li>
           </ul>
         </nav>

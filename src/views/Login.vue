@@ -1,62 +1,76 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const props = defineProps({
   to: String,
-  invalidToken: Boolean
-})
+  invalidToken: Boolean,
+});
 
-const form = ref(false)
-const valid = ref(true)
-const loading = ref(false)
-const email = ref('')
-const password = ref('')
-const error = ref('')
+const form = ref(false);
+const valid = ref(true);
+const loading = ref(false);
+const email = ref("");
+const password = ref("");
+const stayConnected = ref(false);
+const error = ref("");
 
-const store = useStore()
-const router = useRouter()
+const store = useStore();
+const router = useRouter();
 
-const token = computed(() => store.state.auth.token)
+const token = computed(() => store.state.auth.token);
 
 const onSubmit = async () => {
-  loading.value = true
+  loading.value = true;
   if (valid.value) {
     try {
-      await store.dispatch('auth/login', { email: email.value, password: password.value })
-      if (store.getters['auth/isAuthenticated']) {
-        store.getters['auth/roleUser'] === 'admin' ? router.push('/home') : router.push('/')
+      await store.dispatch("auth/login", {
+        email: email.value,
+        password: password.value,
+        stayConnected: stayConnected.value,
+      });
+      const role = store.getters["auth/roleUser"];
+      if (role) {
+        console.log("Redirecionando para:", role === "admin" ? "/home" : "/");
+
+        router.push(role === "admin" ? "/home" : "/");
       } else {
-        error.value = 'Usuário e/ou senha inválidos'
+        error.value = "Usuário e/ou senha inválidos";
       }
     } catch (err) {
-      error.value = 'Erro ao fazer login'
+      error.value = "Erro ao fazer login";
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
-}
+};
 
-onMounted(() => {
-  if (props.invalidToken) {
-    error.value = 'Sua sessão expirou. Faça login novamente'
+onMounted(async () => {
+  const isValid = await store.dispatch("auth/checkTokenValidity");
+  if (!isValid) {
+    error.value = "Sua sessão expirou. Faça login novamente";
+    store.commit("auth/CLEAR_USER");
+    router.push("/login");
+  } else {
+    const role = store.getters["auth/roleUser"];
+    router.push(role === "admin" ? "/home" : "/");
   }
-})
+});
 
 const rules = {
-  required: v => !!v || 'Campo obrigatório.',
-  min: v => v.length >= 8 || 'Minimo 8 caracteres',
-}
+  required: (v) => !!v || "Campo obrigatório.",
+  min: (v) => v.length >= 8 || "Minimo 8 caracteres",
+};
 
-const showPassword = ref(false)
+const showPassword = ref(false);
 </script>
 
 <template>
   <div>
     <div class="container login">
       <div class="left">
-        <img src="../assets/icon-primary.svg" alt="Imagem da Tela de Login">
+        <img src="../assets/icon-primary.svg" alt="Imagem da Tela de Login" />
       </div>
       <div class="right">
         <div>
@@ -67,21 +81,45 @@ const showPassword = ref(false)
         </div>
         <v-card class="mx-auto px-6 py-8 mt-12 form-container" width="500" height="auto">
           <v-form v-model="form" @submit.prevent="onSubmit">
-            <v-text-field v-model="email" :readonly="loading" :rules="[rules.required]" class="mb-2" label="Email"
-              bg-color="#ffffff"></v-text-field>
+            <v-text-field
+              v-model="email"
+              :readonly="loading"
+              :rules="[rules.required]"
+              class="mb-2"
+              label="Email"
+              bg-color="#ffffff"
+            ></v-text-field>
 
-            <v-text-field v-model="password" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="[rules.required, rules.min]" :type="showPassword ? 'text' : 'password'"
-              hint="Pelo menos 8 caracteres" label="Senha" counter @click:append-inner="showPassword = !showPassword"
-              bg-color="#ffffff">
+            <v-text-field
+              v-model="password"
+              :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min]"
+              :type="showPassword ? 'text' : 'password'"
+              hint="Pelo menos 8 caracteres"
+              label="Senha"
+              counter
+              @click:append-inner="showPassword = !showPassword"
+              bg-color="#ffffff"
+            >
             </v-text-field>
 
-            <v-checkbox label="Manter-me conectado" style="color: var(--bronze);"></v-checkbox>
+            <v-checkbox
+              v-model="stayConnected"
+              label="Manter-me conectado"
+              style="color: var(--bronze)"
+            ></v-checkbox>
 
             <v-row>
               <v-col>
-                <v-btn :disabled="!form" :loading="loading" size="large" type="submit" variant="elevated" block
-                  class="submit-button">
+                <v-btn
+                  :disabled="!form"
+                  :loading="loading"
+                  size="large"
+                  type="submit"
+                  variant="elevated"
+                  block
+                  class="submit-button"
+                >
                   Acessar
                 </v-btn>
               </v-col>

@@ -1,19 +1,19 @@
 <script setup>
-import { ref } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { ref } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
-const store = useStore()
-const router = useRouter()
+const store = useStore();
+const router = useRouter();
 
 const handleClick = () => {
-  if (store.getters['auth/isAuthenticated']) {
-    console.log(store.getters['auth/roleUser'])
-    store.getters['auth/roleUser'] === 'admin' ? router.push('/home') : router.push('/')
+  if (store.getters["auth/isAuthenticated"]) {
+    console.log(store.getters["auth/roleUser"]);
+    store.getters["auth/roleUser"] === "admin" ? router.push("/home") : router.push("/");
   } else {
-    router.push('/login')
+    router.push("/login");
   }
-}
+};
 </script>
 
 <template>
