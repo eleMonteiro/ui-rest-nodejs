@@ -8,7 +8,6 @@ const router = useRouter();
 
 const handleClick = () => {
   if (store.getters["auth/isAuthenticated"]) {
-    console.log(store.getters["auth/roleUser"]);
     store.getters["auth/roleUser"] === "admin" ? router.push("/home") : router.push("/");
   } else {
     router.push("/login");

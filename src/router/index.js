@@ -21,4 +21,8 @@ router.beforeEach(async (to, from, next) => {
   next();
 });
 
+router.onError((_error) => {
+  router.replace({ name: "error" });
+});
+
 export default router;

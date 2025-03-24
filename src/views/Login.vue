@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -19,8 +19,6 @@ const error = ref("");
 const store = useStore();
 const router = useRouter();
 
-const token = computed(() => store.state.auth.token);
-
 const onSubmit = async () => {
   loading.value = true;
   if (valid.value) {
@@ -32,13 +30,11 @@ const onSubmit = async () => {
       });
       const role = store.getters["auth/roleUser"];
       if (role) {
-        console.log("Redirecionando para:", role === "admin" ? "/home" : "/");
-
-        router.push(role === "admin" ? "/home" : "/");
+        router.push(role === "ADMIN" ? "/home" : "/");
       } else {
         error.value = "Usuário e/ou senha inválidos";
       }
-    } catch (err) {
+    } catch (error) {
       error.value = "Erro ao fazer login";
     } finally {
       loading.value = false;
@@ -79,7 +75,7 @@ const showPassword = ref(false);
         <div>
           <h2>Ainda não tem uma conta? <router-link to="/account">Cadastre-se</router-link></h2>
         </div>
-        <v-card class="mx-auto px-6 py-8 mt-12 form-container" width="500" height="auto">
+        <v-card width="500" height="auto" variant="text">
           <v-form v-model="form" @submit.prevent="onSubmit">
             <v-text-field
               v-model="email"

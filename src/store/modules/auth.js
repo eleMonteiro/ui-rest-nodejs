@@ -1,7 +1,7 @@
 import api from "@/api";
 
 const state = {
-  user: JSON.parse(localStorage.getItem("user")) || null, // Carrega do localStorage, ou usa null como valor padrão
+  user: JSON.parse(localStorage.getItem("user")) || null,
   name: JSON.parse(localStorage.getItem("name")) || null,
   role: JSON.parse(localStorage.getItem("role")) || null,
 };
@@ -18,7 +18,10 @@ const actions = {
 
       commit("UPDATE_USER", userData);
     } catch (error) {
-      throw new Error("Login failed");
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
     }
   },
 
@@ -32,7 +35,10 @@ const actions = {
 
       commit("CLEAR_USER");
     } catch (error) {
-      throw new Error("Logout failed");
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
     }
   },
 
@@ -47,7 +53,21 @@ const actions = {
 
       commit("UPDATE_USER", userData);
     } catch (error) {
-      throw new Error("Failed to fetch user data");
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
+    }
+  },
+
+  async register({ commit }, authData) {
+    try {
+      await api.post("/register", authData);
+    } catch (error) {
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
     }
   },
 

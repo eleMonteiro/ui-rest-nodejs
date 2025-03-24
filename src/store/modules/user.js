@@ -2,60 +2,87 @@ import api from "@/api";
 
 const state = {
   users: [],
-  user: {},
+  user: null,
 };
 
 const actions = {
-  getUsers({ commit }) {
-    api
-      .get("/users")
-      .then((res) => {
-        commit("SET_USERS", res.data);
-      })
-      .catch((error) => error);
+  async getUsers({ commit }) {
+    try {
+      const response = await api.get("/users");
+      const data = response.data;
+
+      commit("SET_USERS", data);
+    } catch (error) {
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
+    }
   },
 
-  getUser({ commit }, id) {
-    api
-      .get(`/users/${id}`)
-      .then((res) => {
-        commit("SET_USER", res.data);
-      })
-      .catch((error) => error);
+  async getUser({ commit }, id) {
+    try {
+      const response = await api.get(`/users/${id}`);
+      const data = response.data;
+      commit("SET_USER", data);
+    } catch (error) {
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
+    }
   },
 
-  getUserByCPF({ commit }, cpf) {
-    api
-      .get("/users/cpf", {
+  async getUserByCPF({ commit }, cpf) {
+    try {
+      const response = await api.get("/users/cpf", {
         params: { cpf },
-      })
-      .then((res) => {
-        commit("SET_USER", res.data);
-      })
-      .catch((error) => {
-        return error || "Unknown error";
       });
+      const data = response.data;
+
+      commit("SET_USER", data);
+    } catch (error) {
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
+    }
   },
 
-  createUser({ dispatch }, userData) {
-    api
-      .post("/users", userData)
-      .then(() => dispatch("getUsers"))
-      .catch((error) => error);
+  async createUser({ dispatch }, userData) {
+    try {
+      await api.post("/users", userData);
+      dispatch("getUsers");
+    } catch (error) {
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
+    }
   },
 
-  updateUser({ dispatch }, userData) {
-    get
-      .put(`/users/${userData.id}`, userData)
-      .then(() => dispatch("getUsers"))
-      .catch((error) => error);
+  async updateUser({ dispatch }, userData) {
+    try {
+      await get.put(`/users/${userData.id}`, userData);
+      dispatch("getUsers");
+    } catch (error) {
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
+    }
   },
 
-  deleteUser({ dispatch }, id) {
-    api
-      .delete(`/users/${id}`)
-      .then(() => dispatch("getUsers"))
-      .catch((error) => error);
+  async deleteUser({ dispatch }, id) {
+    try {
+      await api.delete(`/users/${id}`);
+      dispatch("getUsers");
+    } catch (error) {
+      return {
+        ...(error.response?.data || {}),
+        status: error.response?.status || 500,
+      };
+    }
   },
 };
 
@@ -80,6 +107,7 @@ const getters = {
 };
 
 export default {
+  namespaced: true,
   state,
   actions,
   mutations,

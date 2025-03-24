@@ -15,6 +15,14 @@ const props = defineProps({
 const itemMenu = ref(Object.keys(props.menuItems)[0]);
 
 const activeComponent = computed(() => props.menuItems[itemMenu.value]);
+
+const handleMenuClick = (key) => {
+  if (key === "logout") {
+    props.menuItems[key].action();
+  } else {
+    itemMenu.value = key;
+  }
+};
 </script>
 
 <template>
@@ -35,7 +43,7 @@ const activeComponent = computed(() => props.menuItems[itemMenu.value]);
               v-for="(item, key) in props.menuItems"
               :key="key"
               :class="{ active: activeComponent.name === key }"
-              @click="itemMenu = key"
+              @click="handleMenuClick(key)"
             >
               <v-icon
                 :class="item.icon"

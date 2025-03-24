@@ -1,23 +1,33 @@
 <script setup>
 import { ref } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
-const form = ref(false);
-const name = ref("");
-const email = ref("");
-const password = ref("");
-const loading = ref(false);
+const store = useStore();
+const router = useRouter();
+
+const DEFAULT_RECORD = { name: "", password: "", email: "", roles: [{ id: "CLIENTE" }] };
+
+const record = ref(DEFAULT_RECORD);
+const showPassword = ref(false);
+const valid = ref(true);
 
 const rules = {
   required: (v) => !!v || "Campo obrigatório.",
   min: (v) => v.length >= 8 || "Minimo 8 caracteres",
 };
 
-const showPassword = ref(false);
+const create = async () => {
+  try {
+    if (valid.value) {
+      await store.dispatch("auth/register", record.value);
+      redirectLogin();
+    }
+  } catch (error) {}
+};
 
-const onSubmit = () => {
-  if (!form.value) return;
-  loading.value = true;
-  setTimeout(() => (loading.value = false), 2000);
+const redirectLogin = () => {
+  router.push("/login");
 };
 </script>
 
@@ -28,59 +38,57 @@ const onSubmit = () => {
         <v-icon class="mdi mdi-account" color="white" size="500"></v-icon>
       </div>
       <div class="right">
-        <div class="text-center">
-          <h1>Cadastre-se</h1>
-        </div>
-        <v-card class="mx-auto px-6 py-8 mt-2 form-container" width="500" height="auto">
-          <v-form v-model="form" @submit.prevent="onSubmit">
+        <v-card width="500" height="auto" variant="text">
+          <template v-slot:title>
+            <div class="text-center">Cadastre-se</div>
+          </template>
+          <template v-slot:text>
             <v-text-field
-              v-model="name"
-              :readonly="loading"
+              v-model="record.name"
               :rules="[rules.required]"
-              class="mb-4"
               label="Nome"
-              bg-color="#ffffff"
+              bg-color="white"
             ></v-text-field>
 
             <v-text-field
-              v-model="email"
-              :readonly="loading"
+              v-model="record.email"
               :rules="[rules.required]"
-              class="mb-4"
               label="Email"
-              bg-color="#ffffff"
+              bg-color="white"
             ></v-text-field>
 
             <v-text-field
-              v-model="password"
+              v-model="record.password"
               :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               :rules="[rules.required, rules.min]"
               :type="showPassword ? 'text' : 'password'"
               hint="Pelo menos 8 caracteres"
               label="Senha"
-              counter
               @click:append-inner="showPassword = !showPassword"
-              bg-color="#ffffff"
-              class="mb-12"
+              bg-color="white"
             >
             </v-text-field>
+          </template>
 
-            <v-row>
-              <v-col cols="6">
-                <v-btn
-                  :disabled="!form"
-                  :loading="loading"
-                  size="large"
-                  type="submit"
-                  variant="elevated"
-                  block
-                  class="submit-button"
-                >
-                  Criar Conta
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-form>
+          <v-card-actions>
+            <v-btn
+              size="large"
+              text="Criar Conta"
+              color="success"
+              variant="flat"
+              @click="create"
+            ></v-btn>
+
+            <v-spacer></v-spacer>
+
+            <v-btn
+              size="large"
+              text="Login"
+              color="error"
+              variant="flat"
+              @click="redirectLogin"
+            ></v-btn>
+          </v-card-actions>
         </v-card>
       </div>
     </div>
@@ -125,7 +133,7 @@ const onSubmit = () => {
   z-index: 1;
 }
 
-.right h1 {
+.text-center {
   font-family: "Be Vietnam Pro", sans-serif;
   font-size: 50px;
   font-weight: 200;
@@ -133,47 +141,11 @@ const onSubmit = () => {
   color: var(--color-primary);
 }
 
-.text-center {
-  width: 50%;
-  height: auto;
-  position: relative;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-}
-
 .right a {
   color: var(--bronze);
 }
 
-.submit-button {
-  background-color: var(--color-primary);
-  color: var(--color-accent);
-  font-family: "Be Vietnam Pro", sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.text-button {
-  color: var(--color-accent);
-  font-family: "Be Vietnam Pro", sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.text-button:hover {
-  text-decoration: underline;
-}
-
-.form-container {
-  background-color: var(--white);
-}
-
 .v-card {
   background-color: transparent !important;
-}
-
-.v-form {
-  background-color: transparent;
 }
 </style>
