@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits, computed } from "vue";
+import { ref, defineProps, defineEmits, computed } from "vue";
 
 const props = defineProps({
   dialog: {
@@ -14,15 +14,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  recordAddress: {
-    type: Object,
-    required: true,
-  },
-  recordRole: {
-    type: Object,
-    required: true,
-  },
 });
+
+const showPassword = ref(false);
+const roles = ["ADMIN", "CLIENTE"];
 
 const emit = defineEmits(["update:dialog", "save", "close"]);
 
@@ -31,9 +26,10 @@ const dialogVisible = computed({
   set: (value) => emit("update:dialog", value),
 });
 
-const disabled = computed(() => {
-  return e1.value === 1 ? "prev" : e1.value === steps.value ? "next" : undefined;
-});
+const rules = {
+  required: (v) => !!v || "Campo obrigatório.",
+  min: (v) => v.length >= 8 || "Minimo 8 caracteres",
+};
 
 const save = () => {
   emit("save");
@@ -45,51 +41,76 @@ const closeDialog = () => {
 </script>
 
 <template>
-  <v-dialog v-model="dialogVisible" max-width="800">
+  <v-dialog v-model="dialogVisible" max-width="auto">
     <v-card :title="`${isEditing ? 'Editar' : 'Adicionar'} um usuário`" color="white">
       <template v-slot:text>
-        <v-container>
-          <v-row justify="center">
-            <v-col cols="12">
-              <v-stepper v-model="e1" flat>
-                <template v-slot:default="{ prev, next }">
-                  <v-stepper-header flat elevation="0" class="stepper-header-flat">
-                    <template v-for="n in 3" :key="`${n}-step`">
-                      <v-stepper-item
-                        :complete="1 > n"
-                        :step="`Step {{ n }}`"
-                        :value="n"
-                        editable
-                      ></v-stepper-item>
+        <v-row>
+          <v-col cols="4">
+            <v-text-field
+              v-model="record.cpf"
+              label="CPF"
+              :rules="[rules.required]"
+              variant="outlined"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              v-model="record.name"
+              label="Nome"
+              :rules="[rules.required]"
+              variant="outlined"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              v-model="record.dateOfBirth"
+              label="Data de Nascimento"
+              :rules="[rules.required]"
+              variant="outlined"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6">
+            <v-text-field
+              v-model="record.email"
+              label="Email"
+              :rules="[rules.required]"
+              variant="outlined"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field
+              v-model="record.password"
+              :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min]"
+              :type="showPassword ? 'text' : 'password'"
+              hint="Pelo menos 8 caracteres"
+              label="Senha"
+              @click:append-inner="showPassword = !showPassword"
+              variant="outlined"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>
 
-                      <v-divider v-if="n !== 3" :key="n"></v-divider>
-                    </template>
-                  </v-stepper-header>
-
-                  <v-stepper-window>
-                    <v-stepper-window-item :value="1">
-                      <v-card color="grey-lighten-1" height="200"> </v-card>
-                    </v-stepper-window-item>
-
-                    <v-stepper-window-item :value="2">
-                      <v-card color="grey-lighten-2" height="200"> </v-card>
-                    </v-stepper-window-item>
-
-                    <v-stepper-window-item :value="3">
-                      <v-card color="grey-lighten-3" height="200"> </v-card>
-                    </v-stepper-window-item>
-                  </v-stepper-window>
-
-                  <v-stepper-actions
-                    :disabled="disabled"
-                    @click:next="next"
-                    @click:prev="prev"
-                  ></v-stepper-actions>
-                </template>
-              </v-stepper>
-            </v-col>
-          </v-row>
-        </v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-select
+              placeholder="Select..."
+              v-model="record.role"
+              :items="roles"
+              label="Perfil"
+              :rules="[rules.required]"
+              variant="outlined"
+              required
+            ></v-select>
+          </v-col>
+        </v-row>
       </template>
 
       <v-card-actions>

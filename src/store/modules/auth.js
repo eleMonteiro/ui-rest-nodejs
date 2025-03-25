@@ -1,22 +1,15 @@
 import api from "@/api";
 
 const state = {
-  user: JSON.parse(localStorage.getItem("user")) || null,
-  name: JSON.parse(localStorage.getItem("name")) || null,
-  role: JSON.parse(localStorage.getItem("role")) || null,
+  user: null,
+  name: null,
+  role: null,
 };
 
 const actions = {
   async login({ commit }, authData) {
     try {
-      const response = await api.post("/login", authData);
-      const userData = response.data.user;
-
-      localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("name", JSON.stringify(userData?.name));
-      localStorage.setItem("role", JSON.stringify(userData?.role));
-
-      commit("UPDATE_USER", userData);
+      await api.post("/login", authData);
     } catch (error) {
       return {
         ...(error.response?.data || {}),
@@ -28,11 +21,6 @@ const actions = {
   async logout({ commit }) {
     try {
       await api.post("/logout", {}, { withCredentials: true });
-
-      localStorage.removeItem("user");
-      localStorage.removeItem("name");
-      localStorage.removeItem("role");
-
       commit("CLEAR_USER");
     } catch (error) {
       return {
@@ -46,11 +34,6 @@ const actions = {
     try {
       const response = await api.get("/profile", { withCredentials: true });
       const userData = response.data.user;
-
-      localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("name", JSON.stringify(userData?.name));
-      localStorage.setItem("role", JSON.stringify(userData?.role));
-
       commit("UPDATE_USER", userData);
     } catch (error) {
       return {
@@ -71,10 +54,12 @@ const actions = {
     }
   },
 
-  async checkTokenValidity() {
+  async checkTokenValidity({ commit }) {
     try {
       const response = await api.get("/validate-token", { withCredentials: true });
-      return response.data.valid;
+      const { user, valid } = response.data;
+      commit("UPDATE_USER", user);
+      return valid;
     } catch (error) {
       return false;
     }

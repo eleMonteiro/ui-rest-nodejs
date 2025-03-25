@@ -81,6 +81,7 @@ const closeDialog = () => {
           <v-row>
             <v-col :cols="imagePreview ? 10 : 12">
               <v-file-input
+                v-model="record.image"
                 label="Imagem"
                 :rules="[rules.required]"
                 variant="solo"

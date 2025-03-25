@@ -7,32 +7,17 @@ import Form from "./Form.vue";
 
 const store = useStore();
 
-const DEFAULT_RECORD_ROLE = {
-  id: "",
-};
-
-const DEFAULT_RECORD_ADDRESS = {
-  road: "",
-  cep: "",
-  neighborhood: "",
-  city: "",
-  uf: "",
-};
-
 const DEFAULT_RECORD = {
   name: "",
   cpf: "",
   dateOfBirth: "",
   password: "",
   email: "",
-  roles: [],
-  addresses: [],
+  role: "",
 };
 
 const itens = ref([]);
 const record = ref(DEFAULT_RECORD);
-const recordRole = ref(DEFAULT_RECORD_ROLE);
-const recordAddress = ref(DEFAULT_RECORD_ADDRESS);
 const dialogForm = ref(false);
 const isEditing = ref(false);
 const dialogDelete = ref(false);
@@ -67,8 +52,6 @@ const fetchUsers = async () => {
 const add = () => {
   isEditing.value = false;
   record.value = DEFAULT_RECORD;
-  recordRole.value = DEFAULT_RECORD_ROLE;
-  recordAddress.value = DEFAULT_RECORD_ADDRESS;
   dialogForm.value = true;
 };
 
@@ -132,7 +115,6 @@ const showAlertMessage = (type, title, message) => {
 
 const closeDialogForm = () => {
   dialogForm.value = false;
-  reset();
 };
 </script>
 
@@ -153,8 +135,6 @@ const closeDialogForm = () => {
       v-model:dialog="dialogForm"
       :isEditing="isEditing"
       :record="record"
-      :recordRole="recordRole"
-      :recordAddress="recordAddress"
       @save="save"
       @close="closeDialogForm"
     />

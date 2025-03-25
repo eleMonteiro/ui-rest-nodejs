@@ -10,6 +10,11 @@ const routes = [
     component: () => import("@/components/Error500.vue"),
   },
   {
+    path: "/not-authorized",
+    name: "not-authorized",
+    component: () => import("@/components/NotAuthorized.vue"),
+  },
+  {
     path: "/",
     name: "home",
     component: () => import("@/views/Home.vue"),
@@ -28,7 +33,10 @@ const routes = [
     path: "/home",
     name: "home-admin",
     component: () => import("@/views/admin/Home.vue"),
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      profile: "ADMIN",
+    },
   },
 ];
 

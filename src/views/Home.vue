@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -8,11 +8,15 @@ const router = useRouter();
 
 const handleClick = () => {
   if (store.getters["auth/isAuthenticated"]) {
-    store.getters["auth/roleUser"] === "admin" ? router.push("/home") : router.push("/");
+    store.getters["auth/roleUser"] === "ADMIN" ? router.push("/home") : router.push("/");
   } else {
     router.push("/login");
   }
 };
+
+onMounted(() => {
+  store.dispatch("auth/checkTokenValidity");
+});
 </script>
 
 <template>

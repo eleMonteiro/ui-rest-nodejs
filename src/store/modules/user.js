@@ -51,7 +51,12 @@ const actions = {
 
   async createUser({ dispatch }, userData) {
     try {
-      await api.post("/users", userData);
+      const { roles, addresses, ...user } = userData;
+      await api.post("/users", {
+        ...user,
+        roles: [roles],
+        addresses: [addresses],
+      });
       dispatch("getUsers");
     } catch (error) {
       return {
@@ -63,7 +68,13 @@ const actions = {
 
   async updateUser({ dispatch }, userData) {
     try {
-      await get.put(`/users/${userData.id}`, userData);
+      const { roles, addresses, ...user } = userData;
+
+      await get.put(`/users/${userData.id}`, {
+        ...user,
+        roles: [roles],
+        addresses: [addresses],
+      });
       dispatch("getUsers");
     } catch (error) {
       return {

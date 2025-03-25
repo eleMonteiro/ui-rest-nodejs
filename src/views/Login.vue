@@ -28,6 +28,7 @@ const onSubmit = async () => {
         password: password.value,
         stayConnected: stayConnected.value,
       });
+      await store.dispatch("auth/checkTokenValidity");
       const role = store.getters["auth/roleUser"];
       if (role) {
         router.push(role === "ADMIN" ? "/home" : "/");
@@ -50,7 +51,7 @@ onMounted(async () => {
     router.push("/login");
   } else {
     const role = store.getters["auth/roleUser"];
-    router.push(role === "admin" ? "/home" : "/");
+    router.push(role === "ADMIN" ? "/home" : "/");
   }
 });
 

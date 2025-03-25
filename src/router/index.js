@@ -13,11 +13,20 @@ router.afterEach((to, from) => {});
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const isValid = await store.dispatch("auth/checkTokenValidity");
+    const role = store.getters["auth/roleUser"];
+    const requiredProfile = to.meta.profile;
+
     if (!isValid && to.path !== "/login") {
       next("/login");
       return;
     }
+
+    if (requiredProfile && role !== requiredProfile) {
+      next("/not-authorized");
+      return;
+    }
   }
+
   next();
 });
 
