@@ -121,7 +121,7 @@ const closeDialog = () => {
         </v-row>
         <v-row>
           <v-col cols="12">
-            <Address :itens="record.addresses" :headers="headers"></Address>
+            <Address :itens="record?.addresses" :headers="headers"></Address>
           </v-col>
         </v-row>
       </template>

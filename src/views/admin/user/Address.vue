@@ -16,7 +16,7 @@ const props = defineProps({
 <template>
   <v-data-table
     :headers="headers"
-    :hide-default-footer="itens.length < 11"
+    :hide-default-footer="!itens || itens?.length < 11"
     :items="itens"
     class="table"
   >
