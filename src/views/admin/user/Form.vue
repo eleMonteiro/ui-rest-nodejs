@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue";
 import Address from "./Address.vue";
+import { maskCpf } from "@/utils/masks";
 
 const props = defineProps({
   dialog: {
@@ -62,6 +63,7 @@ const closeDialog = () => {
               label="CPF"
               :rules="[rules.required]"
               variant="outlined"
+              @input="maskCpf"
               required
             ></v-text-field>
           </v-col>
