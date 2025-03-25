@@ -1,5 +1,6 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue";
+import Address from "./Address.vue";
 
 const props = defineProps({
   dialog: {
@@ -18,6 +19,16 @@ const props = defineProps({
 
 const showPassword = ref(false);
 const roles = ["ADMIN", "CLIENTE"];
+
+const headers = [
+  { title: "ID", key: "id", align: "center" },
+  { title: "CEP", key: "cep", align: "center" },
+  { title: "Rua", key: "road", align: "center" },
+  { title: "Bairro", key: "neighborhood", align: "center" },
+  { title: "Cidade", key: "city", align: "center" },
+  { title: "UF", key: "uf", align: "center" },
+  { title: "", key: "actions", sortable: false, align: "center" },
+];
 
 const emit = defineEmits(["update:dialog", "save", "close"]);
 
@@ -74,7 +85,7 @@ const closeDialog = () => {
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="6">
+          <v-col cols="4">
             <v-text-field
               v-model="record.email"
               label="Email"
@@ -83,7 +94,7 @@ const closeDialog = () => {
               required
             ></v-text-field>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="4">
             <v-text-field
               v-model="record.password"
               :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -96,10 +107,7 @@ const closeDialog = () => {
               required
             ></v-text-field>
           </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col cols="12">
+          <v-col cols="4">
             <v-select
               placeholder="Select..."
               v-model="record.role"
@@ -109,6 +117,11 @@ const closeDialog = () => {
               variant="outlined"
               required
             ></v-select>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <Address :itens="record.addresses" :headers="headers"></Address>
           </v-col>
         </v-row>
       </template>
