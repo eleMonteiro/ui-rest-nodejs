@@ -27,6 +27,8 @@ const headers = [
   { title: "ID", key: "id", align: "center" },
   { title: "CEP", key: "cep", align: "center" },
   { title: "Rua", key: "road", align: "center" },
+  { title: "Número", key: "number", align: "center" },
+  { title: "Complemento", key: "complement", align: "center" },
   { title: "Bairro", key: "neighborhood", align: "center" },
   { title: "Cidade", key: "city", align: "center" },
   { title: "UF", key: "uf", align: "center" },
