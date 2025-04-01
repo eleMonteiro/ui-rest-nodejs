@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, shallowRef, computed } from "vue";
+import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import Table from "./Table.vue";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
@@ -78,18 +78,19 @@ const remove = async () => {
   }
 };
 
-const save = () => {
+const save = async (newRecord) => {
   try {
     if (valid.value) {
       if (isEditing.value) {
-        store.dispatch("user/updateUser", record.value);
+        await store.dispatch("user/updateUser", newRecord);
+        showAlertMessage("success", "Sucesso", "Usuário atualizado com sucesso.");
         reset();
-        fetchUsers();
       } else {
-        store.dispatch("user/createUser", record.value);
+        await store.dispatch("user/createUser", newRecord);
+        showAlertMessage("success", "Sucesso", "Usuário criado com sucesso.");
         reset();
-        fetchUsers();
       }
+      fetchUsers();
     } else {
       showAlertMessage("error", "Erro ao salvar", "Preencha todos os campos corretamente.");
     }

@@ -68,13 +68,7 @@ const actions = {
 
   async updateUser({ dispatch }, userData) {
     try {
-      const { roles, addresses, ...user } = userData;
-
-      await get.put(`/users/${userData.id}`, {
-        ...user,
-        roles: [roles],
-        addresses: [addresses],
-      });
+      await api.put(`/users/${userData.id}`, userData);
       dispatch("getUsers");
     } catch (error) {
       return {

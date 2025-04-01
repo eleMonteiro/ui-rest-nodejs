@@ -44,7 +44,7 @@ const formatCPF = (cpf) => {
     :items="itens"
     class="table"
   >
-    <template v-slot:top>
+    <template #top>
       <v-toolbar class="header-table">
         <v-toolbar-title> Usuários </v-toolbar-title>
 
@@ -54,7 +54,7 @@ const formatCPF = (cpf) => {
       </v-toolbar>
     </template>
 
-    <template v-slot:item.cpf="{ item }">
+    <template #item.cpf="{ item }">
       {{ formatCPF(item.cpf) }}
     </template>
 
@@ -66,7 +66,7 @@ const formatCPF = (cpf) => {
       </div>
     </template>
 
-    <template v-slot:no-data>
+    <template #no-data>
       <v-btn
         prepend-icon="mdi-backup-restore"
         rounded="lg"

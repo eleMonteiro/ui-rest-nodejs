@@ -20,25 +20,22 @@ const props = defineProps({
     :items="itens"
     class="table"
   >
-    <template v-slot:top>
+    <template #top>
       <v-toolbar class="header-table">
         <v-toolbar-title> Endereços </v-toolbar-title>
-
         <v-spacer></v-spacer>
-
         <v-btn icon="mdi-plus" color="primary"></v-btn>
       </v-toolbar>
     </template>
 
-    <template v-slot:item.actions="{ item }">
+    <template #item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
         <v-icon color="primary" icon="mdi-pencil" size="small"></v-icon>
-
         <v-icon color="primary" icon="mdi-delete" size="small"></v-icon>
       </div>
     </template>
 
-    <template v-slot:no-data>
+    <template #no-data>
       <v-btn
         prepend-icon="mdi-backup-restore"
         rounded="lg"
