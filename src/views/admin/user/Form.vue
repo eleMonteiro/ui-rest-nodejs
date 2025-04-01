@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, defineEmits, defineProps } from "vue";
 import Address from "./address/Address.vue";
 import { applyCpfMask, validateCpf, formatCpf, applyDateMask, validateDate } from "@/utils/masks";
 

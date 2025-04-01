@@ -1,5 +1,9 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, defineEmits, defineProps } from "vue";
+import { useStore } from "vuex";
+import { formatCep, applyCepMask, unformatCep } from "@/utils/masks";
+
+const store = useStore();
 
 const props = defineProps({
   itens: {
@@ -18,7 +22,7 @@ const dialog = ref(false);
 const isEditing = ref(false);
 const editedIndex = ref(-1);
 
-const editedItem = ref({
+const RECORD_DEFAULT = {
   cep: "",
   road: "",
   neighborhood: "",
@@ -26,17 +30,9 @@ const editedItem = ref({
   uf: "",
   complement: "",
   number: "",
-});
+};
 
-const defaultItem = ref({
-  cep: "",
-  road: "",
-  neighborhood: "",
-  city: "",
-  uf: "",
-  complement: "",
-  number: "",
-});
+const editedItem = ref({ ...RECORD_DEFAULT });
 
 const formTitle = computed(() => {
   return isEditing.value ? "Editar Endereço" : "Novo Endereço";
@@ -54,7 +50,7 @@ const openDialog = () => {
 const closeDialog = () => {
   dialog.value = false;
   setTimeout(() => {
-    editedItem.value = { ...defaultItem.value };
+    editedItem.value = { ...RECORD_DEFAULT };
     editedIndex.value = -1;
     isEditing.value = false;
   }, 300);
@@ -64,6 +60,7 @@ const editItem = (item) => {
   isEditing.value = true;
   editedIndex.value = props.itens.indexOf(item);
   editedItem.value = { ...item };
+  editedItem.value.cep = formatCep(item.cep);
   dialog.value = true;
 };
 
@@ -81,6 +78,40 @@ const save = () => {
     localItens.value.push(editedItem.value);
   }
   closeDialog();
+};
+
+const fetchAddressByCep = async () => {
+  const cep = unformatCep(editedItem.value.cep);
+  if (cep.length !== 8) return;
+
+  try {
+    await store.dispatch("cep/getAddressByCep", cep);
+    const data = store.getters["cep/address"];
+
+    console.log("Dados do CEP:", data);
+
+    if (data) {
+      editedItem.value.road = data.logradouro || "";
+      editedItem.value.neighborhood = data.bairro || "";
+      editedItem.value.city = data.localidade || "";
+      editedItem.value.uf = data.uf || "";
+    }
+  } catch (error) {}
+};
+
+const handleCepInput = (event) => {
+  const inputValue = event.target.value;
+  const unformattedValue = unformatCep(inputValue);
+  if (unformattedValue.length > 8) {
+    editedItem.value.cep = formatCep(unformattedValue);
+  } else {
+    editedItem.value.cep = applyCepMask(event);
+  }
+};
+
+const handleCepBlur = async () => {
+  editedItem.value.cep = formatCep(editedItem.value.cep);
+  await fetchAddressByCep();
 };
 </script>
 
@@ -101,15 +132,6 @@ const save = () => {
           <v-icon color="primary" icon="mdi-delete" size="small" @click="deleteItem(item)"></v-icon>
         </div>
       </template>
-
-      <template #no-data>
-        <v-btn
-          prepend-icon="mdi-backup-restore"
-          rounded="lg"
-          text="Reset data"
-          variant="text"
-        ></v-btn>
-      </template>
     </v-data-table>
 
     <v-dialog v-model="dialog" max-width="600px">
@@ -127,6 +149,8 @@ const save = () => {
                   label="CEP"
                   required
                   variant="outlined"
+                  @input="handleCepInput"
+                  @blur="handleCepBlur"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="8">
@@ -182,9 +206,7 @@ const save = () => {
 
         <v-card-actions>
           <v-btn text="Cancelar" color="error" variant="flat" @click="closeDialog"></v-btn>
-
           <v-spacer></v-spacer>
-
           <v-btn text="Salvar" color="success" variant="flat" @click="save"></v-btn>
         </v-card-actions>
       </v-card>
