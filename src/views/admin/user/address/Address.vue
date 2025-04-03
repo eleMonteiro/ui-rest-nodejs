@@ -88,8 +88,6 @@ const fetchAddressByCep = async () => {
     await store.dispatch("cep/getAddressByCep", cep);
     const data = store.getters["cep/address"];
 
-    console.log("Dados do CEP:", data);
-
     if (data) {
       editedItem.value.road = data.logradouro || "";
       editedItem.value.neighborhood = data.bairro || "";

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const props = defineProps({
   to: String,
@@ -18,6 +18,7 @@ const error = ref("");
 
 const store = useStore();
 const router = useRouter();
+const route = useRoute();
 
 const onSubmit = async () => {
   loading.value = true;
@@ -43,24 +44,16 @@ const onSubmit = async () => {
   }
 };
 
-onMounted(async () => {
-  const isValid = await store.dispatch("auth/checkTokenValidity");
-  if (!isValid) {
-    error.value = "Sua sessão expirou. Faça login novamente";
-    store.commit("auth/CLEAR_USER");
-    router.push("/login");
-  } else {
-    const role = store.getters["auth/roleUser"];
-    router.push(role === "ADMIN" ? "/home" : "/");
-  }
-});
-
 const rules = {
   required: (v) => !!v || "Campo obrigatório.",
   min: (v) => v.length >= 8 || "Minimo 8 caracteres",
 };
 
 const showPassword = ref(false);
+
+const resetPassword = () => {
+  router.push("/forgot");
+};
 </script>
 
 <template>
@@ -121,7 +114,14 @@ const showPassword = ref(false);
                 </v-btn>
               </v-col>
               <v-col>
-                <v-btn size="large" type="submit" variant="text" block class="text-button">
+                <v-btn
+                  size="large"
+                  type="submit"
+                  variant="text"
+                  block
+                  class="text-button"
+                  @click="resetPassword"
+                >
                   Esqueceu a senha?
                 </v-btn>
               </v-col>

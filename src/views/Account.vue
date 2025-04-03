@@ -39,10 +39,10 @@ const redirectLogin = () => {
       </div>
       <div class="right">
         <v-card width="500" height="auto" variant="text">
-          <template v-slot:title>
+          <template #title>
             <div class="text-center">Cadastre-se</div>
           </template>
-          <template v-slot:text>
+          <template #text>
             <v-text-field
               v-model="record.name"
               :rules="[rules.required]"

@@ -6,16 +6,27 @@ import { useRouter } from "vue-router";
 const store = useStore();
 const router = useRouter();
 
-const handleClick = () => {
-  if (store.getters["auth/isAuthenticated"]) {
+const handleClick = async () => {
+  const response = await store.dispatch("auth/checkTokenValidity");
+  if (response?.status === 200) {
     store.getters["auth/roleUser"] === "ADMIN" ? router.push("/home") : router.push("/");
   } else {
     router.push("/login");
   }
 };
 
-onMounted(() => {
-  store.dispatch("auth/checkTokenValidity");
+onMounted(async () => {
+  try {
+    const response = await store.dispatch("auth/checkTokenValidity");
+    if (response?.status === 200) {
+      const role = store.getters["auth/roleUser"];
+      router.push(role === "ADMIN" ? "/home" : "/");
+    } else {
+      router.push("/login");
+    }
+  } catch (error) {
+    router.push("/login");
+  }
 });
 </script>
 

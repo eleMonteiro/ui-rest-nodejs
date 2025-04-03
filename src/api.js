@@ -8,15 +8,16 @@ const api = axios.create({
 });
 
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response) {
       if (error.response.status === 401 || error.response.status === 403) {
         const path = error.response.data.path || "/";
         store.commit("auth/CLEAR_USER");
-        router.push({ name: "Login", params: { to: path, invalidToken: true } });
+
+        if (router.currentRoute.value.name !== "Login") {
+          router.push({ name: "Login", query: { to: path, invalidToken: "true" } });
+        }
       } else if (error.response.status === 500) {
         router.push({ name: "ServerError" });
       }

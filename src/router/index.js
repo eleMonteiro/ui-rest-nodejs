@@ -12,12 +12,16 @@ router.afterEach((to, from) => {});
 
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const isValid = await store.dispatch("auth/checkTokenValidity");
+    const response = await store.dispatch("auth/checkTokenValidity");
     const role = store.getters["auth/roleUser"];
     const requiredProfile = to.meta.profile;
 
-    if (!isValid && to.path !== "/login") {
-      next("/login");
+    if (!response?.status || response?.status !== 200) {
+      if (to.path !== "/login") {
+        next("/login");
+      } else {
+        next();
+      }
       return;
     }
 

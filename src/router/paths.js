@@ -30,6 +30,18 @@ const routes = [
     component: () => import("@/views/Account.vue"),
   },
   {
+    path: "/forgot",
+    name: "forgot",
+    component: () => import("@/views/auth/Forgot.vue"),
+  },
+
+  {
+    path: "/reset",
+    name: "reset",
+    component: () => import("@/views/auth/Reset.vue"),
+    props: (route) => ({ token: route.query.token }),
+  },
+  {
     path: "/home",
     name: "home-admin",
     component: () => import("@/views/admin/Home.vue"),
