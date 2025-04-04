@@ -7,17 +7,12 @@ import Form from "./Form.vue";
 
 const store = useStore();
 
-const DEFAULT_RECORD = { name: "", description: "", price: "", image: "" };
+const DEFAULT_RECORD = { name: "", description: "", category: "", price: "", image: "" };
 
 const itens = ref([]);
 const record = ref({ ...DEFAULT_RECORD });
 const recordId = ref(null);
 const valid = ref(true);
-
-const typeAlert = ref("success");
-const messageAlert = ref("");
-const titleAlert = ref("");
-const showAlert = ref(false);
 
 const imagePreview = ref(null);
 
@@ -29,6 +24,7 @@ const headers = [
   { title: "ID", key: "id", align: "start" },
   { title: "Nome", key: "name" },
   { title: "Descrição", key: "description" },
+  { title: "Categoria", key: "category" },
   { title: "Preço", key: "price" },
   { title: "", key: "actions", align: "end", sortable: false },
 ];
@@ -39,8 +35,26 @@ onMounted(async () => {
 });
 
 const fetchDishes = async () => {
-  await store.dispatch("dish/getDishes");
-  itens.value = store.getters["dish/dishes"];
+  try {
+    const response = await store.dispatch("dish/getDishes");
+    if (response?.success) {
+      store.dispatch("snackbar/showSnackbar", {
+        text: response?.message,
+        color: "success",
+      });
+      itens.value = store.getters["dish/dishes"];
+    } else {
+      store.dispatch("snackbar/showSnackbar", {
+        text: response?.message,
+        color: "error",
+      });
+    }
+  } catch (error) {
+    store.dispatch("snackbar/showSnackbar", {
+      text: error?.message,
+      color: "error",
+    });
+  }
 };
 
 const add = () => {
@@ -65,11 +79,25 @@ const del = (id) => {
 
 const remove = async () => {
   try {
-    await store.dispatch("dish/deleteDish", recordId.value);
-    dialogDelete.value = false;
-    fetchDishes();
+    const response = await store.dispatch("dish/deleteDish", recordId.value);
+    if (response?.success) {
+      store.dispatch("snackbar/showSnackbar", {
+        text: response?.message,
+        color: "success",
+      });
+      dialogDelete.value = false;
+      fetchDishes();
+    } else {
+      store.dispatch("snackbar/showSnackbar", {
+        text: response?.message,
+        color: "error",
+      });
+    }
   } catch (error) {
-    showAlertMessage("error", error.message, error.error);
+    store.dispatch("snackbar/showSnackbar", {
+      text: error?.message,
+      color: "error",
+    });
   }
 };
 
@@ -77,32 +105,53 @@ const save = async () => {
   try {
     if (valid.value) {
       if (isEditing.value) {
-        await store.dispatch("dish/updateDish", record.value);
-        reset();
-        showAlertMessage("success", "Prato atualizado com sucesso!", "");
+        const response = await store.dispatch("dish/updateDish", record.value);
+
+        if (response?.success) {
+          store.dispatch("snackbar/showSnackbar", {
+            text: response?.message,
+            color: "success",
+          });
+          reset();
+          fetchDishes();
+        } else {
+          store.dispatch("snackbar/showSnackbar", {
+            text: response?.message,
+            color: "error",
+          });
+        }
       } else {
-        await store.dispatch("dish/createDish", record.value);
-        showAlertMessage("success", "Prato criado com sucesso!", "");
-        reset();
+        const response = await store.dispatch("dish/createDish", record.value);
+        if (response?.success) {
+          store.dispatch("snackbar/showSnackbar", {
+            text: response?.message,
+            color: "success",
+          });
+          reset();
+          fetchDishes();
+        } else {
+          store.dispatch("snackbar/showSnackbar", {
+            text: response?.message,
+            color: "error",
+          });
+        }
       }
-      fetchDishes();
     } else {
-      showAlertMessage("error", "Erro ao salvar", "Preencha todos os campos corretamente.");
+      store.dispatch("snackbar/showSnackbar", {
+        text: "Preencha todos os campos corretamente.",
+        color: "error",
+      });
     }
   } catch (error) {
-    showAlertMessage("error", error.message, error.error);
+    store.dispatch("snackbar/showSnackbar", {
+      text: error?.message,
+      color: "error",
+    });
   }
 };
 
 const closeDialogForm = () => {
   dialogForm.value = false;
-};
-
-const showAlertMessage = (type, title, message) => {
-  typeAlert.value = type;
-  titleAlert.value = title;
-  messageAlert.value = message;
-  showAlert.value = true;
 };
 
 const reset = () => {
@@ -131,15 +180,6 @@ watch(
 
 <template>
   <div class="content">
-    <v-alert
-      closable
-      v-model="showAlert"
-      :title="titleAlert"
-      :text="messageAlert"
-      :type="typeAlert"
-      class="alert"
-    ></v-alert>
-
     <Table :itens="itens" :headers="headers" @add="add" @edit="edit" @delete="del" @reset="reset" />
 
     <Form
