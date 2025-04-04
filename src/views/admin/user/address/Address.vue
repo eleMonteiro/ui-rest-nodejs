@@ -39,8 +39,12 @@ const formTitle = computed(() => {
 });
 
 const localItens = computed({
-  get: () => props.itens,
-  set: (value) => emit("update:itens", value),
+  get: () => (Array.isArray(props.itens) ? props.itens : []),
+  set: (value) => {
+    if (Array.isArray(value)) {
+      emit("update:itens", value);
+    }
+  },
 });
 
 const openDialog = () => {
@@ -72,11 +76,14 @@ const deleteItem = (item) => {
 };
 
 const save = () => {
+  const updatedItems = [...localItens.value];
   if (isEditing.value) {
-    Object.assign(localItens.value[editedIndex.value], editedItem.value);
+    updatedItems[editedIndex.value] = { ...editedItem.value };
   } else {
-    localItens.value.push(editedItem.value);
+    updatedItems.push({ ...editedItem.value });
   }
+
+  emit("update:itens", updatedItems);
   closeDialog();
 };
 
@@ -115,7 +122,13 @@ const handleCepBlur = async () => {
 
 <template>
   <div>
-    <v-data-table :headers="headers" :items="itens" :items-per-page="5" class="elevation-1">
+    <v-data-table
+      :key="itens?.length"
+      :headers="headers"
+      :items="itens"
+      :items-per-page="5"
+      class="elevation-1"
+    >
       <template #top>
         <v-toolbar class="header-table">
           <v-toolbar-title> Endereços </v-toolbar-title>

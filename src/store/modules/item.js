@@ -1,5 +1,5 @@
 import api from "@/api";
-import demand from "./demand";
+import { handleApiResponse, handleApiError } from "@/utils/apiResponse";
 
 const state = {
   items: [],
@@ -11,13 +11,10 @@ const actions = {
     try {
       const response = await api.get("/items");
       const data = response.data;
-
       commit("SET_ITEMS", data);
+      return handleApiResponse(response, "Items fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to fetch items");
     }
   },
 
@@ -26,35 +23,27 @@ const actions = {
       const response = await api.get(`/items/${id}`);
       const data = response.data;
       commit("SET_ITEM", data);
+      return handleApiResponse(response, "Item fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to fetch item");
     }
   },
 
   async createItem({ dispatch }, itemData) {
     try {
-      await api.post("/items", itemData);
-      dispatch("getItems");
+      const response = await api.post("/items", itemData);
+      return handleApiResponse(response, "Item created successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to create item");
     }
   },
 
   async deleteItem({ dispatch }, id) {
     try {
-      await api.delete(`/items/${id}`);
-      dispatch("getItems");
+      const response = await api.delete(`/items/${id}`);
+      return handleApiResponse(response, "Item deleted successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to delete item");
     }
   },
 
@@ -65,11 +54,9 @@ const actions = {
       });
       const data = response.data;
       commit("SET_ITEM", data);
+      return handleApiResponse(response, "Items fetched by demand successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to fetch items by demand");
     }
   },
 };

@@ -8,7 +8,7 @@ const router = useRouter();
 
 const handleClick = async () => {
   const response = await store.dispatch("auth/checkTokenValidity");
-  if (response?.status === 200) {
+  if (response?.success) {
     store.getters["auth/roleUser"] === "ADMIN" ? router.push("/home") : router.push("/");
   } else {
     router.push("/login");
@@ -18,7 +18,7 @@ const handleClick = async () => {
 onMounted(async () => {
   try {
     const response = await store.dispatch("auth/checkTokenValidity");
-    if (response?.status === 200) {
+    if (response?.success) {
       const role = store.getters["auth/roleUser"];
       router.push(role === "ADMIN" ? "/home" : "/");
     } else {

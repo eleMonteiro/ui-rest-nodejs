@@ -21,7 +21,16 @@ const props = defineProps({
 const emit = defineEmits(["update:dialog", "save", "close", "update:record"]);
 
 const roles = ["ADMIN", "CLIENTE"];
-const localRecord = ref({ ...props.record });
+const localRecord = ref({
+  cpf: "",
+  name: "",
+  dateOfBirth: "",
+  email: "",
+  password: "",
+  role: "",
+  addresses: Array.isArray(props.record.addresses) ? [...props.record.addresses] : [],
+  ...props.record,
+});
 
 const headers = [
   { title: "ID", key: "id", align: "center" },
@@ -69,9 +78,13 @@ watch(
 watch(
   () => props.record,
   (newVal) => {
-    localRecord.value = { ...newVal };
+    localRecord.value = {
+      ...localRecord.value,
+      ...newVal,
+      addresses: newVal.addresses || localRecord.value.addresses,
+    };
   },
-  { deep: true }
+  { immediate: true, deep: true }
 );
 
 watch(
@@ -102,6 +115,11 @@ const handleValidateDate = () => {
   if (!validateDate(localRecord.value.dateOfBirth)) {
     localRecord.value.dateOfBirth = "";
   }
+};
+
+const updateAddresses = (newAddresses) => {
+  localRecord.value.addresses = newAddresses;
+  emit("update:record", { ...localRecord.value });
 };
 </script>
 
@@ -180,7 +198,11 @@ const handleValidateDate = () => {
         </v-row>
         <v-row>
           <v-col cols="12">
-            <Address :itens="localRecord?.addresses || []" :headers="headers"></Address>
+            <Address
+              :itens="localRecord.addresses"
+              @update:itens="updateAddresses"
+              :headers="headers"
+            ></Address>
           </v-col>
         </v-row>
       </template>

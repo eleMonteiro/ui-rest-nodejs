@@ -1,4 +1,5 @@
 import api from "@/api";
+import { handleApiError, handleApiResponse } from "@/utils/apiResponse";
 
 const state = {
   dishes: [],
@@ -10,13 +11,10 @@ const actions = {
     try {
       const response = await api.get("/dishes");
       const data = response.data;
-
       commit("SET_DISHES", data);
+      return handleApiResponse(response, "Dishes fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to fetch dishes");
     }
   },
 
@@ -25,11 +23,9 @@ const actions = {
       const response = await api.get(`/dishes/${id}`);
       const data = response.data;
       commit("SET_DISH", data);
+      return handleApiResponse(response, "Dish fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to fetch dish");
     }
   },
 
@@ -37,7 +33,7 @@ const actions = {
     try {
       const imageToSend = dishData.image || null;
 
-      await api.post(
+      const response = await api.post(
         "/dishes",
         { ...dishData, image: imageToSend },
         {
@@ -46,12 +42,9 @@ const actions = {
           },
         }
       );
-      dispatch("getDishes");
+      return handleApiResponse(response, "Dish created successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to create dish");
     }
   },
 
@@ -59,7 +52,7 @@ const actions = {
     try {
       const imageToSend = dishData.image || null;
 
-      await api.put(
+      const response = await api.put(
         `/dishes/${dishData.id}`,
         { ...dishData, image: imageToSend },
         {
@@ -68,24 +61,18 @@ const actions = {
           },
         }
       );
-      dispatch("getDishes");
+      return handleApiResponse(response, "Dish updated successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to update dish");
     }
   },
 
   async deleteDish({ dispatch }, id) {
     try {
-      await api.delete(`/dishes/${id}`);
-      dispatch("getDishes");
+      const response = await api.delete(`/dishes/${id}`);
+      return handleApiResponse(response, "Dish deleted successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Failed to delete dish");
     }
   },
 };

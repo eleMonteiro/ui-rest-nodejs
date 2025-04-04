@@ -1,17 +1,27 @@
 export function handleApiResponse(response, successMessage = "Operação realizada com sucesso.") {
+  const data = response?.data || {};
+  const message = isValidMessage(data.message) ? data.message : successMessage;
   return {
-    message: response?.data?.message || successMessage,
+    message: message,
     status: response?.status || 200,
     success: true,
-    data: response?.data || null,
   };
 }
 
 export function handleApiError(error, defaultMessage = "Erro ao processar a solicitação.") {
+  const data = error?.response?.data || {};
+  const message = isValidMessage(data.message)
+    ? data.message
+    : isValidMessage(data.error)
+    ? data.error
+    : defaultMessage;
   return {
-    message: error?.response?.data?.message || error?.response?.data?.error || defaultMessage,
+    message: message,
     status: error?.response?.status || 500,
     success: false,
-    data: error?.response?.data || null,
   };
 }
+
+const isValidMessage = (value) => {
+  return typeof value === "string" && value.trim() !== "";
+};

@@ -25,11 +25,6 @@ const valid = ref(true);
 
 const recordId = ref(null);
 
-const typeAlert = ref("success");
-const messageAlert = ref("");
-const titleAlert = ref("");
-const showAlert = ref(false);
-
 const headers = [
   { title: "ID", key: "id", align: "center" },
   { title: "Nome", key: "name", align: "center" },
@@ -70,11 +65,17 @@ const del = (id) => {
 
 const remove = async () => {
   try {
-    await store.dispatch("user/deleteUser", recordId.value);
+    const response = await store.dispatch("user/deleteUser", recordId.value);
     dialogDelete.value = false;
+    if (response?.success) {
+      showMessage(response);
+    } else {
+      showMessage(response);
+    }
     fetchUsers();
   } catch (error) {
-    showAlertMessage("error", error.message, error.error);
+    dialogDelete.value = false;
+    showMessage(error);
   }
 };
 
@@ -82,20 +83,31 @@ const save = async (newRecord) => {
   try {
     if (valid.value) {
       if (isEditing.value) {
-        await store.dispatch("user/updateUser", newRecord);
-        showAlertMessage("success", "Sucesso", "Usuário atualizado com sucesso.");
+        const response = await store.dispatch("user/updateUser", newRecord);
+        if (response?.success) {
+          showMessage(response);
+        } else {
+          showMessage(response);
+        }
         reset();
       } else {
-        await store.dispatch("user/createUser", newRecord);
-        showAlertMessage("success", "Sucesso", "Usuário criado com sucesso.");
+        const response = await store.dispatch("user/createUser", newRecord);
+        if (response?.success) {
+          showMessage(response);
+        } else {
+          showMessage(response);
+        }
         reset();
       }
       fetchUsers();
     } else {
-      showAlertMessage("error", "Erro ao salvar", "Preencha todos os campos corretamente.");
+      store.dispatch("snackbar/showSnackbar", {
+        text: "Preencha todos os campos corretamente.",
+        color: "error",
+      });
     }
   } catch (error) {
-    showAlertMessage("error", error.message, error.error);
+    showMessage(error);
   }
 };
 
@@ -107,11 +119,11 @@ const reset = () => {
   valid.value = true;
 };
 
-const showAlertMessage = (type, title, message) => {
-  typeAlert.value = type;
-  titleAlert.value = title;
-  messageAlert.value = message;
-  showAlert.value = true;
+const showMessage = (response) => {
+  store.dispatch("snackbar/showSnackbar", {
+    text: response?.message,
+    color: response?.success ? "success" : "error",
+  });
 };
 
 const closeDialogForm = () => {
@@ -121,15 +133,6 @@ const closeDialogForm = () => {
 
 <template>
   <div class="content">
-    <v-alert
-      closable
-      v-model="showAlert"
-      :title="titleAlert"
-      :text="messageAlert"
-      :type="typeAlert"
-      class="alert"
-    ></v-alert>
-
     <Table :itens="itens" :headers="headers" @add="add" @edit="edit" @delete="del" @reset="reset" />
 
     <Form

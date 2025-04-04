@@ -1,4 +1,5 @@
 import api from "@/api";
+import { handleApiResponse, handleApiError } from "@/utils/apiResponse";
 
 const state = {
   demands: [],
@@ -10,13 +11,11 @@ const actions = {
     try {
       const response = await api.get("/demands");
       const data = response.data;
-
       commit("SET_DEMANDS", data);
+      return handleApiResponse(response, "Demands fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      commit("SET_DEMANDS", []);
+      return handleApiError(error, "Error fetching demands");
     }
   },
 
@@ -25,35 +24,28 @@ const actions = {
       const response = await api.get(`/demands/${id}`);
       const data = response.data;
       commit("SET_DEMAND", data);
+      return handleApiResponse(response, "Demand fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      commit("SET_DEMAND", null);
+      return handleApiError(error, "Error fetching demand");
     }
   },
 
   async createDemand({ dispatch }, demandData) {
     try {
-      await api.post("/demands", demandData);
-      dispatch("getDemands");
+      const response = await api.post("/demands", demandData);
+      return handleApiResponse(response, "Demand created successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error creating demand");
     }
   },
 
   async deleteDemand({ dispatch }, id) {
     try {
-      await api.delete(`/demands/${id}`);
-      dispatch("getDemands");
+      const response = await api.delete(`/demands/${id}`);
+      return handleApiResponse(response, "Demand deleted successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error deleting demand");
     }
   },
 
@@ -64,11 +56,9 @@ const actions = {
       });
       const data = response.data;
       commit("SET_DEMAND", data);
+      return handleApiResponse(response, "Demand fetched successfully by user");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error fetching demand by user");
     }
   },
 };

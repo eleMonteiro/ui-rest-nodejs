@@ -16,7 +16,7 @@ const isLoading = ref(false);
 onMounted(async () => {
   if (route.query.token) {
     const response = await store.dispatch("auth/validateResetToken", route.query.token);
-    if (response?.status === 200) {
+    if (response?.success) {
       store.dispatch("snackbar/showSnackbar", {
         text: response?.message,
         color: "success",
@@ -46,7 +46,7 @@ const resetPassword = async () => {
     newPassword: newPassword.value,
   });
 
-  if (response?.status === 200) {
+  if (response?.success) {
     store.dispatch("snackbar/showSnackbar", {
       text: response?.message,
       color: "success",

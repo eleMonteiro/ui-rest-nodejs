@@ -20,10 +20,17 @@ const create = async () => {
     if (valid.value) {
       const response = await store.dispatch("auth/resetPassword", email.value);
 
-      store.dispatch("snackbar/showSnackbar", {
-        text: response?.message,
-        color: "success",
-      });
+      if (response?.success) {
+        store.dispatch("snackbar/showSnackbar", {
+          text: response?.message,
+          color: "success",
+        });
+      } else {
+        store.dispatch("snackbar/showSnackbar", {
+          text: response?.message,
+          color: "error",
+        });
+      }
 
       setTimeout(() => {
         router.push("/login");

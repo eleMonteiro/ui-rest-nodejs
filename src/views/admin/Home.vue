@@ -39,13 +39,12 @@ const menu = ref({
 const user = ref("");
 
 onMounted(async () => {
-  const isValid = await store.dispatch("auth/checkTokenValidity");
-
-  if (!isValid) {
+  const response = await store.dispatch("auth/checkTokenValidity");
+  if (response?.success) {
+    user.value = store.getters["auth/user"].name;
+  } else {
     store.commit("auth/CLEAR_USER");
     router.push("/login");
-  } else {
-    user.value = store.getters["auth/user"].name;
   }
 });
 </script>

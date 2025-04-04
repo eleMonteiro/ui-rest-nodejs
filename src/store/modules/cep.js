@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleApiResponse, handleApiError } from "@/utils/apiResponse";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_APP_VIA_CEP_API_URL,
@@ -14,12 +15,10 @@ const actions = {
     try {
       const response = await api.get(`${cep}/json/`);
       commit("UPDATE_ADDRESS", response.data);
+      return handleApiResponse(response, "Address fetched successfully");
     } catch (error) {
-      console.error("Erro ao buscar o endereço:", error);
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      commit("UPDATE_ADDRESS", null);
+      return handleApiError(error, "Error fetching address");
     }
   },
 };

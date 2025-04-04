@@ -1,4 +1,5 @@
 import api from "@/api";
+import { handleApiResponse, handleApiError } from "@/utils/apiResponse";
 
 const state = {
   users: [],
@@ -10,13 +11,10 @@ const actions = {
     try {
       const response = await api.get("/users");
       const data = response.data;
-
       commit("SET_USERS", data);
+      return handleApiResponse(response, "Users fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error fetching users");
     }
   },
 
@@ -25,11 +23,9 @@ const actions = {
       const response = await api.get(`/users/${id}`);
       const data = response.data;
       commit("SET_USER", data);
+      return handleApiResponse(response, "User fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error fetching user");
     }
   },
 
@@ -39,54 +35,41 @@ const actions = {
         params: { cpf },
       });
       const data = response.data;
-
       commit("SET_USER", data);
+      return handleApiResponse(response, "User fetched successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error fetching user");
     }
   },
 
   async createUser({ dispatch }, userData) {
     try {
-      const { roles, addresses, ...user } = userData;
-      await api.post("/users", {
+      const { addresses, ...user } = userData;
+      const response = await api.post("/users", {
         ...user,
-        roles: [roles],
-        addresses: [addresses],
+        addresses: addresses,
       });
-      dispatch("getUsers");
+      return handleApiResponse(response, "User created successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error creating user");
     }
   },
 
   async updateUser({ dispatch }, userData) {
     try {
-      await api.put(`/users/${userData.id}`, userData);
-      dispatch("getUsers");
+      const response = await api.put(`/users/${userData.id}`, userData);
+      return handleApiResponse(response, "User updated successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error updating user");
     }
   },
 
   async deleteUser({ dispatch }, id) {
     try {
-      await api.delete(`/users/${id}`);
-      dispatch("getUsers");
+      const response = await api.delete(`/users/${id}`);
+      return handleApiResponse(response, "User deleted successfully");
     } catch (error) {
-      return {
-        ...(error.response?.data || {}),
-        status: error.response?.status || 500,
-      };
+      return handleApiError(error, "Error deleting user");
     }
   },
 };
