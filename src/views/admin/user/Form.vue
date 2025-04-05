@@ -54,18 +54,6 @@ const loading = ref(false);
 const currentStep = ref(1);
 const form = ref(null);
 
-const headers = [
-  { title: "ID", key: "id", align: "center" },
-  { title: "CEP", key: "cep", align: "center" },
-  { title: "Rua", key: "road", align: "center" },
-  { title: "Número", key: "number", align: "center" },
-  { title: "Complemento", key: "complement", align: "center" },
-  { title: "Bairro", key: "neighborhood", align: "center" },
-  { title: "Cidade", key: "city", align: "center" },
-  { title: "UF", key: "uf", align: "center" },
-  { title: "", key: "actions", sortable: false, align: "center" },
-];
-
 const dialogVisible = computed({
   get: () => props.dialog,
   set: (value) => emit("update:dialog", value),
@@ -351,7 +339,6 @@ watch(
             <Address
               :itens="localRecord.addresses"
               @update:itens="updateAddresses"
-              :headers="headers"
               class="address-container"
             >
             </Address>

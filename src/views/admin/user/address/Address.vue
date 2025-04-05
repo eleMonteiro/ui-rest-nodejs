@@ -11,10 +11,6 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  headers: {
-    type: Array,
-    required: true,
-  },
   loading: {
     type: Boolean,
     default: false,
@@ -30,6 +26,18 @@ const isLoadingCep = ref(false);
 const formValid = ref(false);
 const dialogDelete = ref(false);
 const recordItem = ref(null);
+
+const headers = [
+  { title: "ID", key: "id", align: "center" },
+  { title: "CEP", key: "cep", align: "center" },
+  { title: "Rua", key: "road", align: "center" },
+  { title: "Número", key: "number", align: "center" },
+  { title: "Complemento", key: "complement", align: "center" },
+  { title: "Bairro", key: "neighborhood", align: "center" },
+  { title: "Cidade", key: "city", align: "center" },
+  { title: "UF", key: "uf", align: "center" },
+  { title: "", key: "actions", sortable: false, align: "center" },
+];
 
 const RECORD_DEFAULT = {
   cep: "",
@@ -163,8 +171,7 @@ const handleCepInput = (event) => {
 };
 
 const handleCepBlur = async () => {
-  editedItem.value.cep = formatCep(editedItem.value.cep);
-  if (editedItem.value.cep.length === 9) {
+  if (editedItem.value.cep.length === 10) {
     await fetchAddressByCep();
   }
 };
@@ -186,7 +193,7 @@ const validateForm = () => {
 
 <template>
   <div>
-    <v-card class="mb-6" elevation="2">
+    <v-card class="mb-6" elevation="0">
       <v-data-table
         :key="itens?.length"
         :headers="headers"
@@ -195,7 +202,8 @@ const validateForm = () => {
         :loading="loading"
         loading-text="Carregando endereços..."
         no-data-text="Nenhum endereço cadastrado"
-        class="elevation-0"
+        height="150px"
+        fixed-header
       >
         <template #top>
           <v-toolbar color="primary" dark flat>
