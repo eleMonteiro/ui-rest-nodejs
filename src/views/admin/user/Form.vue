@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, watch, defineEmits, defineProps } from "vue";
-import Address from "./address/Address.vue";
 import { applyCpfMask, validateCpf, formatCpf, applyDateMask, validateDate } from "@/utils/masks";
 import { useStore } from "vuex";
+import Address from "@/views/address/Address.vue";
 
 const props = defineProps({
   dialog: Boolean,

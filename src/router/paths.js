@@ -50,6 +50,15 @@ const routes = [
       profile: "ADMIN",
     },
   },
+  {
+    path: "/home-client",
+    name: "home-client",
+    component: () => import("@/views/client/Home.vue"),
+    meta: {
+      requiresAuth: true,
+      profile: "CLIENTE",
+    },
+  },
 ];
 
 export default routes;

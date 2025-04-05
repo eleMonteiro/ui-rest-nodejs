@@ -33,7 +33,7 @@ const onSubmit = async () => {
         await store.dispatch("auth/checkTokenValidity");
         const role = store.getters["auth/roleUser"];
         if (role) {
-          router.push(role === "ADMIN" ? "/home" : "/");
+          router.push(role === "ADMIN" ? "/home" : "/home-client");
         } else {
           store.dispatch("snackbar/showSnackbar", {
             text: "Usuário e/ou senha inválidos",
