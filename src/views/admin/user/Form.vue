@@ -223,6 +223,8 @@ watch(
       id="userFormTitle"
       aria-modal="true"
       class="full-height-card"
+      elevation="0"
+      variant="flat"
     >
       <v-card-text class="card-content">
         <v-stepper

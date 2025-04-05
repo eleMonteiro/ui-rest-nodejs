@@ -193,7 +193,7 @@ const validateForm = () => {
 
 <template>
   <div>
-    <v-card class="mb-6" elevation="0">
+    <v-card elevation="0">
       <v-data-table
         :key="itens?.length"
         :headers="headers"
@@ -202,7 +202,7 @@ const validateForm = () => {
         :loading="loading"
         loading-text="Carregando endereços..."
         no-data-text="Nenhum endereço cadastrado"
-        height="150px"
+        height="100"
         fixed-header
       >
         <template #top>

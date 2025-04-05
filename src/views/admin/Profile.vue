@@ -135,10 +135,9 @@ const save = async () => {
 </script>
 
 <template>
-  <div class="content">
-    <v-card width="100%" max-height="100%" class="d-flex flex-column">
-      <v-card-title style="margin-bottom: 20px"> Dados do Usuário </v-card-title>
-      <v-card-text scrollable>
+  <div>
+    <v-card height="450" width="100%" class="pa-4" style="max-height: 90vh; overflow-y: auto">
+      <v-card-text>
         <v-form class="mb-4">
           <v-row>
             <v-col cols="4">
@@ -232,7 +231,6 @@ const save = async () => {
             <v-col cols="12">
               <Address
                 :itens="user.addresses"
-                :headers="headers"
                 @update:itens="updateAddresses"
                 class="address-container"
               >
@@ -252,17 +250,4 @@ const save = async () => {
   </div>
 </template>
 
-<style scoped>
-.content {
-  width: 90%;
-  height: 90%;
-  background-color: var(--color-primary);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  border-radius: 10px;
-}
-</style>
+<style scoped></style>

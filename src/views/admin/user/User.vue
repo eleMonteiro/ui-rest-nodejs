@@ -132,7 +132,7 @@ const closeDialogForm = () => {
 </script>
 
 <template>
-  <div class="content">
+  <div>
     <Table :itens="itens" :headers="headers" @add="add" @edit="edit" @delete="del" @reset="reset" />
 
     <Form
@@ -152,27 +152,4 @@ const closeDialogForm = () => {
   </div>
 </template>
 
-<style scoped>
-.content {
-  width: 90%;
-  height: 90%;
-  background-color: var(--color-primary);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  border-radius: 10px;
-}
-
-.alert {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: auto;
-  height: auto;
-  z-index: 1000;
-}
-</style>
+<style scoped></style>
