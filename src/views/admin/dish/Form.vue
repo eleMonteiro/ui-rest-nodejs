@@ -19,6 +19,7 @@ const dialogVisible = computed({
 
 watch(dialogVisible, (newVal) => {
   if (!newVal) {
+    imageFile.value = null;
     emit("clear-preview");
   }
 });
@@ -44,7 +45,7 @@ const rules = {
 };
 
 const previewImage = (event) => {
-  const file = event.target.files?.[0];
+  const file = event?.target?.files?.[0] || event;
   imageFile.value = file || null;
   if (file) {
     emit("preview-image", file);
@@ -52,7 +53,6 @@ const previewImage = (event) => {
     emit("clear-preview");
   }
 };
-
 const clearImage = () => {
   imageFile.value = null;
   emit("clear-preview");
@@ -63,6 +63,7 @@ const save = () => {
 };
 
 const closeDialog = () => {
+  imageFile.value = null;
   emit("close");
   emit("clear-preview");
 };

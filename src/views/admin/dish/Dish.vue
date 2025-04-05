@@ -38,10 +38,6 @@ const fetchDishes = async () => {
   try {
     const response = await store.dispatch("dish/getDishes");
     if (response?.success) {
-      store.dispatch("snackbar/showSnackbar", {
-        text: response?.message,
-        color: "success",
-      });
       itens.value = store.getters["dish/dishes"];
     } else {
       store.dispatch("snackbar/showSnackbar", {
@@ -163,6 +159,10 @@ const reset = () => {
   valid.value = true;
 };
 
+const handleClearPreview = () => {
+  imagePreview.value = null;
+};
+
 watch(
   () => record.value.image,
   (newVal) => {
@@ -189,6 +189,7 @@ watch(
       :imagePreview="imagePreview"
       @save="save"
       @close="closeDialogForm"
+      @clear-preview="handleClearPreview"
     />
 
     <ConfirmDeleteDialog

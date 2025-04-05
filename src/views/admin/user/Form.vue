@@ -2,35 +2,57 @@
 import { ref, computed, watch, defineEmits, defineProps } from "vue";
 import Address from "./address/Address.vue";
 import { applyCpfMask, validateCpf, formatCpf, applyDateMask, validateDate } from "@/utils/masks";
+import { useStore } from "vuex";
 
 const props = defineProps({
-  dialog: {
-    type: Boolean,
-    required: true,
-  },
-  isEditing: {
-    type: Boolean,
-    required: true,
-  },
+  dialog: Boolean,
+  isEditing: Boolean,
   record: {
     type: Object,
     required: true,
+    default: () => ({
+      id: "",
+      cpf: "",
+      name: "",
+      dateOfBirth: "",
+      email: "",
+      password: "",
+      role: "",
+      addresses: [],
+    }),
+    validator: (value) => {
+      const requiredProps = ["cpf", "name", "dateOfBirth", "role", "addresses"];
+      return (
+        typeof value === "object" &&
+        value !== null &&
+        requiredProps.every((prop) => prop in value) &&
+        Array.isArray(value.addresses)
+      );
+    },
   },
 });
 
+const store = useStore();
 const emit = defineEmits(["update:dialog", "save", "close", "update:record"]);
 
 const roles = ["ADMIN", "CLIENTE"];
+
 const localRecord = ref({
-  cpf: "",
-  name: "",
-  dateOfBirth: "",
-  email: "",
-  password: "",
-  role: "",
-  addresses: Array.isArray(props.record.addresses) ? [...props.record.addresses] : [],
-  ...props.record,
+  id: props.record.id || "",
+  cpf: props.record.cpf || "",
+  name: props.record.name || "",
+  dateOfBirth: props.record.dateOfBirth || "",
+  email: props.record.email || "",
+  password: props.record.password || "",
+  role: props.record.role || "",
+  addresses: Array.isArray(props.record.addresses)
+    ? props.record.addresses.map((addr) => ({ ...addr }))
+    : [],
 });
+
+const loading = ref(false);
+const currentStep = ref(1);
+const form = ref(null);
 
 const headers = [
   { title: "ID", key: "id", align: "center" },
@@ -56,44 +78,62 @@ const rules = {
     const digits = value?.replace(/\D/g, "") || "";
     return digits.length === 11 || "CPF deve ter 11 dígitos";
   },
+  name: (v) => (v && v.length >= 3 && /^[a-zA-ZÀ-ÿ\s]+$/.test(v)) || "Nome inválido",
+  email: (v) => /.+@.+\..+/.test(v) || "E-mail inválido",
+  password: (v) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(v) ||
+    "Senha deve conter maiúscula, minúscula, número e caractere especial",
+  date: (v) => validateDate(v) || "Data inválida",
+  role: (v) => roles.includes(v) || "Perfil inválido",
 };
 
-const save = () => {
-  emit("save", localRecord.value);
-};
+const save = async () => {
+  try {
+    loading.value = true;
 
-const closeDialog = () => {
-  emit("close");
-};
-
-watch(
-  () => props.isEditing,
-  (editing) => {
-    if (editing) {
-      formatInitialValues();
+    const { valid } = await form.value.validate();
+    if (!valid || !isStep1Valid.value) {
+      store.dispatch("snackbar/showSnackbar", {
+        text: "Preencha todos os campos obrigatórios",
+        color: "error",
+      });
+      return;
     }
+
+    if (localRecord.value.addresses.length === 0) {
+      store.dispatch("snackbar/showSnackbar", {
+        text: "Adicione pelo menos um endereço",
+        color: "error",
+      });
+      return;
+    }
+
+    emit("save", localRecord.value);
+  } catch (error) {
+    store.dispatch("snackbar/showSnackbar", {
+      text: error.message,
+      color: "error",
+    });
+  } finally {
+    loading.value = false;
+    currentStep.value = 1;
+    dialogVisible.value = false;
   }
-);
+};
 
-watch(
-  () => props.record,
-  (newVal) => {
-    localRecord.value = {
-      ...localRecord.value,
-      ...newVal,
-      addresses: newVal.addresses || localRecord.value.addresses,
-    };
-  },
-  { immediate: true, deep: true }
-);
+const validateStep1 = async () => {
+  const { valid } = await form.value.validate();
+  if (valid && isStep1Valid.value) {
+    currentStep.value = 2;
+  } else {
+    store.dispatch("snackbar/showSnackbar", {
+      text: "Corrija os erros antes de continuar",
+      color: "warning",
+    });
+  }
+};
 
-watch(
-  () => localRecord.value,
-  (newVal) => {
-    emit("update:record", { ...newVal });
-  },
-  { deep: true }
-);
+const closeDialog = () => emit("close");
 
 function formatInitialValues() {
   if (localRecord.value.cpf) {
@@ -121,107 +161,304 @@ const updateAddresses = (newAddresses) => {
   localRecord.value.addresses = newAddresses;
   emit("update:record", { ...localRecord.value });
 };
+
+const isStep1Valid = computed(() => {
+  return (
+    rules.required(localRecord.value.cpf) === true &&
+    rules.cpf(localRecord.value.cpf) === true &&
+    rules.required(localRecord.value.name) === true &&
+    rules.name(localRecord.value.name) === true &&
+    rules.required(localRecord.value.dateOfBirth) === true &&
+    rules.date(localRecord.value.dateOfBirth) === true &&
+    rules.required(localRecord.value.email) === true &&
+    rules.required(localRecord.value.role) === true
+  );
+});
+
+watch(
+  () => props.isEditing,
+  (editing) => {
+    if (editing) {
+      formatInitialValues();
+    }
+  }
+);
+
+watch(
+  () => props.record,
+  (newVal) => {
+    localRecord.value = {
+      id: newVal.id || "",
+      cpf: newVal.cpf || "",
+      name: newVal.name || "",
+      dateOfBirth: newVal.dateOfBirth || "",
+      email: newVal.email || "",
+      password: newVal.password || "",
+      role: newVal.role || "",
+      addresses: Array.isArray(newVal.addresses)
+        ? newVal.addresses.map((addr) => ({ ...addr }))
+        : [],
+    };
+    if (props.isEditing) formatInitialValues();
+  },
+  { immediate: true, deep: true }
+);
+
+watch(
+  () => localRecord.value,
+  (newVal) => {
+    emit("update:record", { ...newVal });
+
+    if (newVal.cpf && newVal.cpf.length === 14) {
+      handleCpfBlur();
+    }
+
+    if (newVal.dateOfBirth && newVal.dateOfBirth.length === 10) {
+      handleValidateDate();
+    }
+  },
+  { deep: true }
+);
 </script>
 
 <template>
-  <v-dialog v-model="dialogVisible" max-width="auto">
-    <v-card :title="`${isEditing ? 'Editar' : 'Adicionar'} um usuário`" color="white">
-      <template #text>
-        <v-row>
-          <v-col cols="4">
-            <v-text-field
-              v-model="localRecord.cpf"
-              label="CPF"
-              :rules="[rules.required, rules.cpf]"
-              variant="outlined"
-              @input="handleCpfInput"
-              @blur="handleCpfBlur"
-              hint="Formato: 000.000.000-00"
-              required
-              maxlength="14"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              v-model="localRecord.name"
-              label="Nome"
-              :rules="[rules.required]"
-              variant="outlined"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              v-model="localRecord.dateOfBirth"
-              label="Data de Nascimento"
-              :rules="[rules.required]"
-              variant="outlined"
-              required
-              @input="applyDateMask"
-              @blur="handleValidateDate"
-              placeholder="DD/MM/AAAA"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="4">
-            <v-text-field
-              v-model="localRecord.email"
-              label="Email"
-              :rules="[rules.required]"
-              variant="outlined"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              v-model="localRecord.password"
-              :rules="[rules.required, rules.min]"
-              type="password"
-              hint="Pelo menos 8 caracteres"
-              label="Senha"
-              variant="outlined"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="4">
-            <v-select
-              placeholder="Select..."
-              v-model="localRecord.role"
-              :items="roles"
-              label="Perfil"
-              :rules="[rules.required]"
-              variant="outlined"
-              required
-            ></v-select>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
+  <v-dialog
+    v-model="dialogVisible"
+    max-width="1000"
+    scrollable
+    persistent
+    aria-labelledby="userFormTitle"
+    content-class="full-dialog"
+  >
+    <v-card
+      :title="`${isEditing ? 'Editar' : 'Adicionar'} usuário`"
+      id="userFormTitle"
+      aria-modal="true"
+      class="full-height-card"
+    >
+      <v-card-text class="card-content">
+        <v-stepper
+          v-model="currentStep"
+          :items="['Dados Pessoais', 'Endereços']"
+          class="full-height-stepper"
+          hide-actions
+        >
+          <template #item.1>
+            <v-form ref="form" @submit.prevent="currentStep = 2" class="mb-4">
+              <v-row>
+                <v-col cols="4">
+                  <v-text-field
+                    v-model="localRecord.cpf"
+                    label="CPF"
+                    :rules="[rules.required, rules.cpf]"
+                    variant="outlined"
+                    @input="handleCpfInput"
+                    @blur="handleCpfBlur"
+                    hint="Formato: 000.000.000-00"
+                    required
+                    maxlength="14"
+                    prepend-inner-icon="mdi-card-account-details"
+                    clearable
+                    aria-label="CPF do usuário"
+                    aria-required="true"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    v-model="localRecord.name"
+                    label="Nome"
+                    :rules="[rules.required, rules.name]"
+                    variant="outlined"
+                    required
+                    prepend-inner-icon="mdi-account"
+                    counter
+                    maxlength="100"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    v-model="localRecord.dateOfBirth"
+                    label="Data de Nascimento"
+                    :rules="[rules.required, rules.date]"
+                    variant="outlined"
+                    prepend-inner-icon="mdi-calendar"
+                    placeholder="DD/MM/AAAA"
+                    @input="applyDateMask"
+                    @blur="handleValidateDate"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="4">
+                  <v-text-field
+                    v-model="localRecord.email"
+                    label="Email"
+                    :rules="[rules.required, rules.email]"
+                    variant="outlined"
+                    prepend-inner-icon="mdi-email"
+                    clearable
+                    autocomplete="email"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field
+                    v-model="localRecord.password"
+                    :rules="isEditing ? [] : [rules.required, rules.min, rules.password]"
+                    type="password"
+                    label="Senha"
+                    variant="outlined"
+                    prepend-inner-icon="mdi-lock"
+                    hint="Deve conter: 8 caracteres, maiúscula, minúscula e número"
+                    counter
+                    autocomplete="current-password"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                  <v-select
+                    placeholder="Select..."
+                    v-model="localRecord.role"
+                    :items="roles"
+                    label="Perfil"
+                    :rules="[rules.required]"
+                    variant="outlined"
+                    required
+                    aria-label="Perfil do usuário"
+                    aria-required="true"
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </v-form>
+
+            <v-card-actions class="mt-4">
+              <v-btn color="secondary" variant="flat" @click="closeDialog">
+                <v-icon start>mdi-close</v-icon>
+                Cancelar
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="primary"
+                variant="flat"
+                @click="validateStep1"
+                :disabled="!isStep1Valid"
+              >
+                Próximo
+                <v-icon end>mdi-arrow-right</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </template>
+
+          <template #item.2>
             <Address
               :itens="localRecord.addresses"
               @update:itens="updateAddresses"
               :headers="headers"
-            ></Address>
-          </v-col>
-        </v-row>
-      </template>
+              class="address-container"
+            >
+            </Address>
 
-      <v-card-actions>
-        <v-btn text="Cancelar" color="error" variant="flat" @click="closeDialog"></v-btn>
+            <v-card-actions class="mt-4">
+              <v-btn color="secondary" variant="flat" @click="currentStep = 1">
+                <v-icon start>mdi-arrow-left</v-icon>
+                Voltar
+              </v-btn>
 
-        <v-spacer></v-spacer>
+              <v-spacer></v-spacer>
 
-        <v-btn text="Salvar" color="success" variant="flat" @click="save(localRecord)"></v-btn>
-      </v-card-actions>
+              <v-btn
+                color="primary"
+                variant="flat"
+                @click="save"
+                :disabled="localRecord.addresses.length === 0"
+                :loading="loading"
+              >
+                <v-icon start>mdi-content-save</v-icon>
+                Salvar
+              </v-btn>
+            </v-card-actions>
+          </template>
+        </v-stepper>
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <style scoped>
-.stepper-header-flat {
-  background: transparent !important;
-  box-shadow: none !important;
-  border-bottom: none !important;
+.full-dialog {
+  height: 95vh;
+}
+
+.full-height-card {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
+.card-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.full-height-stepper {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.v-stepper__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  min-height: 0;
+}
+
+.v-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.v-row {
+  margin: 0 -12px;
+}
+
+.v-col {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.v-card-actions {
+  padding: 16px;
+  margin-top: auto;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+.address-container {
+  min-height: 300px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+@media (max-width: 960px) {
+  .v-col {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  .full-height-card {
+    height: 95vh;
+  }
+
+  .address-container {
+    max-height: 40vh;
+  }
 }
 </style>

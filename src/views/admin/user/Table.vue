@@ -60,9 +60,28 @@ const formatCPF = (cpf) => {
 
     <template v-slot:item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
-        <v-icon color="white" icon="mdi-pencil" size="small" @click="edit(item.id)"></v-icon>
-
-        <v-icon color="white" icon="mdi-delete" size="small" @click="del(item.id)"></v-icon>
+        <v-tooltip text="Editar" location="top">
+          <template #activator="{ props }">
+            <v-icon
+              color="white"
+              icon="mdi-pencil"
+              size="small"
+              @click="edit(item.id)"
+              v-bind="props"
+            ></v-icon>
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Excluir" location="top">
+          <template #activator="{ props }">
+            <v-icon
+              color="white"
+              icon="mdi-delete"
+              size="small"
+              @click="del(item.id)"
+              v-bind="props"
+            ></v-icon>
+          </template>
+        </v-tooltip>
       </div>
     </template>
 
