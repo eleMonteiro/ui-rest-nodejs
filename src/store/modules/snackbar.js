@@ -16,7 +16,7 @@ const actions = {
 const mutations = {
   SHOW_MESSAGE(state, { text, color = "success" }) {
     state.show = true;
-    state.text = text;
+    state.text = text ? text : "No message provided";
     state.color = color;
   },
   HIDE_MESSAGE(state) {

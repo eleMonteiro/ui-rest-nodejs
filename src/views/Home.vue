@@ -9,7 +9,7 @@ const router = useRouter();
 const handleClick = async () => {
   const response = await store.dispatch("auth/checkTokenValidity");
   if (response?.success) {
-    store.getters["auth/roleUser"] === "ADMIN" ? router.push("/home") : router.push("/");
+    store.getters["auth/roleUser"] === "ADMIN" ? router.push("/home") : router.push("/home-client");
   } else {
     router.push("/login");
   }
@@ -20,7 +20,7 @@ onMounted(async () => {
     const response = await store.dispatch("auth/checkTokenValidity");
     if (response?.success) {
       const role = store.getters["auth/roleUser"];
-      router.push(role === "ADMIN" ? "/home" : "/");
+      router.push(role === "ADMIN" ? "/home" : "/home-client");
     } else {
       router.push("/login");
     }

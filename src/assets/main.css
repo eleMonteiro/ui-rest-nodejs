@@ -8,28 +8,15 @@
   font-family: "Be Vietnam Pro", sans-serif;
 }
 
-a, .green {
+a,
+.green {
   text-decoration: none;
   color: var(--color-text);
   transition: 0.4s;
   padding: 3px;
 }
 
-@media (hover: hover) {
-  a:hover {
-    cursor: pointer;
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 0;
-  }
+.v-application {
+  background-color: #3c1518 !important;
+  color: #f2f3ae !important;
 }

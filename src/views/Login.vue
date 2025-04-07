@@ -35,29 +35,23 @@ const onSubmit = async () => {
         if (role) {
           router.push(role === "ADMIN" ? "/home" : "/home-client");
         } else {
-          store.dispatch("snackbar/showSnackbar", {
-            text: "Usuário e/ou senha inválidos",
-            color: "error",
+          showMessage({
+            message: "Usuário e/ou senha inválidos",
+            success: false,
           });
         }
       } else {
-        store.dispatch("snackbar/showSnackbar", {
-          text: response?.message,
-          color: "error",
-        });
+        showMessage(response);
       }
     } catch (error) {
-      store.dispatch("snackbar/showSnackbar", {
-        text: error?.message,
-        color: "error",
-      });
+      showMessage(error);
     } finally {
       loading.value = false;
     }
   } else {
-    store.dispatch("snackbar/showSnackbar", {
-      text: "Preencha todos os campos obrigatórios",
-      color: "error",
+    showMessage({
+      message: "Preencha todos os campos obrigatórios",
+      success: false,
     });
     loading.value = false;
   }
@@ -65,17 +59,23 @@ const onSubmit = async () => {
 
 const rules = {
   required: (v) => !!v || "Campo obrigatório.",
-  min: (v) => v.length >= 8 || "Minimo 8 caracteres",
-  emailValid: (v) => /.+@.+\..+/.test(v) || "E-mail inválido",
-  passwordValid: (v) =>
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(v) ||
-    "Senha deve conter maiúscula, minúscula, número e caractere especial",
 };
 
 const showPassword = ref(false);
 
 const resetPassword = () => {
   router.push("/forgot");
+};
+
+const showMessage = (response) => {
+  const message = response?.success
+    ? "Operação realizada com sucesso!"
+    : "Erro ao realizar operação!";
+
+  store.dispatch("snackbar/showSnackbar", {
+    text: response?.message || message,
+    color: response?.success ? "success" : "error",
+  });
 };
 </script>
 
@@ -94,7 +94,7 @@ const resetPassword = () => {
               <v-text-field
                 v-model="email"
                 :readonly="loading"
-                :rules="[rules.required, rules.emailValid]"
+                :rules="[rules.required]"
                 class="mb-2"
                 label="E-mail"
                 placeholder="Digite seu e-mail"
@@ -113,12 +113,10 @@ const resetPassword = () => {
               <v-text-field
                 v-model="password"
                 :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                :rules="[rules.required, rules.min, rules.passwordValid]"
+                :rules="[rules.required]"
                 :type="showPassword ? 'text' : 'password'"
                 label="Senha"
                 placeholder="Digite sua senha"
-                hint="Mínimo 8 caracteres, com maiúscula e número"
-                counter
                 @click:append-inner="showPassword = !showPassword"
                 autocomplete="current-password"
                 clearable
@@ -277,7 +275,7 @@ const resetPassword = () => {
 }
 
 .v-field__input::placeholder {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--color-primary);
   opacity: 1;
 }
 

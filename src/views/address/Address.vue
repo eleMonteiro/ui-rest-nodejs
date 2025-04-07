@@ -36,7 +36,7 @@ const headers = [
   { title: "Bairro", key: "neighborhood", align: "center" },
   { title: "Cidade", key: "city", align: "center" },
   { title: "UF", key: "uf", align: "center" },
-  { title: "", key: "actions", sortable: false, align: "center" },
+  { title: "Ações", key: "actions", sortable: false, align: "center" },
 ];
 
 const RECORD_DEFAULT = {
@@ -84,10 +84,7 @@ const edit = (item) => {
   editedItem.value = { ...item };
   editedItem.value.cep = formatCep(item.cep);
   dialog.value = true;
-
-  setTimeout(() => {
-    validateForm();
-  }, 100);
+  setTimeout(() => validateForm(), 100);
 };
 
 const del = (item) => {
@@ -99,10 +96,9 @@ const deleteItem = async () => {
   const index = props.itens.indexOf(recordItem.value);
   if (index === -1) return;
   localItens.value.splice(index, 1);
-
-  store.dispatch("snackbar/showSnackbar", {
-    message: "Endereço removido da lista de endereços com sucesso!",
-    color: "success",
+  showMessage({
+    success: true,
+    message: "Endereço removido com sucesso!",
   });
 };
 
@@ -112,17 +108,15 @@ const save = () => {
   const updatedItems = [...localItens.value];
   if (isEditing.value) {
     updatedItems[editedIndex.value] = { ...editedItem.value };
-
-    store.dispatch("snackbar/showSnackbar", {
+    showMessage({
+      success: true,
       message: "Endereço atualizado com sucesso!",
-      color: "success",
     });
   } else {
     updatedItems.push({ ...editedItem.value });
-
-    store.dispatch("snackbar/showSnackbar", {
-      message: "Endereço adicionado a lista de endereços com sucesso!",
-      color: "success",
+    showMessage({
+      success: true,
+      message: "Endereço adicionado com sucesso!",
     });
   }
 
@@ -145,15 +139,15 @@ const fetchAddressByCep = async () => {
       editedItem.value.city = data.localidade || "";
       editedItem.value.uf = data.uf || "";
     } else {
-      store.dispatch("snackbar/showSnackbar", {
-        message: "CEP não encontrado na base de dados.",
-        color: "error",
+      showMessage({
+        success: false,
+        message: "CEP não encontrado",
       });
     }
   } catch (error) {
-    store.dispatch("snackbar/showSnackbar", {
-      message: "Erro ao buscar endereço pelo CEP.",
-      color: "error",
+    showMessage({
+      success: false,
+      message: "Erro ao buscar endereço pelo CEP",
     });
   } finally {
     isLoadingCep.value = false;
@@ -185,15 +179,24 @@ const validateForm = () => {
     !!editedItem.value.city &&
     editedItem.value.uf?.length === 2;
 
-  const optionalFieldsValid = true;
+  formValid.value = requiredFieldsValid;
+};
 
-  formValid.value = requiredFieldsValid && optionalFieldsValid;
+const showMessage = (response) => {
+  const message = response?.success
+    ? "Operação realizada com sucesso!"
+    : "Erro ao realizar operação!";
+
+  store.dispatch("snackbar/showSnackbar", {
+    text: response?.message || message,
+    color: response?.success ? "success" : "error",
+  });
 };
 </script>
 
 <template>
-  <div>
-    <v-card elevation="0">
+  <div class="address-container">
+    <v-card class="address-card" elevation="2">
       <v-data-table
         :key="itens?.length"
         :headers="headers"
@@ -202,48 +205,41 @@ const validateForm = () => {
         :loading="loading"
         loading-text="Carregando endereços..."
         no-data-text="Nenhum endereço cadastrado"
-        height="100"
         fixed-header
+        class="address-table"
       >
         <template #top>
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title class="text-h6">Endereços Cadastrados</v-toolbar-title>
-            <v-spacer></v-spacer>
+          <v-toolbar class="address-toolbar" density="comfortable">
+            <v-toolbar-title class="address-title">Endereços</v-toolbar-title>
+            <v-spacer />
             <v-btn
               icon="mdi-plus"
-              color="white"
+              color="primary"
               variant="tonal"
               @click="openDialog"
-              title="Adicionar novo endereço"
-            ></v-btn>
+              aria-label="Adicionar novo endereço"
+            />
           </v-toolbar>
         </template>
 
         <template #item.actions="{ item }">
-          <div class="d-flex ga-2 justify-end">
-            <v-tooltip text="Editar" location="top">
-              <template #activator="{ props }">
-                <v-icon
-                  v-bind="props"
-                  color="primary"
-                  icon="mdi-pencil"
-                  size="small"
-                  @click="edit(item)"
-                ></v-icon>
-              </template>
-            </v-tooltip>
-
-            <v-tooltip text="Excluir" location="top">
-              <template #activator="{ props }">
-                <v-icon
-                  v-bind="props"
-                  color="error"
-                  icon="mdi-delete"
-                  size="small"
-                  @click="del(item)"
-                ></v-icon>
-              </template>
-            </v-tooltip>
+          <div class="address-actions">
+            <v-btn
+              icon="mdi-pencil"
+              color="primary"
+              variant="text"
+              size="small"
+              @click="edit(item)"
+              aria-label="Editar endereço"
+            />
+            <v-btn
+              icon="mdi-delete"
+              color="error"
+              variant="text"
+              size="small"
+              @click="del(item)"
+              aria-label="Excluir endereço"
+            />
           </div>
         </template>
 
@@ -253,23 +249,22 @@ const validateForm = () => {
       </v-data-table>
     </v-card>
 
-    <v-dialog v-model="dialog" max-width="1000" persistent>
-      <v-card>
-        <v-card-title class="d-flex align-center">
+    <v-dialog v-model="dialog" max-width="800" scrollable persistent>
+      <v-card class="dialog-card">
+        <v-card-title class="dialog-title">
           <span class="text-h5">{{ formTitle }}</span>
         </v-card-title>
 
-        <v-divider></v-divider>
+        <v-divider />
 
-        <v-card-text class="pt-4">
+        <v-card-text class="dialog-content">
           <v-form @submit.prevent="save" v-model="formValid" @input="validateForm">
-            <v-container>
+            <v-container class="form-container">
               <v-row>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
                     v-model="editedItem.cep"
-                    label="CEP"
-                    required
+                    label="CEP *"
                     variant="outlined"
                     :loading="isLoadingCep"
                     :rules="[
@@ -279,29 +274,29 @@ const validateForm = () => {
                     @input="handleCepInput"
                     @blur="handleCepBlur"
                     prepend-inner-icon="mdi-map-marker"
-                  ></v-text-field>
+                    persistent-hint
+                    hint="Digite o CEP para autocompletar"
+                  />
                 </v-col>
 
                 <v-col cols="12" sm="6" md="8">
                   <v-text-field
                     v-model="editedItem.road"
-                    label="Logradouro"
-                    required
+                    label="Logradouro *"
                     variant="outlined"
                     :rules="[(v) => !!v || 'Logradouro é obrigatório']"
                     prepend-inner-icon="mdi-road"
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
                     v-model="editedItem.number"
-                    label="Número"
-                    required
+                    label="Número *"
                     variant="outlined"
                     :rules="[(v) => !!v || 'Número é obrigatório']"
                     prepend-inner-icon="mdi-numeric"
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col cols="12" sm="6" md="8">
@@ -311,55 +306,51 @@ const validateForm = () => {
                     variant="outlined"
                     placeholder="Ex: Apartamento 101, Bloco B"
                     prepend-inner-icon="mdi-home-plus"
-                    :rules="[]"
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
                     v-model="editedItem.neighborhood"
-                    label="Bairro"
-                    required
+                    label="Bairro *"
                     variant="outlined"
                     :rules="[(v) => !!v || 'Bairro é obrigatório']"
                     prepend-inner-icon="mdi-google-maps"
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
                     v-model="editedItem.city"
-                    label="Cidade"
-                    required
+                    label="Cidade *"
                     variant="outlined"
                     :rules="[(v) => !!v || 'Cidade é obrigatória']"
                     prepend-inner-icon="mdi-city"
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col cols="12" sm="6" md="2">
                   <v-text-field
                     v-model="editedItem.uf"
-                    label="UF"
-                    required
+                    label="UF *"
                     variant="outlined"
                     :rules="[
                       (v) => !!v || 'UF é obrigatória',
                       (v) => v.length === 2 || 'UF deve ter 2 caracteres',
                     ]"
                     prepend-inner-icon="mdi-map-marker-radius"
-                  ></v-text-field>
+                  />
                 </v-col>
               </v-row>
             </v-container>
           </v-form>
         </v-card-text>
 
-        <v-divider></v-divider>
+        <v-divider />
 
-        <v-card-actions class="pa-4">
+        <v-card-actions class="dialog-actions">
           <v-btn color="error" variant="flat" @click="closeDialog"> Cancelar </v-btn>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             color="success"
             variant="flat"
@@ -367,52 +358,115 @@ const validateForm = () => {
             :loading="isLoadingCep"
             :disabled="!formValid"
           >
-            <v-icon start icon="mdi-content-save"></v-icon>
+            <v-icon start icon="mdi-content-save" />
             Salvar
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
+    <!-- Dialog de Confirmação de Exclusão -->
     <ConfirmDeleteDialog
-      v-model="dialogDelete"
-      @confirm-delete="deleteItem"
-      @close="dialogDelete = false"
+      v-model:visible="dialogDelete"
+      @confirm="deleteItem"
+      @cancel="dialogDelete = false"
       text="Deseja realmente remover este endereço?"
-    ></ConfirmDeleteDialog>
+    />
   </div>
 </template>
 
 <style scoped>
-.v-card {
+.address-container {
+  display: flex;
+  flex-direction: column;
+  height: 100px;
+  width: 100%;
+}
+
+.address-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border-radius: 8px;
 }
 
-.v-toolbar {
-  border-radius: 8px 8px 0 0;
+.address-table {
+  flex: 1;
+  min-height: 100px;
 }
 
-.v-data-table {
-  border-radius: 0 0 8px 8px;
+.address-toolbar {
+  background-color: rgba(var(--v-theme-primary), 0.05);
+}
+
+.address-title {
+  font-weight: 500;
+  color: rgba(var(--v-theme-primary), 0.8);
+}
+
+.address-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.dialog-card {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-title {
+  padding: 16px 24px;
+  background-color: rgba(var(--v-theme-primary), 0.05);
+}
+
+.dialog-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.dialog-actions {
+  padding: 12px 24px;
+}
+
+.form-container {
+  padding: 0;
+}
+
+.v-btn {
+  min-width: 0;
 }
 
 .v-text-field :deep(.v-input__details) {
   padding-left: 4px;
 }
 
-.v-dialog .v-card {
-  overflow: hidden;
+@media (max-width: 960px) {
+  .dialog-card {
+    max-width: 95vw;
+  }
+
+  .form-container {
+    padding: 0 8px;
+  }
 }
 
-.action-btn {
-  transition: all 0.2s ease;
-}
+@media (max-width: 600px) {
+  .address-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
 
-.action-btn:hover {
-  transform: scale(1.1);
-}
+  .dialog-title,
+  .dialog-actions {
+    padding: 12px 16px;
+  }
 
-:deep(.v-field__prepend-inner) {
-  padding-right: 8px;
+  .dialog-content {
+    padding: 12px 16px;
+  }
 }
 </style>

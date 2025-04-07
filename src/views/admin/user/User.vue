@@ -120,8 +120,12 @@ const reset = () => {
 };
 
 const showMessage = (response) => {
+  const message = response?.success
+    ? "Operação realizada com sucesso!"
+    : "Erro ao realizar operação!";
+
   store.dispatch("snackbar/showSnackbar", {
-    text: response?.message,
+    text: response?.message || message,
     color: response?.success ? "success" : "error",
   });
 };
@@ -133,7 +137,14 @@ const closeDialogForm = () => {
 
 <template>
   <div>
-    <Table :itens="itens" :headers="headers" @add="add" @edit="edit" @delete="del" @reset="reset" />
+    <Table
+      :itens="itens"
+      :headers="headers"
+      @add="add"
+      @edit="edit"
+      @delete="del"
+      @reset="reset"
+    ></Table>
 
     <Form
       v-model:dialog="dialogForm"
@@ -141,14 +152,14 @@ const closeDialogForm = () => {
       :record="record"
       @save="save"
       @close="closeDialogForm"
-    />
+    ></Form>
 
     <ConfirmDeleteDialog
-      :visible="dialogDelete"
+      v-model:visible="dialogDelete"
+      @confirm="deleteItem"
+      @cancel="dialogDelete = false"
       text="Deseja realmente remover este usuário?"
-      @close="dialogDelete = false"
-      @confirm-delete="remove"
-    />
+    ></ConfirmDeleteDialog>
   </div>
 </template>
 

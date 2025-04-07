@@ -81,9 +81,9 @@ const save = async () => {
 
     const { valid } = await form.value.validate();
     if (!valid || !isStep1Valid.value) {
-      store.dispatch("snackbar/showSnackbar", {
-        text: "Preencha todos os campos obrigatórios",
-        color: "error",
+      showMessage({
+        success: false,
+        message: "Corrija os erros antes de continuar",
       });
       return;
     }
@@ -98,10 +98,7 @@ const save = async () => {
 
     emit("save", localRecord.value);
   } catch (error) {
-    store.dispatch("snackbar/showSnackbar", {
-      text: error.message,
-      color: "error",
-    });
+    showMessage(error);
   } finally {
     loading.value = false;
     currentStep.value = 1;
@@ -114,9 +111,9 @@ const validateStep1 = async () => {
   if (valid && isStep1Valid.value) {
     currentStep.value = 2;
   } else {
-    store.dispatch("snackbar/showSnackbar", {
-      text: "Corrija os erros antes de continuar",
-      color: "warning",
+    showMessage({
+      success: false,
+      message: "Corrija os erros antes de continuar",
     });
   }
 };
@@ -207,6 +204,17 @@ watch(
   },
   { deep: true }
 );
+
+const showMessage = (response) => {
+  const message = response?.success
+    ? "Operação realizada com sucesso!"
+    : "Erro ao realizar operação!";
+
+  store.dispatch("snackbar/showSnackbar", {
+    text: response?.message || message,
+    color: response?.success ? "success" : "error",
+  });
+};
 </script>
 
 <template>

@@ -40,16 +40,10 @@ const fetchDishes = async () => {
     if (response?.success) {
       itens.value = store.getters["dish/dishes"];
     } else {
-      store.dispatch("snackbar/showSnackbar", {
-        text: response?.message,
-        color: "error",
-      });
+      showMessage(response);
     }
   } catch (error) {
-    store.dispatch("snackbar/showSnackbar", {
-      text: error?.message,
-      color: "error",
-    });
+    showMessage(error);
   }
 };
 
@@ -77,23 +71,14 @@ const remove = async () => {
   try {
     const response = await store.dispatch("dish/deleteDish", recordId.value);
     if (response?.success) {
-      store.dispatch("snackbar/showSnackbar", {
-        text: response?.message,
-        color: "success",
-      });
+      showMessage(response);
       dialogDelete.value = false;
       fetchDishes();
     } else {
-      store.dispatch("snackbar/showSnackbar", {
-        text: response?.message,
-        color: "error",
-      });
+      showMessage(response);
     }
   } catch (error) {
-    store.dispatch("snackbar/showSnackbar", {
-      text: error?.message,
-      color: "error",
-    });
+    showMessage(error);
   }
 };
 
@@ -104,46 +89,42 @@ const save = async () => {
         const response = await store.dispatch("dish/updateDish", record.value);
 
         if (response?.success) {
-          store.dispatch("snackbar/showSnackbar", {
-            text: response?.message,
-            color: "success",
-          });
+          showMessage(response);
           reset();
           fetchDishes();
         } else {
-          store.dispatch("snackbar/showSnackbar", {
-            text: response?.message,
-            color: "error",
-          });
+          showMessage(response);
         }
       } else {
         const response = await store.dispatch("dish/createDish", record.value);
         if (response?.success) {
-          store.dispatch("snackbar/showSnackbar", {
-            text: response?.message,
-            color: "success",
-          });
+          showMessage(response);
           reset();
           fetchDishes();
         } else {
-          store.dispatch("snackbar/showSnackbar", {
-            text: response?.message,
-            color: "error",
-          });
+          showMessage(response);
         }
       }
     } else {
-      store.dispatch("snackbar/showSnackbar", {
-        text: "Preencha todos os campos corretamente.",
-        color: "error",
+      showMessage({
+        success: false,
+        message: "Preencha todos os campos corretamente.",
       });
     }
   } catch (error) {
-    store.dispatch("snackbar/showSnackbar", {
-      text: error?.message,
-      color: "error",
-    });
+    showMessage(error);
   }
+};
+
+const showMessage = (response) => {
+  const message = response?.success
+    ? "Operação realizada com sucesso!"
+    : "Erro ao realizar operação!";
+
+  store.dispatch("snackbar/showSnackbar", {
+    text: response?.message || message,
+    color: response?.success ? "success" : "error",
+  });
 };
 
 const closeDialogForm = () => {
@@ -180,7 +161,14 @@ watch(
 
 <template>
   <div>
-    <Table :itens="itens" :headers="headers" @add="add" @edit="edit" @delete="del" @reset="reset" />
+    <Table
+      :itens="itens"
+      :headers="headers"
+      @add="add"
+      @edit="edit"
+      @delete="del"
+      @reset="reset"
+    ></Table>
 
     <Form
       v-model:dialog="dialogForm"
@@ -190,14 +178,14 @@ watch(
       @save="save"
       @close="closeDialogForm"
       @clear-preview="handleClearPreview"
-    />
+    ></Form>
 
     <ConfirmDeleteDialog
-      :visible="dialogDelete"
+      v-model:visible="dialogDelete"
+      @confirm="deleteItem"
+      @cancel="dialogDelete = false"
       text="Deseja realmente remover este prato?"
-      @close="dialogDelete = false"
-      @confirm-delete="remove"
-    />
+    ></ConfirmDeleteDialog>
   </div>
 </template>
 

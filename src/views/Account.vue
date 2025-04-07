@@ -30,32 +30,33 @@ const create = async () => {
       const response = await store.dispatch("auth/register", record.value);
 
       if (response?.success) {
-        store.dispatch("snackbar/showSnackbar", {
-          text: response?.message,
-          color: "success",
-        });
-
+        showMessage(response);
         setTimeout(() => {
           router.push("/login");
         }, 2000);
       } else {
-        store.dispatch("snackbar/showSnackbar", {
-          text: response?.message,
-          color: "error",
-        });
+        showMessage(response);
       }
     } catch (error) {
-      store.dispatch("snackbar/showSnackbar", {
-        text: error?.message,
-        color: error?.success ? "success" : "error",
-      });
+      showMessage(error);
     }
   } else {
-    store.dispatch("snackbar/showSnackbar", {
-      text: "Preencha todos os campos corretamente.",
-      color: "error",
+    showMessage({
+      success: false,
+      message: "Preencha todos os campos corretamente.",
     });
   }
+};
+
+const showMessage = (response) => {
+  const message = response?.success
+    ? "Operação realizada com sucesso!"
+    : "Erro ao realizar operação!";
+
+  store.dispatch("snackbar/showSnackbar", {
+    text: response?.message || message,
+    color: response?.success ? "success" : "error",
+  });
 };
 
 const redirectLogin = () => {

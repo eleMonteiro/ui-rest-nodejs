@@ -1,29 +1,54 @@
 <script setup>
-import { defineProps, defineEmits, computed } from "vue";
+import { computed } from "vue";
 
-const props = defineProps(["visible", "text"]);
-const emit = defineEmits(["update:visible", "confirm-delete"]);
+const props = defineProps({
+  visible: { type: Boolean, default: false },
+  text: { type: String, default: "Tem certeza que deseja remover este item?" },
+  cancelText: { type: String, default: "Cancelar" },
+  confirmText: { type: String, default: "Confirmar" },
+  cancelColor: { type: String, default: "error" },
+  confirmColor: { type: String, default: "success" },
+  width: { type: [String, Number], default: 500 },
+  persistent: { type: Boolean, default: false },
+});
+
+const emit = defineEmits(["update:visible", "confirm", "cancel"]);
 
 const dialogVisible = computed({
   get: () => props.visible,
   set: (value) => emit("update:visible", value),
 });
+
+const handleCancel = () => {
+  emit("cancel");
+  dialogVisible.value = false;
+};
+
+const handleConfirm = () => {
+  emit("confirm");
+  dialogVisible.value = false;
+};
 </script>
 
 <template>
-  <v-dialog v-model="dialogVisible" max-width="500">
+  <v-dialog v-model="dialogVisible" :max-width="width" :persistent="persistent">
     <v-card>
-      <v-card-text> {{ text }} </v-card-text>
+      <v-card-text>
+        <slot name="text">{{ text }}</slot>
+      </v-card-text>
+
+      <slot name="additional-content"></slot>
+
       <v-card-actions>
-        <v-btn text="Cancelar" color="error" variant="flat" @click="$emit('close')"></v-btn>
+        <v-btn :text="cancelText" :color="cancelColor" variant="flat" @click="handleCancel"></v-btn>
 
         <v-spacer></v-spacer>
 
         <v-btn
-          text="Remover"
-          color="success"
+          :text="confirmText"
+          :color="confirmColor"
           variant="flat"
-          @click="$emit('confirm-delete')"
+          @click="handleConfirm"
         ></v-btn>
       </v-card-actions>
     </v-card>

@@ -68,7 +68,6 @@ const handleMenuClick = (key) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
 }
 
 .user-section {
@@ -100,8 +99,8 @@ const handleMenuClick = (key) => {
 }
 
 .sidebar {
-  width: 80px;
-  height: 90%;
+  width: auto;
+  height: auto;
   background: #f6eee8;
 
   display: flex;
@@ -144,7 +143,6 @@ nav ul li {
 nav ul li.active {
   height: auto;
   background: var(--color-primary);
-  border-radius: 0px 20px 20px 0px;
 }
 
 .content {
@@ -152,18 +150,18 @@ nav ul li.active {
   height: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 5px;
 }
 
 .content-body {
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: auto;
   background-color: var(--color-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px;
+  padding: 10px;
   border-radius: 10px;
 }
 </style>

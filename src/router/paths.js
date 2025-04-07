@@ -2,17 +2,32 @@ const routes = [
   {
     path: "/:catchAll(.*)",
     name: "not-found",
-    component: () => import("@/components/Error404.vue"),
+    component: () => import("@/components/ErrorPage.vue"),
+    props: {
+      title: "Página não encontrada",
+      message: "A página que você tentou acessar não existe.",
+      icon: "mdi-alert-octagon",
+    },
   },
   {
     path: "/error",
     name: "error",
-    component: () => import("@/components/Error500.vue"),
+    component: () => import("@/components/ErrorPage.vue"),
+    props: {
+      title: "Erro interno do servidor",
+      message: "Algo deu errado ao processar sua solicitação.",
+      icon: "mdi-alert-circle",
+    },
   },
   {
     path: "/not-authorized",
     name: "not-authorized",
-    component: () => import("@/components/NotAuthorized.vue"),
+    component: () => import("@/components/ErrorPage.vue"),
+    props: {
+      title: "Acesso negado",
+      message: "Você não tem permissão para acessar esta página.",
+      icon: "mdi-lock",
+    },
   },
   {
     path: "/",
