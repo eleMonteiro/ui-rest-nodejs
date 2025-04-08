@@ -10,7 +10,7 @@ const actions = {
   async getDishes({ commit }) {
     try {
       const response = await api.get("/dishes");
-      const data = response.data;
+      const { data } = response?.data;
       commit("SET_DISHES", data);
       return handleApiResponse(response, "Dishes fetched successfully");
     } catch (error) {
@@ -21,7 +21,7 @@ const actions = {
   async getDish({ commit }, id) {
     try {
       const response = await api.get(`/dishes/${id}`);
-      const data = response.data;
+      const { data } = response?.data;
       commit("SET_DISH", data);
       return handleApiResponse(response, "Dish fetched successfully");
     } catch (error) {

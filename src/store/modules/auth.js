@@ -13,6 +13,7 @@ const actions = {
   async login({ commit }, authData) {
     try {
       const response = await api.post("/login", authData);
+      commit("UPDATE_USER", response?.data?.user);
       return handleApiResponse(response, "Login realizado com sucesso.");
     } catch (error) {
       return handleApiError(error, "Erro ao fazer login.");
@@ -32,7 +33,7 @@ const actions = {
   async fetchUser({ commit }) {
     try {
       const response = await api.get("/profile", { withCredentials: true });
-      commit("UPDATE_USER", response.data.user);
+      commit("UPDATE_USER", response?.data?.user);
       return handleApiResponse(response, "Usuário carregado com sucesso.");
     } catch (error) {
       return handleApiError(error, "Erro ao buscar usuário.");
@@ -51,7 +52,7 @@ const actions = {
   async checkTokenValidity({ commit }) {
     try {
       const response = await api.get("/validate-token", { withCredentials: true });
-      commit("UPDATE_USER", response.data.user);
+      commit("UPDATE_USER", response?.data?.user);
       return handleApiResponse(response, "Token validado com sucesso.");
     } catch (error) {
       return handleApiError(error, "Token inválido.");

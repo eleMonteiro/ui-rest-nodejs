@@ -10,7 +10,7 @@ const actions = {
   async getUsers({ commit }) {
     try {
       const response = await api.get("/users");
-      const data = response.data;
+      const { data } = response?.data;
       commit("SET_USERS", data);
       return handleApiResponse(response, "Users fetched successfully");
     } catch (error) {
@@ -21,7 +21,7 @@ const actions = {
   async getUser({ commit }, id) {
     try {
       const response = await api.get(`/users/${id}`);
-      const data = response.data;
+      const { data } = response?.data;
       commit("SET_USER", data);
       return handleApiResponse(response, "User fetched successfully");
     } catch (error) {
@@ -34,7 +34,7 @@ const actions = {
       const response = await api.get("/users/cpf", {
         params: { cpf },
       });
-      const data = response.data;
+      const { data } = response?.data;
       commit("SET_USER", data);
       return handleApiResponse(response, "User fetched successfully");
     } catch (error) {

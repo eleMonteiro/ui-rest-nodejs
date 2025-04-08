@@ -10,7 +10,7 @@ const actions = {
   async getItems({ commit }) {
     try {
       const response = await api.get("/items");
-      const data = response.data;
+      const { data } = response?.data;     
       commit("SET_ITEMS", data);
       return handleApiResponse(response, "Items fetched successfully");
     } catch (error) {
@@ -21,7 +21,7 @@ const actions = {
   async getItem({ commit }, id) {
     try {
       const response = await api.get(`/items/${id}`);
-      const data = response.data;
+      const { data } = response?.data;
       commit("SET_ITEM", data);
       return handleApiResponse(response, "Item fetched successfully");
     } catch (error) {
@@ -52,7 +52,7 @@ const actions = {
       const response = await api.get("/items/demand/", {
         params: { demandId },
       });
-      const data = response.data;
+      const { data } = response?.data;
       commit("SET_ITEM", data);
       return handleApiResponse(response, "Items fetched by demand successfully");
     } catch (error) {

@@ -69,7 +69,7 @@ onMounted(async () => {
     const response = await store.dispatch("auth/checkTokenValidity");
     if (response?.success) {
       const userAuth = store.getters["auth/user"];
-      await fetchUser(userAuth?.id);
+      await fetchUser(userAuth?.userId);
     } else {
       user.value = null;
       store.dispatch("snackbar/showSnackbar", {
