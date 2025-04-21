@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
 import Table from "./Table.vue";
@@ -7,7 +7,13 @@ import Form from "./Form.vue";
 
 const store = useStore();
 
-const DEFAULT_RECORD = { name: "", description: "", category: "", price: "", image: "" };
+const DEFAULT_RECORD = {
+  name: "",
+  description: "",
+  category: "",
+  price: "",
+  image: ""
+};
 
 const itens = ref([]);
 const record = ref({ ...DEFAULT_RECORD });
@@ -15,6 +21,7 @@ const recordId = ref(null);
 const valid = ref(true);
 
 const imagePreview = ref(null);
+const imageFile = ref(null);
 
 const dialogForm = ref(false);
 const isEditing = ref(false);
@@ -50,14 +57,20 @@ const fetchDishes = async () => {
 const add = () => {
   isEditing.value = false;
   record.value = { ...DEFAULT_RECORD };
+  imagePreview.value = null;
+  imageFile.value = null;
   dialogForm.value = true;
 };
 
 const edit = (id) => {
   isEditing.value = true;
   imagePreview.value = null;
+  imageFile.value = null;
   store.dispatch("dish/getDish", id).then(() => {
     record.value = { ...store.getters["dish/dish"] };
+    if (record.value.image) {
+      imagePreview.value = record.value.image;
+    }
     dialogForm.value = true;
   });
 };
@@ -67,7 +80,7 @@ const del = (id) => {
   dialogDelete.value = true;
 };
 
-const remove = async () => {
+const deleteItem = async () => {
   try {
     const response = await store.dispatch("dish/deleteDish", recordId.value);
     if (response?.success) {
@@ -85,9 +98,15 @@ const remove = async () => {
 const save = async () => {
   try {
     if (valid.value) {
+      // Atualiza a imagem apenas se um novo arquivo foi selecionado
+      if (imageFile.value) {
+        record.value.image = imageFile.value;
+      } else if (!imagePreview.value) {
+        record.value.image = "";
+      }
+
       if (isEditing.value) {
         const response = await store.dispatch("dish/updateDish", record.value);
-
         if (response?.success) {
           showMessage(response);
           reset();
@@ -136,27 +155,16 @@ const reset = () => {
   record.value = { ...DEFAULT_RECORD };
   isEditing.value = false;
   imagePreview.value = null;
+  imageFile.value = null;
   recordId.value = null;
   valid.value = true;
 };
 
 const handleClearPreview = () => {
   imagePreview.value = null;
+  imageFile.value = null;
+  record.value.image = "";
 };
-
-watch(
-  () => record.value.image,
-  (newVal) => {
-    if (newVal) {
-      if (typeof newVal === "string") {
-        imagePreview.value = newVal;
-      } else if (newVal instanceof File) {
-        imagePreview.value = URL.createObjectURL(newVal);
-      }
-    }
-  },
-  { immediate: true }
-);
 </script>
 
 <template>
@@ -171,10 +179,11 @@ watch(
     ></Table>
 
     <Form
-      v-model:dialog="dialogForm"
+      :dialog="dialogForm"
       :isEditing="isEditing"
       :record="record"
       :imagePreview="imagePreview"
+      :imageFile="imageFile"
       @save="save"
       @close="closeDialogForm"
       @clear-preview="handleClearPreview"

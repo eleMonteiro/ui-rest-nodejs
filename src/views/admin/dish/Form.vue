@@ -1,27 +1,24 @@
 <script setup>
-import { ref, defineProps, defineEmits, computed, watch } from "vue";
+import { ref, computed, watch } from "vue";
 
 const props = defineProps({
   dialog: Boolean,
   isEditing: Boolean,
   record: Object,
   imagePreview: [String, null],
+  imageFile: [File, null],
 });
 
-const emit = defineEmits(["update:dialog", "save", "close", "preview-image", "clear-preview"]);
-
-const imageFile = ref(null);
+const emit = defineEmits(["update:dialog", "update:imageFile", "save", "close", "clear-preview"]);
 
 const dialogVisible = computed({
   get: () => props.dialog,
   set: (value) => emit("update:dialog", value),
 });
 
-watch(dialogVisible, (newVal) => {
-  if (!newVal) {
-    imageFile.value = null;
-    emit("clear-preview");
-  }
+const imageFile = computed({
+  get: () => props.imageFile,
+  set: (value) => emit("update:imageFile", value),
 });
 
 const rules = {
@@ -45,14 +42,12 @@ const rules = {
 };
 
 const previewImage = (event) => {
-  const file = event?.target?.files?.[0] || event;
-  imageFile.value = file || null;
+  const file = event?.target?.files?.[0];
   if (file) {
-    emit("preview-image", file);
-  } else {
-    emit("clear-preview");
+    imageFile.value = file;
   }
 };
+
 const clearImage = () => {
   imageFile.value = null;
   emit("clear-preview");
@@ -63,9 +58,7 @@ const save = () => {
 };
 
 const closeDialog = () => {
-  imageFile.value = null;
   emit("close");
-  emit("clear-preview");
 };
 </script>
 
@@ -136,19 +129,19 @@ const closeDialog = () => {
                 prepend-icon=""
                 prepend-inner-icon="mdi-image"
                 variant="outlined"
-                @update:modelValue="previewImage"
-                @click:clear="clearImage"
                 show-size
                 counter
+                @update:modelValue="previewImage"
+                @click:clear="clearImage"
               ></v-file-input>
             </v-col>
 
             <v-col cols="12" class="d-flex justify-center">
-              <template v-if="imagePreview || record.image">
+              <template v-if="imagePreview">
                 <v-hover v-slot="{ isHovering, props }">
                   <div v-bind="props" class="image-container">
                     <v-img
-                      :src="imagePreview || record.image + '?t=' + Date.now()"
+                      :src="imagePreview"
                       max-height="200"
                       max-width="200"
                       contain
