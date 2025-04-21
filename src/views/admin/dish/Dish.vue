@@ -98,7 +98,6 @@ const deleteItem = async () => {
 const save = async () => {
   try {
     if (valid.value) {
-      // Atualiza a imagem apenas se um novo arquivo foi selecionado
       if (imageFile.value) {
         record.value.image = imageFile.value;
       } else if (!imagePreview.value) {
@@ -183,7 +182,7 @@ const handleClearPreview = () => {
       :isEditing="isEditing"
       :record="record"
       :imagePreview="imagePreview"
-      :imageFile="imageFile"
+      @update:imageFile="(file) => imageFile = file"
       @save="save"
       @close="closeDialogForm"
       @clear-preview="handleClearPreview"

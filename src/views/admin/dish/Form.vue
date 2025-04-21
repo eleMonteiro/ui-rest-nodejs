@@ -6,19 +6,29 @@ const props = defineProps({
   isEditing: Boolean,
   record: Object,
   imagePreview: [String, null],
-  imageFile: [File, null],
 });
 
 const emit = defineEmits(["update:dialog", "update:imageFile", "save", "close", "clear-preview"]);
+const localImageFile = ref(null);
+const localImagePreview = ref(props.imagePreview);
+
+watch(localImageFile, (newFile) => {
+  if (newFile) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      localImagePreview.value = e.target.result;
+    };
+    reader.readAsDataURL(newFile);
+  } else {
+    if (!props.isEditing) {
+      localImagePreview.value = null;
+    }
+  }
+});
 
 const dialogVisible = computed({
   get: () => props.dialog,
   set: (value) => emit("update:dialog", value),
-});
-
-const imageFile = computed({
-  get: () => props.imageFile,
-  set: (value) => emit("update:imageFile", value),
 });
 
 const rules = {
@@ -41,15 +51,17 @@ const rules = {
   },
 };
 
-const previewImage = (event) => {
-  const file = event?.target?.files?.[0];
+const previewImage = (file) => {
   if (file) {
-    imageFile.value = file;
+    localImageFile.value = file;
+    emit("update:imageFile", file);
   }
 };
 
 const clearImage = () => {
-  imageFile.value = null;
+  localImageFile.value = null;
+  localImagePreview.value = null;
+  emit("update:imageFile", null);
   emit("clear-preview");
 };
 
@@ -122,7 +134,7 @@ const closeDialog = () => {
 
             <v-col cols="12">
               <v-file-input
-                v-model="imageFile"
+                v-model="localImageFile"
                 label="Imagem do prato"
                 :rules="[!isEditing || rules.required, rules.imageType, rules.imageSize]"
                 accept="image/*"
@@ -137,11 +149,11 @@ const closeDialog = () => {
             </v-col>
 
             <v-col cols="12" class="d-flex justify-center">
-              <template v-if="imagePreview">
+              <template v-if="localImagePreview">
                 <v-hover v-slot="{ isHovering, props }">
                   <div v-bind="props" class="image-container">
                     <v-img
-                      :src="imagePreview"
+                      :src="localImagePreview"
                       max-height="200"
                       max-width="200"
                       contain
