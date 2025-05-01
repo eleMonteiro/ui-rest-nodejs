@@ -159,11 +159,13 @@ const showMessage = (response) => {
                     @blur="handleCpfBlur"
                     required
                     maxlength="14"
-                    prepend-inner-icon="mdi-card-account-details"
+                    class="custom-text-field"
                     clearable
                     density="comfortable"
-                    class="custom-text-field"
                   >
+                    <template #prepend>
+                      <v-icon color="bronze">mdi-card-account-details</v-icon>
+                    </template>
                   </v-text-field>
                 </v-col>
 
@@ -174,12 +176,16 @@ const showMessage = (response) => {
                     :rules="[rules.required, rules.name]"
                     variant="outlined"
                     required
-                    prepend-inner-icon="mdi-account"
                     counter
                     clearable
                     maxlength="100"
                     density="comfortable"
-                  />
+                    class="custom-text-field"
+                  >
+                    <template #prepend>
+                      <v-icon color="bronze">mdi-account</v-icon>
+                    </template>
+                  </v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="4">
@@ -188,13 +194,17 @@ const showMessage = (response) => {
                     label="Data de Nascimento"
                     :rules="[rules.required, rules.date]"
                     variant="outlined"
-                    prepend-inner-icon="mdi-calendar"
                     placeholder="DD/MM/AAAA"
                     @input="handleDateInput"
                     @blur="handleValidateDate"
                     clearable
                     density="comfortable"
-                  />
+                    class="custom-text-field"
+                  >
+                    <template #prepend>
+                      <v-icon color="bronze">mdi-calendar</v-icon>
+                    </template>
+                  </v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="6">
@@ -203,10 +213,14 @@ const showMessage = (response) => {
                     label="Email"
                     :rules="[rules.required, rules.email]"
                     variant="outlined"
-                    prepend-inner-icon="mdi-email"
                     clearable
                     density="comfortable"
-                  />
+                    class="custom-text-field"
+                  >
+                    <template #prepend>
+                      <v-icon color="bronze">mdi-email</v-icon>
+                    </template>
+                  </v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="6">
@@ -215,12 +229,20 @@ const showMessage = (response) => {
                     :items="roles"
                     label="Perfil"
                     :rules="[rules.required]"
-                    variant="outlined"
                     required
+                    variant="outlined"
                     clearable
                     density="comfortable"
-                    prepend-inner-icon="mdi-account-tie"
-                  />
+                    class="custom-text-field"
+                  >
+                    <template #prepend>
+                      <v-icon color="bronze">mdi-account-tie</v-icon>
+                    </template>
+
+                    <template #item="{ props: item }">
+                      <v-list-item v-bind="item"></v-list-item>
+                    </template>
+                  </v-select>
                 </v-col>
               </v-row>
             </v-form>
@@ -242,12 +264,16 @@ const showMessage = (response) => {
                     type="password"
                     label="Nova Senha"
                     variant="outlined"
-                    prepend-inner-icon="mdi-lock"
                     hint="Deve conter: 8 caracteres, maiúscula, minúscula, número e caractere especial"
                     counter
                     clearable
                     density="comfortable"
-                  />
+                    class="custom-text-field"
+                  >
+                    <template #prepend>
+                      <v-icon color="bronze">mdi-lock</v-icon>
+                    </template>
+                  </v-text-field>
                 </v-col>
               </v-row>
             </v-form>
@@ -317,7 +343,7 @@ const showMessage = (response) => {
   margin-top: 5px;
   flex: 1;
   border-radius: 5px;
-  background-color: var(--white);
+  background-color: var(--color-primary);
 }
 
 .address-container {
@@ -329,5 +355,23 @@ const showMessage = (response) => {
 
 .card-actions {
   background-color: var(--color-primary);
+}
+
+.custom-text-field {
+  color: var(--bronze);
+}
+
+.custom-text-field :deep(input) {
+  background-color: var(--color-primary);
+  color: var(--white);
+  border: none;
+}
+
+.custom-text-field :deep(.v-messages__message) {
+  color: var(--white);
+}
+
+.custom-text-field :deep(.v-select__selection) {
+  color: var(--white);
 }
 </style>
