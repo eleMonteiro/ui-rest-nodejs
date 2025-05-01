@@ -26,6 +26,16 @@ watch(localImageFile, (newFile) => {
   }
 });
 
+watch(
+  () => props.imagePreview,
+  (newPreview) => {
+    if (newPreview) {
+      localImagePreview.value = newPreview;
+    }
+  },
+  { immediate: true }
+);
+
 const dialogVisible = computed({
   get: () => props.dialog,
   set: (value) => emit("update:dialog", value),
@@ -67,10 +77,12 @@ const clearImage = () => {
 
 const save = () => {
   emit("save");
+  clearImage();
 };
 
 const closeDialog = () => {
   emit("close");
+  clearImage();
 };
 </script>
 

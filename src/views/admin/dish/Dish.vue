@@ -12,7 +12,7 @@ const DEFAULT_RECORD = {
   description: "",
   category: "",
   price: "",
-  image: ""
+  image: "",
 };
 
 const itens = ref([]);
@@ -68,9 +68,8 @@ const edit = (id) => {
   imageFile.value = null;
   store.dispatch("dish/getDish", id).then(() => {
     record.value = { ...store.getters["dish/dish"] };
-    if (record.value.image) {
-      imagePreview.value = record.value.image;
-    }
+    imagePreview.value = record.value.image ? record.value.image : null;
+    imageFile.value = null;
     dialogForm.value = true;
   });
 };
@@ -182,7 +181,7 @@ const handleClearPreview = () => {
       :isEditing="isEditing"
       :record="record"
       :imagePreview="imagePreview"
-      @update:imageFile="(file) => imageFile = file"
+      @update:imageFile="(file) => (imageFile = file)"
       @save="save"
       @close="closeDialogForm"
       @clear-preview="handleClearPreview"
