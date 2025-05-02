@@ -116,27 +116,31 @@ const save = async () => {
 </script>
 
 <template>
-  <div>
-    <v-card height="450" width="100%" class="pa-4" style="max-height: 90vh; overflow-y: auto">
-      <v-card-text>
-        <v-form class="mb-4">
+  <div class="profile-container">
+    <v-card class="profile-card">
+      <v-card-text class="card-content">
+        <v-form class="form-container">
           <v-row>
             <v-col cols="4">
               <v-text-field
                 v-model="user.cpf"
                 label="CPF"
                 :rules="[rules.required, rules.cpf]"
-                variant="solo"
+                variant="outlined"
                 @input="handleCpfInput"
                 @blur="handleCpfBlur"
                 required
                 maxlength="14"
-                prepend-inner-icon="mdi-card-account-details"
                 clearable
                 aria-label="CPF do usuário"
                 aria-required="true"
                 placeholder="000.000.000-00"
-              ></v-text-field>
+                class="custom-text-field"
+              >
+                <template #prepend>
+                  <v-icon color="bronze">mdi-card-account-details</v-icon>
+                </template>
+              </v-text-field>
             </v-col>
 
             <v-col cols="4">
@@ -144,48 +148,140 @@ const save = async () => {
                 v-model="user.name"
                 label="Nome"
                 :rules="[rules.required, rules.name]"
-                variant="solo"
+                variant="outlined"
                 required
-                prepend-inner-icon="mdi-account"
                 counter
                 clearable
                 maxlength="100"
-              ></v-text-field>
+                class="custom-text-field"
+              >
+                <template #prepend>
+                  <v-icon color="bronze">mdi-account</v-icon>
+                </template>
+              </v-text-field>
             </v-col>
             <v-col cols="4">
               <v-text-field
                 v-model="user.email"
                 label="Email"
                 :rules="[rules.required, rules.email]"
-                variant="solo"
-                prepend-inner-icon="mdi-email"
+                variant="outlined"
                 clearable
                 autocomplete="email"
-              ></v-text-field>
+                class="custom-text-field"
+              >
+                <template #prepend>
+                  <v-icon color="bronze">mdi-email</v-icon>
+                </template>
+              </v-text-field>
             </v-col>
             <v-col cols="4"> </v-col>
           </v-row>
           <v-row>
             <v-col cols="12">
-              <Address
-                :itens="user.addresses"
-                @update:itens="updateAddresses"
-                class="address-container"
-              >
-              </Address>
+              <div class="address-container">
+                <Address
+                  :itens="user.addresses"
+                  @update:itens="updateAddresses"
+                  class="address-container"
+                >
+                </Address>
+              </div>
             </v-col>
           </v-row>
         </v-form>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="card-actions">
         <v-spacer></v-spacer>
-        <v-btn color="primary" variant="flat" @click="save">
+        <v-btn color="primary" variant="flat" @click="save" size="large">
           <v-icon left>mdi-content-save</v-icon>
-          Save
+          Salvar Alterações
         </v-btn>
       </v-card-actions>
     </v-card>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.profile-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-primary);
+}
+
+.tab-header {
+  background-color: var(--color-primary);
+  color: var(--white);
+}
+
+.tab-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+.tab-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: var(--color-primary);
+}
+
+.form-container {
+  padding: 24px;
+  margin-top: 5px;
+  flex: 1;
+  border-radius: 5px;
+  background-color: var(--color-primary);
+}
+
+.address-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+}
+
+.card-actions {
+  background-color: var(--color-primary);
+}
+
+.custom-text-field {
+  color: var(--bronze);
+}
+
+.custom-text-field :deep(input) {
+  background-color: var(--color-primary);
+  color: var(--white);
+  border: none;
+}
+
+.custom-text-field :deep(.v-messages__message) {
+  color: var(--white);
+}
+
+.custom-text-field :deep(.v-select__selection) {
+  color: var(--white);
+}
+</style>
