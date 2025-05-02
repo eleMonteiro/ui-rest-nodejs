@@ -16,6 +16,12 @@ const DEFAULT_RECORD = {
 };
 
 const itens = ref([]);
+const pagination = ref({
+  total: 0,
+  page: 1,
+  pageSize: 5,
+  totalPages: 0,
+});
 const record = ref({ ...DEFAULT_RECORD });
 const recordId = ref(null);
 const valid = ref(true);
@@ -41,11 +47,22 @@ onMounted(async () => {
   fetchDishes();
 });
 
+const updateTable = ({ page, itemsPerPage }) => {
+  pagination.value.page = page;
+  pagination.value.pageSize = itemsPerPage;
+  fetchDishes();
+};
+
 const fetchDishes = async () => {
   try {
-    const response = await store.dispatch("dish/getDishes");
+    const response = await store.dispatch("dish/getDishes", {
+      page: pagination.value.page,
+      pageSize: pagination.value.pageSize,
+    });
+
     if (response?.success) {
       itens.value = store.getters["dish/dishes"];
+      pagination.value = store.getters["dish/pagination"];
     } else {
       showMessage(response);
     }
@@ -168,12 +185,14 @@ const handleClearPreview = () => {
 <template>
   <div>
     <Table
+      :pagination="pagination"
       :itens="itens"
       :headers="headers"
       @add="add"
       @edit="edit"
       @delete="del"
       @reset="reset"
+      @update-table="updateTable"
     ></Table>
 
     <Form

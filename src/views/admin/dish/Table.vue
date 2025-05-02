@@ -2,6 +2,10 @@
 import { ref } from "vue";
 
 const props = defineProps({
+  pagination: {
+    type: Object,
+    required: true,
+  },
   itens: {
     type: Array,
     required: true,
@@ -30,6 +34,10 @@ const reset = () => {
   emit("reset");
 };
 
+const updateTable = (options) => {
+  emit("update-table", options);
+};
+
 const formatCurrency = (value) => {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -39,10 +47,14 @@ const formatCurrency = (value) => {
 </script>
 
 <template>
-  <v-data-table
+  <v-data-table-server
     :headers="headers"
-    :hide-default-footer="itens.length < 11"
     :items="itens"
+    :items-length="pagination.total"
+    :loading="loading"
+    :items-per-page-options="[5, 10, 25, 50]"
+    :items-per-page-text="'Itens por página'"
+    @update:options="updateTable"
     class="table"
   >
     <template v-slot:top>
@@ -95,7 +107,7 @@ const formatCurrency = (value) => {
         @click="reset"
       ></v-btn>
     </template>
-  </v-data-table>
+  </v-data-table-server>
 </template>
 
 <style scoped>

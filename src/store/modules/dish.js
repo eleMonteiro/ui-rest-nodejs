@@ -3,15 +3,22 @@ import { handleApiError, handleApiResponse } from "@/utils/apiResponse";
 
 const state = {
   dishes: [],
+  pagination: {},
   dish: null,
 };
 
 const actions = {
-  async getDishes({ commit }) {
+  async getDishes({ commit }, { page = 1, pageSize = 10 }) {
     try {
-      const response = await api.get("/dishes");
+      const response = await api.get("/dishes", {
+        params: {
+          page,
+          pageSize,
+        },
+      });
       const { data } = response?.data;
-      commit("SET_DISHES", data);
+      commit("SET_DISHES", data?.dishes);
+      commit("SET_PAGINATION", data?.pagination);
       return handleApiResponse(response, "Dishes fetched successfully");
     } catch (error) {
       return handleApiError(error, "Failed to fetch dishes");
@@ -85,6 +92,10 @@ const mutations = {
   SET_DISH(state, dish) {
     state.dish = dish;
   },
+
+  SET_PAGINATION(state, pagination) {
+    state.pagination = pagination;
+  },
 };
 
 const getters = {
@@ -94,6 +105,10 @@ const getters = {
 
   dish(state) {
     return state.dish;
+  },
+
+  pagination(state) {
+    return state.pagination;
   },
 };
 
