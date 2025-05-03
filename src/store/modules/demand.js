@@ -4,6 +4,7 @@ import { handleApiResponse, handleApiError } from "@/utils/apiResponse";
 const state = {
   demands: [],
   demand: null,
+  pagination: null,
 };
 
 const actions = {
@@ -49,13 +50,14 @@ const actions = {
     }
   },
 
-  async getDemandByUser({ commit }, userId) {
+  async getDemandByUser({ commit }, { userId, page = 1, pageSize = 10 }) {
     try {
       const response = await api.get("/demands/user/", {
-        params: { userId },
+        params: { userId, page, pageSize },
       });
       const { data } = response?.data;
-      commit("SET_DEMAND", data);
+      commit("SET_DEMANDS", data?.demands);
+      commit("SET_PAGINATION", data?.pagination);
       return handleApiResponse(response, "Demand fetched successfully by user");
     } catch (error) {
       return handleApiError(error, "Error fetching demand by user");
@@ -71,6 +73,10 @@ const mutations = {
   SET_DEMAND(state, demand) {
     state.demand = demand;
   },
+
+  SET_PAGINATION(state, pagination) {
+    state.pagination = pagination;
+  },
 };
 
 const getters = {
@@ -80,6 +86,10 @@ const getters = {
 
   demand(state) {
     return state.demand;
+  },
+
+  pagination(state) {
+    return state.pagination;
   },
 };
 
