@@ -167,7 +167,8 @@ const handleImageError = (dishId) => {
 }
 
 .content-wrapper > .card-row {
-  max-height: 200px;
+  min-height: 400px;
+  overflow-y: auto;
 }
 
 .card-dish {
