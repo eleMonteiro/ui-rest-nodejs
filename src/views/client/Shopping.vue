@@ -1,10 +1,14 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
 import Cookies from "js-cookie";
+
+const store = useStore();
 
 const DEFAULT_DEMAND = ref({
   total: 0,
   address: null,
+  dateOfDemand: new Date(),
   items: {
     dishId: 0,
     amount: 0,
@@ -41,8 +45,43 @@ const removeItem = (dishId) => {
   DEFAULT_DEMAND.value.total = cartItems.value.reduce((sum, item) => sum + item.totalPrice, 0);
 };
 
-const finishBuy = () => {
-  console.log("Sending demand:", DEFAULT_DEMAND.value);
+const finishBuy = async () => {
+  try {
+    const response = await store.dispatch("demand/createDemand", DEFAULT_DEMAND.value);
+    if (response?.success) {
+      showMessage(response);
+    } else {
+      showMessage(response);
+    }
+    reset();
+  } catch (error) {
+    showMessage(error);
+  }
+};
+
+const showMessage = (response) => {
+  const message = response?.success
+    ? "Operação realizada com sucesso!"
+    : "Erro ao realizar operação!";
+
+  store.dispatch("snackbar/showSnackbar", {
+    text: response?.message || message,
+    color: response?.success ? "success" : "error",
+  });
+};
+
+const reset = () => {
+  DEFAULT_DEMAND = {
+    total: 0,
+    address: null,
+    items: {
+      dishId: 0,
+      amount: 0,
+      totalPrice: 0,
+    },
+  };
+
+  Cookies.set("cart", JSON.stringify({}), { expires: 7 });
 };
 </script>
 
