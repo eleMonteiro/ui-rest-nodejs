@@ -1,8 +1,13 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
+import Cookies from "js-cookie";
+import noneImg from "../../assets/none-img.png";
 
+const defaultImg = ref(noneImg);
+const errorCache = ref({});
 const loading = ref({});
+const page = ref(1);
 const pagination = ref({});
 const dishes = ref([]);
 
@@ -12,9 +17,16 @@ onMounted(async () => {
   await fetchDishes();
 });
 
-async function fetchDishes() {
+watch(page, async () => {
+  await fetchDishes();
+});
+
+const fetchDishes = async () => {
   try {
-    const response = await store.dispatch("dish/getDishes");
+    const response = await store.dispatch("dish/getDishes", {
+      page: page.value,
+      pageSize: 10,
+    });
     if (response?.success) {
       dishes.value = store.getters["dish/dishes"];
       pagination.value = store.getters["dish/pagination"];
@@ -24,7 +36,7 @@ async function fetchDishes() {
   } catch (error) {
     showMessage(error);
   }
-}
+};
 
 const showMessage = (response) => {
   const message = response?.success
@@ -37,27 +49,52 @@ const showMessage = (response) => {
   });
 };
 
-function buyDish(dishId) {
+const buyDish = (dishId) => {
   loading.value[dishId] = true;
+
+  const dish = dishes.value.find((d) => d.id === dishId);
+  if (!dish) return;
+
   setTimeout(() => {
     loading.value[dishId] = false;
-    showMessage({ success: true, message: `Prato ${dishId} adicionado ao carrinho!` });
-  }, 2000);
-}
+    addToCart(dish);
+    showMessage({ success: true, message: `Dish ${dish.name} added to the cart!` });
+  }, 500);
+};
+
+const addToCart = (dish) => {
+  let cart = JSON.parse(Cookies.get("cart") || "[]");
+
+  const existing = cart.find((item) => item.dishId === dish.id);
+
+  if (existing) {
+    existing.amount++;
+    existing.totalPrice = existing.amount * dish.price;
+  } else {
+    cart.push({
+      dishId: dish.id,
+      name: dish.name,
+      price: dish.price,
+      amount: 1,
+      totalPrice: dish.price,
+    });
+  }
+
+  Cookies.set("cart", JSON.stringify(cart), { expires: 7 });
+};
+
+const handleImageError = (dishId) => {
+  errorCache.value[dishId] = true;
+  return defaultImg;
+};
 </script>
 
 <template>
   <div class="cards-container">
     <div class="content-wrapper">
-      <v-row :dense="true">
-        <v-col v-for="dish in dishes" :key="dish.id">
-          <v-card
-            class="card-dish mb-2"
-            :disabled="loading[dish.id]"
-            :loading="loading[dish.id]"
-            height="270"
-            width="200"
-          >
+      <v-row class="card-row" :dense="true">
+        <v-col v-for="dish in dishes" :key="dish.id" cols="12" sm="6" md="6" lg="3">
+          <v-card class="card-dish" :disabled="loading[dish.id]" :loading="loading[dish.id]">
             <template #loader="{ isActive }">
               <v-progress-linear
                 :active="isActive"
@@ -67,34 +104,39 @@ function buyDish(dishId) {
               ></v-progress-linear>
             </template>
             <v-img
-              height="150"
-              :src="dish.image"
+              :src="errorCache[dish.id] ? defaultImg : dish.image"
               :alt="dish.name"
               aspect-ratio="16/9"
+              class="v-img"
               cover
+              @error="handleImageError(dish.id)"
             ></v-img>
             <v-card-title class="dish-title">{{ dish.name }}</v-card-title>
-            <v-card-subtitle class="dish-description">{{
-              dish.category.toUpperCase()
-            }}</v-card-subtitle>
 
-            <v-card-actions>
-              <v-chip variant="text">R$ {{ dish.price.toFixed(2) }}</v-chip>
+            <v-card-actions class="v-card-actions">
+              <v-chip variant="flat" color="primary">{{ dish?.category?.toUpperCase() }}</v-chip>
               <v-spacer></v-spacer>
-              <v-btn color="primary" icon="mdi-cart-outline" @click="buyDish(dish.id)"></v-btn>
+              <v-chip variant="flat" color="secondary">R$ {{ dish?.price?.toFixed(2) }}</v-chip>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="primary"
+                class="text-button"
+                icon="mdi-cart-outline"
+                @click="buyDish(dish.id)"
+              ></v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
+    </div>
 
-      <div class="pagination-wrapper" v-if="dishes.length > 0">
-        <v-pagination
-          v-model="page"
-          :length="pagination.totalPages"
-          :total-visible="pagination.total"
-          rounded="circle"
-        ></v-pagination>
-      </div>
+    <div class="pagination-wrapper" v-if="dishes?.length > 0">
+      <v-pagination
+        v-model="page"
+        :length="pagination.totalPages"
+        :total-visible="pagination.total"
+        rounded="circle"
+      ></v-pagination>
     </div>
   </div>
 </template>
@@ -103,26 +145,49 @@ function buyDish(dishId) {
 .cards-container {
   width: 100%;
   height: 100%;
+
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
 }
 
 .content-wrapper {
+  flex-grow: 1;
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  flex-direction: row;
+  justify-content: stretch;
   width: 100%;
 }
 
 .pagination-wrapper {
-  margin-top: auto;
   display: flex;
   align-self: center;
+  margin-top: 16px;
+}
+
+.content-wrapper > .card-row {
+  max-height: 200px;
 }
 
 .card-dish {
   background-color: var(--bronze);
   color: var(--white);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-dish .v-img {
+  flex: 0 0 auto;
+  height: 150px;
+}
+
+.card-dish .v-card-title,
+.card-dish .v-card-subtitle,
+.card-dish .v-card-actions {
+  flex: 0 0 auto;
+  padding: 8px 12px;
 }
 
 .dish-title {
@@ -130,6 +195,7 @@ function buyDish(dishId) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .dish-description {
@@ -137,5 +203,6 @@ function buyDish(dishId) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: rgba(255, 255, 255, 0.7);
 }
 </style>

@@ -66,20 +66,26 @@ const handleMenuClick = (key) => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  margin: 0 auto;
+  padding: 10px;
+
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 .user-section {
   width: 100%;
+  height: 80px;
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .avatar {
   width: 50px;
   height: 50px;
+  min-width: 50px;
   background: #823b19;
   border-radius: 50%;
   display: flex;
@@ -98,25 +104,27 @@ const handleMenuClick = (key) => {
   justify-content: center;
 }
 
-.sidebar {
-  width: auto;
-  height: auto;
-  background: #f6eee8;
-
+.content {
+  width: 100%;
+  height: calc(100vh - 80px);
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+.sidebar {
+  width: 80px;
+  height: 100%;
+  background: #f6eee8;
   border-radius: 10px;
+  flex-shrink: 0;
 }
 
 nav {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 nav ul {
@@ -133,35 +141,54 @@ nav ul {
 
 nav ul li {
   width: 100%;
-  padding: 15px;
-  text-align: center;
-  font-size: 20px;
-  color: #823b19;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 nav ul li.active {
-  height: auto;
   background: var(--color-primary);
 }
 
-.content {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 5px;
+.content-body {
+  flex-grow: 1;
+  background-color: var(--color-primary);
+  border-radius: 10px;
+  padding: 20px;
+  overflow: auto;
+  box-sizing: border-box;
 }
 
-.content-body {
-  width: 100%;
-  height: auto;
-  background-color: var(--color-primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  border-radius: 10px;
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    min-width: 320px;
+  }
+
+  .content {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .content-body {
+    padding: 10px;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 60px;
+  }
+
+  nav ul {
+    flex-direction: row;
+  }
+
+  nav ul li {
+    height: 60px;
+    width: 60px;
+  }
 }
 </style>

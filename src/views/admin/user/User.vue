@@ -156,7 +156,7 @@ const closeDialogForm = () => {
 
     <ConfirmDeleteDialog
       v-model:visible="dialogDelete"
-      @confirm="deleteItem"
+      @confirm="remove"
       @cancel="dialogDelete = false"
       text="Deseja realmente remover este usuário?"
     ></ConfirmDeleteDialog>
