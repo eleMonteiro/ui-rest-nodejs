@@ -93,7 +93,7 @@ const handleImageError = (dishId) => {
   <div class="cards-container">
     <div class="content-wrapper">
       <v-row class="card-row" :dense="true">
-        <v-col v-for="dish in dishes" :key="dish.id" cols="12" sm="6" md="6" lg="3">
+        <v-col v-for="dish in dishes" :key="dish.id" cols="12" md="3">
           <v-card class="card-dish" :disabled="loading[dish.id]" :loading="loading[dish.id]">
             <template #loader="{ isActive }">
               <v-progress-linear
@@ -169,6 +169,8 @@ const handleImageError = (dishId) => {
 .content-wrapper > .card-row {
   min-height: 400px;
   overflow-y: auto;
+  display: flex;
+  justify-content: center;
 }
 
 .card-dish {

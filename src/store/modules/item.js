@@ -10,7 +10,7 @@ const actions = {
   async getItems({ commit }) {
     try {
       const response = await api.get("/items");
-      const { data } = response?.data;     
+      const { data } = response?.data;
       commit("SET_ITEMS", data);
       return handleApiResponse(response, "Items fetched successfully");
     } catch (error) {
@@ -49,11 +49,11 @@ const actions = {
 
   async getItemByDemand({ commit }, demandId) {
     try {
-      const response = await api.get("/items/demand/", {
+      const response = await api.get("/items/demand", {
         params: { demandId },
       });
       const { data } = response?.data;
-      commit("SET_ITEM", data);
+      commit("SET_ITEMS", data);
       return handleApiResponse(response, "Items fetched by demand successfully");
     } catch (error) {
       return handleApiError(error, "Failed to fetch items by demand");

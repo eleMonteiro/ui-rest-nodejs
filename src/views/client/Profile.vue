@@ -271,17 +271,17 @@ const save = async () => {
   color: var(--bronze);
 }
 
-.custom-text-field :deep(input) {
+.custom-text-field:deep(input) {
   background-color: var(--color-primary);
   color: var(--white);
   border: none;
 }
 
-.custom-text-field :deep(.v-messages__message) {
+.custom-text-field:deep(.v-messages__message) {
   color: var(--white);
 }
 
-.custom-text-field :deep(.v-select__selection) {
+.custom-text-field:deep(.v-select__selection) {
   color: var(--white);
 }
 </style>

@@ -1,13 +1,14 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import Cookies from "js-cookie";
-import noneImg from "../../assets/none-img.png";
+import Dialog from "./placed/PlacedDialog.vue";
 
 const loading = ref({});
 const page = ref(1);
 const pagination = ref({});
 const demands = ref([]);
+const dialogForm = ref(false);
+const record = ref({});
 
 const store = useStore();
 
@@ -49,10 +50,20 @@ const showMessage = (response) => {
     color: response?.success ? "success" : "error",
   });
 };
+
+const viewRequest = (demand) => {
+  loading.value[demand.id] = true;
+  setTimeout(() => {
+    loading.value[demand.id] = false;
+    record.value = demand;
+    dialogForm.value = true;
+  }, 1000);
+};
 </script>
 
 <template>
   <div class="cards-container">
+    <Dialog :dialog="dialogForm" :record="record" @close="dialogForm = false" />
     <div class="content-wrapper">
       <v-row class="card-row" :dense="true" no-gutters>
         <v-col v-for="demand in demands" :key="demand.id" cols="12" md="3" align-self="stretch">
@@ -78,7 +89,12 @@ const showMessage = (response) => {
                 `R$ ${demand?.total?.toFixed(2)}`
               }}</v-chip>
               <v-spacer></v-spacer>
-              <v-btn color="primary" class="text-button" icon="mdi mdi-magnify-expand"></v-btn>
+              <v-btn
+                color="primary"
+                class="text-button"
+                icon="mdi mdi-magnify-expand"
+                @click="viewRequest(demand)"
+              ></v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
