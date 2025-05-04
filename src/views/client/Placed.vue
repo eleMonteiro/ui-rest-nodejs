@@ -54,8 +54,8 @@ const showMessage = (response) => {
 <template>
   <div class="cards-container">
     <div class="content-wrapper">
-      <v-row class="card-row" :dense="true">
-        <v-col v-for="demand in demands" :key="demand.id" cols="3" align-self="stretch">
+      <v-row class="card-row" :dense="true" no-gutters>
+        <v-col v-for="demand in demands" :key="demand.id" cols="12" md="3" align-self="stretch">
           <v-card class="card-demand" :disabled="loading[demand.id]" :loading="loading[demand.id]">
             <template #loader="{ isActive }">
               <v-progress-linear
@@ -67,10 +67,10 @@ const showMessage = (response) => {
             </template>
 
             <v-card-title class="demand-title">
-              {{ `Número do Pedido: #${String(demand.id).padStart(10, "0")}` }}
+              {{ `Número do Pedido: #${demand.id}` }}
             </v-card-title>
             <v-card-text class="demand-text">
-              {{ `Endereço de Entrega: ${demand?.address?.toUpperCase()}` }}
+              {{ `Data do Pedido: ${new Date(demand?.dateOfDemand).toLocaleDateString("pt-BR")}` }}
             </v-card-text>
 
             <v-card-actions class="v-card-actions">
@@ -124,6 +124,10 @@ const showMessage = (response) => {
 .content-wrapper > .card-row {
   min-height: 200px;
   overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
 }
 
 .card-demand {
