@@ -96,7 +96,7 @@ const close = () => {
               <tr v-for="item in items" :key="item.id">
                 <td>{{ item.dish.name }}</td>
                 <td>{{ item.amount }}</td>
-                <td>R$ {{ item.totalPrice }}</td>
+                <td>R$ {{ item.totalPrice.toFixed(2) }}</td>
               </tr>
             </tbody>
           </v-table>
