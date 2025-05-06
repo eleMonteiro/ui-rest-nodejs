@@ -96,7 +96,7 @@ const closeDialog = () => {
 
 <template>
   <v-dialog v-model="dialogVisible" max-width="800" persistent @click:outside="closeDialog">
-    <v-card :title="`${isEditing ? 'Editar' : 'Adicionar'} um prato`" color="white">
+    <v-card :title="`${isEditing ? 'Editar' : 'Adicionar'} um prato`">
       <template v-slot:text>
         <v-form validate-on="submit">
           <v-row>
@@ -108,7 +108,7 @@ const closeDialog = () => {
                 counter
                 clearable
                 prepend-inner-icon="mdi-food"
-                variant="outlined"
+                class="custom-text-field"
               ></v-text-field>
             </v-col>
 
@@ -117,12 +117,12 @@ const closeDialog = () => {
                 v-model="record.description"
                 label="Descrição"
                 :rules="[rules.required, rules.minLength(10), rules.maxLength(200)]"
-                variant="outlined"
                 counter
                 clearable
                 auto-grow
                 rows="3"
                 prepend-inner-icon="mdi-text"
+                class="custom-text-field"
               ></v-textarea>
             </v-col>
 
@@ -132,12 +132,12 @@ const closeDialog = () => {
                 type="number"
                 label="Preço"
                 :rules="[rules.required, rules.price]"
-                variant="outlined"
                 prepend-inner-icon="mdi-currency-usd"
                 step="0.01"
                 min="0.01"
                 max="9999.99"
                 suffix="R$"
+                class="custom-text-field"
               ></v-text-field>
             </v-col>
 
@@ -149,8 +149,8 @@ const closeDialog = () => {
                 item-title="label"
                 item-value="value"
                 :rules="[rules.required]"
-                variant="outlined"
                 prepend-inner-icon="mdi-tag"
+                class="custom-text-field"
               ></v-select>
             </v-col>
 
@@ -162,11 +162,11 @@ const closeDialog = () => {
                 accept="image/*"
                 prepend-icon=""
                 prepend-inner-icon="mdi-image"
-                variant="outlined"
                 show-size
                 counter
                 @update:modelValue="previewImage"
                 @click:clear="clearImage"
+                class="custom-text-field"
               ></v-file-input>
             </v-col>
 
@@ -250,5 +250,33 @@ const closeDialog = () => {
 .v-select,
 .v-file-input {
   margin-bottom: 12px;
+}
+
+.v-card {
+  background-color: var(--bronze);
+}
+
+.custom-text-field {
+  color: var(--white);
+}
+
+.custom-text-field :deep(input) {
+  background-color: var(--bronze);
+  color: var(--color-primary);
+  border: none;
+  font-size: 1em;
+  font-weight: 200;
+}
+
+.custom-text-field :deep(textarea) {
+  background-color: var(--bronze);
+  color: var(--color-primary);
+  border: none;
+  font-size: 1em;
+  font-weight: 200;
+}
+
+.custom-text-field :deep(.v-messages__message) {
+  color: var(--bronze);
 }
 </style>

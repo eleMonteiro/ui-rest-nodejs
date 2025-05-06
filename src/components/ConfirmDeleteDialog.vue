@@ -54,3 +54,11 @@ const handleConfirm = () => {
     </v-card>
   </v-dialog>
 </template>
+
+<style scoped>
+.v-card {
+  background-color: var(--bronze);
+  color: white;
+  font-size: 1.5em;
+}
+</style>

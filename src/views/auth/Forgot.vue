@@ -65,9 +65,8 @@ const redirectLogin = () => {
             <v-text-field
               v-model="email"
               :rules="[rules.required]"
-              class="mb-2"
+              class="mb-2 custom-text-field"
               label="Email"
-              bg-color="#ffffff"
             ></v-text-field>
           </v-card-text>
 
@@ -111,8 +110,6 @@ const redirectLogin = () => {
   justify-content: center;
   align-items: center;
   border-radius: 20px;
-
-  background-color: var(--white);
 }
 
 .right h1 {
@@ -138,7 +135,23 @@ const redirectLogin = () => {
   color: var(--bronze);
 }
 
-.form-container {
-  background-color: var(--white);
+.v-card {
+  background-color: transparent;
+}
+
+.custom-text-field {
+  color: var(--color-primary);
+}
+
+.custom-text-field :deep(input) {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+  border: none;
+  font-size: 1em;
+  font-weight: 200;
+}
+
+.custom-text-field :deep(.v-messages__message) {
+  color: var(--color-primary);
 }
 </style>

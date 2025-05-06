@@ -83,9 +83,9 @@ const redirectLogin = () => {
                   :rules="[rules.required, rules.name]"
                   type="text"
                   label="Nome"
-                  bg-color="white"
                   autocomplete="name"
                   clearable
+                  class="custom-text-field"
                 ></v-text-field>
 
                 <v-text-field
@@ -93,9 +93,9 @@ const redirectLogin = () => {
                   :rules="[rules.required, rules.email]"
                   type="email"
                   label="E-mail"
-                  bg-color="white"
                   autocomplete="email"
                   clearable
+                  class="custom-text-field"
                 ></v-text-field>
 
                 <v-text-field
@@ -107,8 +107,8 @@ const redirectLogin = () => {
                   hint="Deve conter: maiúscula, minúscula, número e caractere especial"
                   counter
                   @click:append-inner="showPassword = !showPassword"
-                  bg-color="white"
                   autocomplete="new-password"
+                  class="custom-text-field"
                 ></v-text-field>
               </v-form>
             </template>
@@ -187,6 +187,7 @@ const redirectLogin = () => {
   width: 100%;
   padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  background-color: transparent;
 }
 
 .v-card-actions {
@@ -194,6 +195,22 @@ const redirectLogin = () => {
   justify-content: space-between;
   padding: 0;
   margin-top: 1rem;
+}
+
+.custom-text-field {
+  color: var(--color-primary);
+}
+
+.custom-text-field :deep(input) {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+  border: none;
+  font-size: 1em;
+  font-weight: 200;
+}
+
+.custom-text-field :deep(.v-messages__message) {
+  color: var(--color-primary);
 }
 
 @media (max-width: 1024px) {

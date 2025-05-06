@@ -89,24 +89,23 @@ const showMessage = (response) => {
         <div class="right-inner">
           <h1>Bem-vindo de volta!</h1>
           <h2>Ainda não tem uma conta? <router-link to="/account">Cadastre-se</router-link></h2>
-          <v-card width="500" height="auto">
+          <v-card width="500" height="auto" class="card">
             <v-form v-model="form" @submit.prevent="onSubmit">
               <v-text-field
                 v-model="email"
                 :readonly="loading"
                 :rules="[rules.required]"
-                class="mb-2"
+                class="mb-2 custom-text-field"
                 label="E-mail"
                 placeholder="Digite seu e-mail"
                 autocomplete="email"
                 clearable
                 prepend-inner-icon="mdi-email-outline"
-                variant="outlined"
                 :error-messages="error"
                 @focus="error = ''"
               >
                 <template #message="{ message }">
-                  <span style="color: #69140e">{{ message }}</span>
+                  <span style="color: white">{{ message }}</span>
                 </template>
               </v-text-field>
 
@@ -121,12 +120,12 @@ const showMessage = (response) => {
                 autocomplete="current-password"
                 clearable
                 prepend-inner-icon="mdi-lock-outline"
-                variant="outlined"
                 :error-messages="error"
                 @focus="error = ''"
+                class="custom-text-field"
               >
                 <template #message="{ message }">
-                  <span style="color: #69140e">{{ message }}</span>
+                  <span style="color: white">{{ message }}</span>
                 </template>
               </v-text-field>
 
@@ -234,6 +233,8 @@ const showMessage = (response) => {
   width: 100%;
   padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  background-color: transparent;
+  color: white;
 }
 
 .v-card-actions {
@@ -281,6 +282,22 @@ const showMessage = (response) => {
 
 .v-field--focused .v-field__outline {
   border-color: var(--color-accent) !important;
+}
+
+.custom-text-field {
+  color: var(--white);
+}
+
+.custom-text-field :deep(input) {
+  background-color: var(--color-primary);
+  color: var(--white);
+  border: none;
+  font-size: 1em;
+  font-weight: 200;
+}
+
+.custom-text-field :deep(.v-messages__message) {
+  color: var(--bronze);
 }
 
 @media (max-width: 1024px) {

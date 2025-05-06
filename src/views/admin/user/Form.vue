@@ -249,7 +249,6 @@ const showMessage = (response) => {
                     v-model="localRecord.cpf"
                     label="CPF"
                     :rules="[rules.required, rules.cpf]"
-                    variant="outlined"
                     @input="handleCpfInput"
                     @blur="handleCpfBlur"
                     hint="Formato: 000.000.000-00"
@@ -259,6 +258,7 @@ const showMessage = (response) => {
                     clearable
                     aria-label="CPF do usuário"
                     aria-required="true"
+                    class="custom-text-field"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="4">
@@ -266,11 +266,11 @@ const showMessage = (response) => {
                     v-model="localRecord.name"
                     label="Nome"
                     :rules="[rules.required, rules.name]"
-                    variant="outlined"
                     required
                     prepend-inner-icon="mdi-account"
                     counter
                     maxlength="100"
+                    class="custom-text-field"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="4">
@@ -278,11 +278,11 @@ const showMessage = (response) => {
                     v-model="localRecord.dateOfBirth"
                     label="Data de Nascimento"
                     :rules="[rules.required, rules.date]"
-                    variant="outlined"
                     prepend-inner-icon="mdi-calendar"
                     placeholder="DD/MM/AAAA"
                     @input="applyDateMask"
                     @blur="handleValidateDate"
+                    class="custom-text-field"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -292,10 +292,10 @@ const showMessage = (response) => {
                     v-model="localRecord.email"
                     label="Email"
                     :rules="[rules.required, rules.email]"
-                    variant="outlined"
                     prepend-inner-icon="mdi-email"
                     clearable
                     autocomplete="email"
+                    class="custom-text-field"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="4">
@@ -304,11 +304,11 @@ const showMessage = (response) => {
                     :rules="isEditing ? [] : [rules.required, rules.min, rules.password]"
                     type="password"
                     label="Senha"
-                    variant="outlined"
                     prepend-inner-icon="mdi-lock"
                     hint="Deve conter: 8 caracteres, maiúscula, minúscula e número"
                     counter
                     autocomplete="current-password"
+                    class="custom-text-field"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="4">
@@ -318,10 +318,10 @@ const showMessage = (response) => {
                     :items="roles"
                     label="Perfil"
                     :rules="[rules.required]"
-                    variant="outlined"
                     required
                     aria-label="Perfil do usuário"
                     aria-required="true"
+                    class="custom-text-field"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -403,6 +403,7 @@ const showMessage = (response) => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background-color: var(--bronze);
 }
 
 .v-stepper__content {
@@ -428,6 +429,10 @@ const showMessage = (response) => {
   flex-direction: column;
 }
 
+.v-card {
+  background-color: var(--bronze);
+}
+
 .v-card-actions {
   padding: 16px;
   margin-top: auto;
@@ -442,6 +447,22 @@ const showMessage = (response) => {
   padding: 16px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+}
+
+.custom-text-field {
+  color: var(--white);
+}
+
+.custom-text-field :deep(input) {
+  background-color: var(--bronze);
+  color: var(--color-primary);
+  border: none;
+  font-size: 1em;
+  font-weight: 200;
+}
+
+.custom-text-field :deep(.v-messages__message) {
+  color: var(--bronze);
 }
 
 @media (max-width: 960px) {

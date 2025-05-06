@@ -226,7 +226,7 @@ const showMessage = (response) => {
           <div class="address-actions">
             <v-btn
               icon="mdi-pencil"
-              color="primary"
+              color="white"
               variant="text"
               size="small"
               @click="edit(item)"
@@ -234,7 +234,7 @@ const showMessage = (response) => {
             />
             <v-btn
               icon="mdi-delete"
-              color="error"
+              color="white"
               variant="text"
               size="small"
               @click="del(item)"
@@ -389,20 +389,27 @@ const showMessage = (response) => {
   flex-direction: column;
   overflow: hidden;
   border-radius: 8px;
+  background-color: transparent;
 }
 
 .address-table {
   flex: 1;
   min-height: 100px;
+  background-color: transparent !important;
+  color: var(--white);
+}
+
+.address-table :deep(.v-data-table__td) {
+  background-color: transparent !important;
 }
 
 .address-toolbar {
-  background-color: rgba(var(--v-theme-primary), 0.05);
+  background-color: transparent !important;
 }
 
 .address-title {
   font-weight: 500;
-  color: rgba(var(--v-theme-primary), 0.8);
+  color: var(--white);
 }
 
 .address-actions {
