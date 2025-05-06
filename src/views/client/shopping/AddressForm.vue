@@ -1,23 +1,24 @@
 <script setup>
-import { formatCep, applyCepMask, unformatCep } from "@/utils/masks";
+import { ref, onMounted } from "vue";
+import IMask from "imask";
 
+const cepRef = ref(null);
+
+onMounted(() => {
+  const input = cepRef.value?.$el?.querySelector("input");
+  if (input) {
+    IMask(input, {
+      mask: "00.000-000",
+    });
+  }
+});
 const props = defineProps({
   address: Object,
   isLoadingCep: Boolean,
   disabledFields: Boolean,
 });
 
-defineEmits(["cep-blur"]);
-
-const handleCepInput = (event) => {
-  const inputValue = event.target.value;
-  const unformattedValue = unformatCep(inputValue);
-  if (unformattedValue.length > 8) {
-    props.address.cep = formatCep(unformattedValue);
-  } else {
-    props.address.cep = applyCepMask(event);
-  }
-};
+const emit = defineEmits(["cep-blur"]);
 </script>
 
 <template>
@@ -25,13 +26,13 @@ const handleCepInput = (event) => {
     <v-row>
       <v-col cols="12" sm="6" md="4">
         <v-text-field
+          ref="cepRef"
           v-model="props.address.cep"
           label="CEP *"
           clearable
           :loading="isLoadingCep"
           :rules="[(v) => !!v || 'CEP é obrigatório', (v) => v.length === 10 || 'CEP inválido']"
-          @input="handleCepInput"
-          @blur="$emit('cep-blur')"
+          @blur="emit('cep-blur')"
           prepend-inner-icon="mdi-map-marker"
           class="custom-text-field"
         />

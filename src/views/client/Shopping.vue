@@ -1,9 +1,8 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { useStore } from "vuex";
 import ItensTable from "./shopping/ItensTable.vue";
 import AddressForm from "./shopping/AddressForm.vue";
-import { unformatCep } from "@/utils/masks";
 import Cookies from "js-cookie";
 import PaymentForm from "./shopping/PaymentForm.vue";
 
@@ -15,6 +14,7 @@ const DEFAULT_DEMAND = ref({
   dateOfDemand: new Date(),
   addressId: null,
   userId: null,
+  card: null,
   items: [],
 });
 
@@ -30,6 +30,12 @@ const RECORD_DEFAULT = {
 };
 
 const address = ref({ ...RECORD_DEFAULT });
+const payment = reactive({
+  cardNumber: "",
+  cardHolderName: "",
+  expirationDate: "",
+  cvv: "",
+});
 
 const step = ref(1);
 const cartItems = ref([]);
@@ -95,6 +101,8 @@ const finishBuy = async () => {
     DEFAULT_DEMAND.value.address = formatAddress();
     const user = store.getters["user/user"];
     DEFAULT_DEMAND.value.userId = user?.id;
+    const { cardNumber, cardHolderName } = payment;
+    DEFAULT_DEMAND.value.card = { cardNumber, cardHolderName };
     const response = await store.dispatch("demand/createDemand", DEFAULT_DEMAND.value);
     showMessage(response);
     reset();
@@ -116,21 +124,34 @@ const reset = () => {
   DEFAULT_DEMAND.value = {
     total: 0,
     address: null,
+    addressId: null,
+    dateOfDemand: new Date(),
+    userId: null,
+    card: null,
     items: [],
   };
+
+  Object.assign(payment, {
+    cardNumber: "",
+    cardHolderName: "",
+    expirationDate: "",
+    cvv: "",
+  });
+
+  Object.assign(address.value, RECORD_DEFAULT);
+  cartItems.value = [];
   Cookies.set("cart", JSON.stringify([]), { expires: 7 });
+  step.value = 1; // volta para a primeira etapa
 };
 
 const handleCepBlur = async () => {
   if (address.value.cep.length === 10) {
-    const cep = unformatCep(address.value.cep);
-    if (cep.length !== 8) return;
     isLoadingCep.value = true;
 
     try {
       const user = store.getters["user/user"];
       const response = await store.dispatch("cep/getAddressByFilter", {
-        cep,
+        cep: address.value.cep,
         userId: user.id,
       });
 
@@ -179,7 +200,7 @@ const handleCepBlur = async () => {
         </v-window-item>
 
         <v-window-item :value="3" class="window-item-full">
-          <PaymentForm />
+          <PaymentForm :card="payment" @update:card="(val) => Object.assign(payment, val)" />
         </v-window-item>
       </v-window>
 
