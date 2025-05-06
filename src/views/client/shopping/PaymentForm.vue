@@ -127,7 +127,6 @@ const fetchCard = async (cardNumber) => {
       localCard.id = null;
     }
   } catch (error) {
-    console.log(error);
     showMessage(error);
   }
 };
@@ -135,7 +134,6 @@ const fetchCard = async (cardNumber) => {
 const createCard = async () => {
   try {
     localCard.userId = props.userId;
-    console.log(localCard);
     const response = await store.dispatch("card/createCard", { ...localCard });
     if (response?.success) {
       const card = store.getters["card/card"];
