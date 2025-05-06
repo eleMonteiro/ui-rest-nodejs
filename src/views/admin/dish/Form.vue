@@ -11,6 +11,14 @@ const props = defineProps({
 const emit = defineEmits(["update:dialog", "update:imageFile", "save", "close", "clear-preview"]);
 const localImageFile = ref(null);
 const localImagePreview = ref(props.imagePreview);
+const CATEGORY_OPTIONS = [
+  { value: "ENTRADA", label: "Entrada" },
+  { value: "PRATO_PRINCIPAL", label: "Prato Principal" },
+  { value: "SOBREMESA", label: "Sobremesa" },
+  { value: "BEBIDA", label: "Bebida" },
+  { value: "LANCHES", label: "Lanches" },
+  { value: "PETISCOS", label: "Petiscos" },
+];
 
 watch(localImageFile, (newFile) => {
   if (newFile) {
@@ -137,7 +145,9 @@ const closeDialog = () => {
               <v-select
                 v-model="record.category"
                 label="Categoria"
-                :items="['Entrada', 'Prato Principal', 'Sobremesa', 'Bebida']"
+                :items="CATEGORY_OPTIONS"
+                item-title="label"
+                item-value="value"
                 :rules="[rules.required]"
                 variant="outlined"
                 prepend-inner-icon="mdi-tag"

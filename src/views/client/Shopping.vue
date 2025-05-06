@@ -8,13 +8,13 @@ import PaymentForm from "./shopping/PaymentForm.vue";
 
 const store = useStore();
 
-const DEFAULT_DEMAND = ref({
+const DEFAULT_DEMAND = reactive({
   total: 0,
   address: null,
   dateOfDemand: new Date(),
+  payment: null,
   addressId: null,
   userId: null,
-  card: null,
   items: [],
 });
 
@@ -30,11 +30,19 @@ const RECORD_DEFAULT = {
 };
 
 const address = ref({ ...RECORD_DEFAULT });
-const payment = reactive({
+const card = reactive({
   cardNumber: "",
   cardHolderName: "",
   expirationDate: "",
   cvv: "",
+  brand: "",
+  userId: null,
+});
+
+const payment = reactive({
+  method: "",
+  amount: 0,
+  cardId: null,
 });
 
 const step = ref(1);
@@ -58,7 +66,7 @@ const canProceed = computed(() => {
     case 1:
       return cartItems.value.length > 0;
     case 2:
-      return DEFAULT_DEMAND.value.addressId !== null;
+      return DEFAULT_DEMAND.addressId !== null;
     default:
       return true;
   }
@@ -66,6 +74,8 @@ const canProceed = computed(() => {
 
 const nextButtonText = computed(() => ["", "Dados de Entrega", "Dados de Pagamento"][step.value]);
 const backButtonText = computed(() => ["", "", "Itens", "Dados de Entrega"][step.value]);
+const user = computed(() => store.getters["user/user"]);
+const userId = computed(() => user.value?.id);
 
 const loadCart = () => {
   const cookieCart = Cookies.get("cart");
@@ -79,16 +89,16 @@ const loadCart = () => {
   }
 
   cartItems.value = parsed;
-  DEFAULT_DEMAND.value.items = cartItems.value;
-  DEFAULT_DEMAND.value.total = cartItems.value.reduce((sum, item) => sum + item.totalPrice, 0);
+  DEFAULT_DEMAND.items = cartItems.value;
+  DEFAULT_DEMAND.total = cartItems.value.reduce((sum, item) => sum + item.totalPrice, 0);
 };
 
 const removeItem = (dishId) => {
   cartItems.value = cartItems.value.filter((item) => item.dishId !== dishId);
   Cookies.set("cart", JSON.stringify(cartItems.value), { expires: 7 });
 
-  DEFAULT_DEMAND.value.items = cartItems?.value;
-  DEFAULT_DEMAND.value.total = cartItems?.value?.reduce((sum, item) => sum + item.totalPrice, 0);
+  DEFAULT_DEMAND.items = cartItems.value;
+  DEFAULT_DEMAND.total = cartItems.value.reduce((sum, item) => sum + item.totalPrice, 0);
 };
 
 const formatAddress = () => {
@@ -98,12 +108,14 @@ const formatAddress = () => {
 
 const finishBuy = async () => {
   try {
-    DEFAULT_DEMAND.value.address = formatAddress();
-    const user = store.getters["user/user"];
-    DEFAULT_DEMAND.value.userId = user?.id;
-    const { cardNumber, cardHolderName } = payment;
-    DEFAULT_DEMAND.value.card = { cardNumber, cardHolderName };
-    const response = await store.dispatch("demand/createDemand", DEFAULT_DEMAND.value);
+    DEFAULT_DEMAND.address = formatAddress();
+    DEFAULT_DEMAND.userId = userId.value;
+    DEFAULT_DEMAND.payment = {
+      amount: DEFAULT_DEMAND.total,
+      method: payment.method,
+      cardId: payment.cardId,
+    };
+    const response = await store.dispatch("demand/createDemand", DEFAULT_DEMAND);
     showMessage(response);
     reset();
   } catch (error) {
@@ -121,58 +133,60 @@ const showMessage = (response) => {
 };
 
 const reset = () => {
-  DEFAULT_DEMAND.value = {
+  Object.assign(DEFAULT_DEMAND, {
     total: 0,
     address: null,
     addressId: null,
+    payment: null,
     dateOfDemand: new Date(),
     userId: null,
-    card: null,
     items: [],
-  };
+  });
 
-  Object.assign(payment, {
+  Object.assign(card, {
     cardNumber: "",
     cardHolderName: "",
     expirationDate: "",
     cvv: "",
+    brand: "",
+  });
+
+  Object.assign(payment, {
+    method: "",
+    amount: 0,
   });
 
   Object.assign(address.value, RECORD_DEFAULT);
   cartItems.value = [];
   Cookies.set("cart", JSON.stringify([]), { expires: 7 });
-  step.value = 1; // volta para a primeira etapa
+  step.value = 1;
 };
 
 const handleCepBlur = async () => {
-  if (address.value.cep.length === 10) {
-    isLoadingCep.value = true;
+  isLoadingCep.value = true;
+  try {
+    const response = await store.dispatch("cep/getAddressByFilter", {
+      cep: address.value.cep,
+      userId: userId.value,
+    });
 
-    try {
-      const user = store.getters["user/user"];
-      const response = await store.dispatch("cep/getAddressByFilter", {
-        cep: address.value.cep,
-        userId: user.id,
-      });
-
-      if (response?.success) {
-        const data = store.getters["cep/address"];
-        address.value.id = data?.id;
-        address.value.road = data?.road;
-        address.value.neighborhood = data?.neighborhood;
-        address.value.city = data?.city;
-        address.value.uf = data?.uf;
-        address.value.complement = data?.complement;
-        address.value.number = data?.number;
-        DEFAULT_DEMAND.value.addressId = data?.id;
-      } else {
-        showMessage({ success: false, message: "Endereço não cadastrado" });
-      }
-    } catch {
-      showMessage({ success: false, message: "Erro ao buscar endereço pelo CEP e Usuário" });
-    } finally {
-      isLoadingCep.value = false;
+    if (response?.success) {
+      const data = store.getters["cep/address"];
+      address.value.id = data?.id;
+      address.value.road = data?.road;
+      address.value.neighborhood = data?.neighborhood;
+      address.value.city = data?.city;
+      address.value.uf = data?.uf;
+      address.value.complement = data?.complement;
+      address.value.number = data?.number;
+      DEFAULT_DEMAND.addressId = data?.id;
+    } else {
+      showMessage({ success: false, message: "Endereço não cadastrado" });
     }
+  } catch {
+    showMessage({ success: false, message: "Erro ao buscar endereço pelo CEP e Usuário" });
+  } finally {
+    isLoadingCep.value = false;
   }
 };
 </script>
@@ -200,7 +214,15 @@ const handleCepBlur = async () => {
         </v-window-item>
 
         <v-window-item :value="3" class="window-item-full">
-          <PaymentForm :card="payment" @update:card="(val) => Object.assign(payment, val)" />
+          <PaymentForm
+            :userId="userId"
+            :card="card"
+            :payment="payment"
+            :amount="DEFAULT_DEMAND.total"
+            @confirm="finishBuy"
+            @update:card="(val) => Object.assign(card, val)"
+            @update:payment="(val) => Object.assign(payment, val)"
+          />
         </v-window-item>
       </v-window>
 

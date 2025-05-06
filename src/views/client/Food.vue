@@ -104,7 +104,7 @@ const handleImageError = (dishId) => {
               ></v-progress-linear>
             </template>
             <v-img
-              :src="errorCache[dish.id] ? defaultImg : dish.image"
+              :src="errorCache[dish.id] || !dish.image ? defaultImg : dish.image"
               :alt="dish.name"
               aspect-ratio="16/9"
               class="v-img"

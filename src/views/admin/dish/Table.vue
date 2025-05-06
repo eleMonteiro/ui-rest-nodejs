@@ -18,6 +18,15 @@ const props = defineProps({
 
 const emit = defineEmits(["add", "edit", "delete", "reset"]);
 
+const CATEGORY_OPTIONS = [
+  { value: "ENTRADA", label: "Entrada" },
+  { value: "PRATO_PRINCIPAL", label: "Prato Principal" },
+  { value: "SOBREMESA", label: "Sobremesa" },
+  { value: "BEBIDA", label: "Bebida" },
+  { value: "LANCHES", label: "Lanches" },
+  { value: "PETISCOS", label: "Petiscos" },
+];
+
 const add = () => {
   emit("add");
 };
@@ -69,6 +78,10 @@ const formatCurrency = (value) => {
 
     <template v-slot:item.price="{ item }">
       {{ formatCurrency(item.price) }}
+    </template>
+
+    <template v-slot:item.category="{ item }">
+      {{ CATEGORY_OPTIONS.find((option) => option.value === item.category)?.label }}
     </template>
 
     <template v-slot:item.actions="{ item }">

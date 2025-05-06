@@ -82,6 +82,9 @@ const viewRequest = (demand) => {
             </v-card-title>
             <v-card-text class="demand-text">
               {{ `Data do Pedido: ${new Date(demand?.dateOfDemand).toLocaleDateString("pt-BR")}` }}
+            </v-card-text class="demand-text">
+            <v-card-text>
+              {{ `Forma de Pagamento: ${demand?.payment?.method}` }}
             </v-card-text>
 
             <v-card-actions class="v-card-actions">
