@@ -214,7 +214,7 @@ const showMessage = (response) => {
             <v-spacer />
             <v-btn
               icon="mdi-plus"
-              color="primary"
+              color="white"
               variant="tonal"
               @click="openDialog"
               aria-label="Adicionar novo endereço"
@@ -265,7 +265,6 @@ const showMessage = (response) => {
                   <v-text-field
                     v-model="editedItem.cep"
                     label="CEP *"
-                    variant="outlined"
                     :loading="isLoadingCep"
                     :rules="[
                       (v) => !!v || 'CEP é obrigatório',
@@ -276,6 +275,7 @@ const showMessage = (response) => {
                     prepend-inner-icon="mdi-map-marker"
                     persistent-hint
                     hint="Digite o CEP para autocompletar"
+                    class="custom-text-field"
                   />
                 </v-col>
 
@@ -283,9 +283,9 @@ const showMessage = (response) => {
                   <v-text-field
                     v-model="editedItem.road"
                     label="Logradouro *"
-                    variant="outlined"
                     :rules="[(v) => !!v || 'Logradouro é obrigatório']"
                     prepend-inner-icon="mdi-road"
+                    class="custom-text-field"
                   />
                 </v-col>
 
@@ -293,9 +293,9 @@ const showMessage = (response) => {
                   <v-text-field
                     v-model="editedItem.number"
                     label="Número *"
-                    variant="outlined"
                     :rules="[(v) => !!v || 'Número é obrigatório']"
                     prepend-inner-icon="mdi-numeric"
+                    class="custom-text-field"
                   />
                 </v-col>
 
@@ -303,9 +303,9 @@ const showMessage = (response) => {
                   <v-text-field
                     v-model="editedItem.complement"
                     label="Complemento"
-                    variant="outlined"
                     placeholder="Ex: Apartamento 101, Bloco B"
                     prepend-inner-icon="mdi-home-plus"
+                    class="custom-text-field"
                   />
                 </v-col>
 
@@ -313,9 +313,9 @@ const showMessage = (response) => {
                   <v-text-field
                     v-model="editedItem.neighborhood"
                     label="Bairro *"
-                    variant="outlined"
                     :rules="[(v) => !!v || 'Bairro é obrigatório']"
                     prepend-inner-icon="mdi-google-maps"
+                    class="custom-text-field"
                   />
                 </v-col>
 
@@ -323,9 +323,9 @@ const showMessage = (response) => {
                   <v-text-field
                     v-model="editedItem.city"
                     label="Cidade *"
-                    variant="outlined"
                     :rules="[(v) => !!v || 'Cidade é obrigatória']"
                     prepend-inner-icon="mdi-city"
+                    class="custom-text-field"
                   />
                 </v-col>
 
@@ -333,12 +333,12 @@ const showMessage = (response) => {
                   <v-text-field
                     v-model="editedItem.uf"
                     label="UF *"
-                    variant="outlined"
                     :rules="[
                       (v) => !!v || 'UF é obrigatória',
                       (v) => v.length === 2 || 'UF deve ter 2 caracteres',
                     ]"
                     prepend-inner-icon="mdi-map-marker-radius"
+                    class="custom-text-field"
                   />
                 </v-col>
               </v-row>
@@ -422,6 +422,8 @@ const showMessage = (response) => {
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--bronze);
+  color: var(--white);
 }
 
 .dialog-title {
@@ -449,6 +451,22 @@ const showMessage = (response) => {
 
 .v-text-field :deep(.v-input__details) {
   padding-left: 4px;
+}
+
+.custom-text-field {
+  color: var(--color-primary);
+}
+
+.custom-text-field :deep(input) {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+  border: none;
+  font-size: 1em;
+  font-weight: 200;
+}
+
+.custom-text-field :deep(.v-messages__message) {
+  color: var(--color-primary);
 }
 
 @media (max-width: 960px) {

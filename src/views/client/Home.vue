@@ -47,7 +47,13 @@ const user = ref("");
 onMounted(async () => {
   const response = await store.dispatch("auth/checkTokenValidity");
   if (response?.success) {
-    user.value = store.getters["auth/user"].name;
+    const _user = store.getters["auth/user"];
+    const _response = await store.dispatch("user/getUser", _user.userId);
+    if (_response?.success) {
+      user.value = store.getters["user/user"]?.name;
+    } else {
+      user.value = "Senhor(a)";
+    }
   } else {
     store.commit("auth/CLEAR_USER");
     router.push("/login");
