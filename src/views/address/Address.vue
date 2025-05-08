@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, defineEmits, defineProps } from "vue";
 import { useStore } from "vuex";
-import { formatCep, applyCepMask, unformatCep } from "@/utils/masks";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
 
 const store = useStore();
@@ -82,7 +81,6 @@ const edit = (item) => {
   isEditing.value = true;
   editedIndex.value = props.itens.indexOf(item);
   editedItem.value = { ...item };
-  editedItem.value.cep = formatCep(item.cep);
   dialog.value = true;
   setTimeout(() => validateForm(), 100);
 };
@@ -125,12 +123,10 @@ const save = () => {
 };
 
 const fetchAddressByCep = async () => {
-  const cep = unformatCep(editedItem.value.cep);
-  if (cep.length !== 8) return;
-
   isLoadingCep.value = true;
   try {
-    await store.dispatch("cep/getAddressByCep", cep);
+    const cepFormatted = editedItem.value.cep.replace(/\D/g, "");
+    await store.dispatch("cep/getAddressByCep", cepFormatted);
     const data = store.getters["cep/address"];
 
     if (data) {
@@ -151,16 +147,6 @@ const fetchAddressByCep = async () => {
     });
   } finally {
     isLoadingCep.value = false;
-  }
-};
-
-const handleCepInput = (event) => {
-  const inputValue = event.target.value;
-  const unformattedValue = unformatCep(inputValue);
-  if (unformattedValue.length > 8) {
-    editedItem.value.cep = formatCep(unformattedValue);
-  } else {
-    editedItem.value.cep = applyCepMask(event);
   }
 };
 
@@ -244,7 +230,7 @@ const showMessage = (response) => {
         </template>
 
         <template #item.cep="{ item }">
-          {{ formatCep(item.cep) }}
+          {{ item.cep }}
         </template>
       </v-data-table>
     </v-card>
@@ -270,8 +256,8 @@ const showMessage = (response) => {
                       (v) => !!v || 'CEP é obrigatório',
                       (v) => v.length === 10 || 'CEP inválido',
                     ]"
-                    @input="handleCepInput"
                     @blur="handleCepBlur"
+                    v-mask="'##.###-###'"
                     prepend-inner-icon="mdi-map-marker"
                     persistent-hint
                     hint="Digite o CEP para autocompletar"
@@ -428,7 +414,7 @@ const showMessage = (response) => {
 
 .dialog-title {
   padding: 16px 24px;
-  background-color: rgba(var(--v-theme-primary), 0.05);
+  background-color: rgba(var(--color-primary), 0.05);
 }
 
 .dialog-content {

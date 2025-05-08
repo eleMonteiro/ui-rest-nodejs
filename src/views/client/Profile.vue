@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import { applyCpfMask, validateCpf, formatCpf } from "@/utils/masks";
 import Address from "../address/Address.vue";
 
 const store = useStore();
@@ -28,16 +27,6 @@ const rules = {
   email: (v) => /.+@.+\..+/.test(v) || "E-mail inválido",
 };
 
-const handleCpfInput = (event) => {
-  user.value.cpf = applyCpfMask(event);
-};
-
-const handleCpfBlur = () => {
-  if (user.value?.cpf) {
-    user.value.cpf = validateCpf(user.value.cpf);
-  }
-};
-
 const updateAddresses = (newAddresses) => {
   user.value.addresses = newAddresses;
 };
@@ -48,7 +37,7 @@ const fetchUser = async (id) => {
     const userData = store.getters["user/user"];
     userId.value = userData?.id;
     user.value.id = userData?.id;
-    user.value.cpf = formatCpf(userData?.cpf);
+    user.value.cpf = userData?.cpf;
     user.value.name = userData?.name;
     user.value.dateOfBirth = userData?.dateOfBirth;
     user.value.email = userData?.email;
@@ -127,14 +116,13 @@ const save = async () => {
                 label="CPF"
                 :rules="[rules.required, rules.cpf]"
                 variant="outlined"
-                @input="handleCpfInput"
-                @blur="handleCpfBlur"
                 required
                 maxlength="14"
                 clearable
                 aria-label="CPF do usuário"
                 aria-required="true"
                 placeholder="000.000.000-00"
+                v-mask="'###.###.###-##'"
                 class="custom-text-field"
               >
                 <template #prepend>

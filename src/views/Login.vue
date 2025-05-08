@@ -105,7 +105,7 @@ const showMessage = (response) => {
                 @focus="error = ''"
               >
                 <template #message="{ message }">
-                  <span style="color: white">{{ message }}</span>
+                  <span style="color: var(--white)">{{ message }}</span>
                 </template>
               </v-text-field>
 
@@ -125,7 +125,7 @@ const showMessage = (response) => {
                 class="custom-text-field"
               >
                 <template #message="{ message }">
-                  <span style="color: white">{{ message }}</span>
+                  <span style="color: var(--white)">{{ message }}</span>
                 </template>
               </v-text-field>
 
@@ -152,7 +152,6 @@ const showMessage = (response) => {
                 <v-col>
                   <v-btn
                     size="large"
-                    type="submit"
                     variant="text"
                     block
                     class="text-button"
@@ -232,9 +231,9 @@ const showMessage = (response) => {
 .v-card {
   width: 100%;
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px var(--white) !important;
   background-color: transparent;
-  color: white;
+  color: var(--white);
 }
 
 .v-card-actions {

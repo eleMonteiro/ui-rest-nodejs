@@ -98,7 +98,7 @@ const handleImageError = (dishId) => {
             <template #loader="{ isActive }">
               <v-progress-linear
                 :active="isActive"
-                color="deep-purple"
+                color="white"
                 height="4"
                 indeterminate
               ></v-progress-linear>
@@ -206,6 +206,6 @@ const handleImageError = (dishId) => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--white);
 }
 </style>

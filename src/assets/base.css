@@ -5,13 +5,15 @@
   --bronze: #d58936;
   --vanilla: #f2f3ae;
   --white: #ffffff;
-  
+  --avatar: #823b19;
+  --black: #000000;
+
   --color-primary: var(--black-bean);
   --color-secondary: var(--blood-red);
   --color-accent: var(--bronze);
   --color-background: var(--vanilla);
   --color-text: var(--brown);
-
+  --color-avatar: var(--avatar);
   --color-border: rgba(60, 60, 60, 0.12);
   --color-border-hover: rgba(60, 60, 60, 0.29);
 }

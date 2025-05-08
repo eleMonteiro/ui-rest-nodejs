@@ -186,7 +186,7 @@ const redirectLogin = () => {
 .v-card {
   width: 100%;
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px var(--white) !important;
   background-color: transparent;
 }
 

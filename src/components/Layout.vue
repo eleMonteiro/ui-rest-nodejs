@@ -47,7 +47,9 @@ const handleMenuClick = (key) => {
             >
               <v-icon
                 :class="item.icon"
-                :color="activeComponent.name === key ? '#d58936' : '#69140e'"
+                :color="
+                  activeComponent.name === key ? 'var(--color-accent)' : 'var(--color-primary)'
+                "
                 size="35"
               ></v-icon>
             </li>
@@ -86,19 +88,19 @@ const handleMenuClick = (key) => {
   width: 50px;
   height: 50px;
   min-width: 50px;
-  background: #823b19;
+  background: var(--color-avatar);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--white);
   font-size: 20px;
   margin-right: 15px;
 }
 
 .user-info {
   font-size: 14px;
-  color: #823b19;
+  color: var(--color-avatar);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -115,7 +117,7 @@ const handleMenuClick = (key) => {
 .sidebar {
   width: 80px;
   height: 100%;
-  background: #f6eee8;
+  background: var(--white);
   border-radius: 10px;
   flex-shrink: 0;
 }

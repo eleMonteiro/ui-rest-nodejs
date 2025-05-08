@@ -1,7 +1,6 @@
 <script setup>
-import { ref, reactive, computed, onMounted, watch, watchEffect } from "vue";
+import { ref, reactive, computed, watch, watchEffect } from "vue";
 import { useStore } from "vuex";
-import IMask from "imask";
 
 const store = useStore();
 
@@ -24,7 +23,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:card", "update:payment", "confirm"]);
+const emit = defineEmits(["update:card", "update:payment", "update:finished", "confirm"]);
 
 const localCard = reactive({
   cardNumber: "",
@@ -43,38 +42,12 @@ const localPayment = reactive({
   cardId: null,
 });
 
-const cardNumberRef = ref(null);
-const expirationDateRef = ref(null);
-const cvvRef = ref(null);
 const formPayment = ref("CREDITO");
 const newCard = ref(false);
 const shouldShowCardForm = computed(() => ["CREDITO", "DEBITO"].includes(formPayment.value));
 const shouldShowBoleto = computed(() => formPayment.value === "BOLETO");
 const disableFields = ref(false);
-
-onMounted(() => {
-  const cardInput = cardNumberRef.value?.$el?.querySelector("input");
-  const dateInput = expirationDateRef.value?.$el?.querySelector("input");
-  const cvvInput = cvvRef.value?.$el?.querySelector("input");
-
-  if (cardInput) {
-    IMask(cardInput, { mask: "0000 0000 0000 0000" });
-  }
-
-  if (dateInput) {
-    IMask(dateInput, {
-      mask: "MM{/}YY",
-      blocks: {
-        MM: { mask: IMask.MaskedRange, from: 1, to: 12 },
-        YY: { mask: IMask.MaskedRange, from: 23, to: 99 },
-      },
-    });
-  }
-
-  if (cvvInput) {
-    IMask(cvvInput, { mask: "000[0]" });
-  }
-});
+const isPaymentValid = ref(false);
 
 watch(
   () => localCard,
@@ -82,10 +55,26 @@ watch(
   { deep: true, immediate: true }
 );
 
-watchEffect(() => {
-  localPayment.method = formPayment.value;
+watch(formPayment, (newMethod) => {
+  localPayment.method = newMethod;
   newCard.value = false;
   disableFields.value = false;
+
+  Object.assign(localCard, {
+    cardNumber: "",
+    cardHolderName: "",
+    expirationDate: "",
+    cvv: "",
+    id: null,
+    cardType: "",
+    brand: "",
+    userId: null,
+  });
+
+  localPayment.cardId = null;
+  isPaymentValid.value = false;
+
+  emit("update:card", localCard);
   emit("update:payment", localPayment);
 });
 
@@ -122,10 +111,15 @@ const fetchCard = async (cardNumber) => {
       Object.assign(localCard, card);
       localPayment.cardId = card.id;
       disableFields.value = true;
+      isPaymentValid.value = true;
     } else {
       localPayment.cardId = null;
       localCard.id = null;
+      newCard.value = true;
+      isPaymentValid.value = false;
     }
+
+    emit("update:finished", isPaymentValid);
   } catch (error) {
     showMessage(error);
   }
@@ -216,13 +210,13 @@ const showMessage = (response) => {
 
       <v-text-field
         autocapitalize="off"
-        ref="cardNumberRef"
         :disabled="disableFields"
         v-model="localCard.cardNumber"
         label="Número do Cartão"
         clearable
         prepend-inner-icon="mdi-credit-card-outline"
         @blur="handleNumberCardBlur"
+        v-mask="'#### #### #### ####'"
         class="custom-text-field"
       />
 
@@ -238,23 +232,24 @@ const showMessage = (response) => {
       <v-row>
         <v-col cols="6">
           <v-text-field
-            ref="expirationDateRef"
             v-model="localCard.expirationDate"
             :disabled="disableFields"
             label="Validade (MM/AA)"
             clearable
             prepend-inner-icon="mdi-calendar"
+            v-mask="'##/##'"
             class="custom-text-field"
           />
         </v-col>
         <v-col cols="6">
           <v-text-field
-            ref="cvvRef"
             v-model="localCard.cvv"
             :disabled="disableFields"
             label="CVC"
             clearable
             prepend-inner-icon="mdi-lock"
+            :rules="[(v) => /^\d{3,4}$/.test(v) || 'CVC deve ter 3 ou 4 dígitos']"
+            v-mask="'####'"
             class="custom-text-field"
           />
         </v-col>

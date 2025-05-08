@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import { applyCpfMask, validateCpf, formatCpf, applyDateMask, validateDate } from "@/utils/masks";
+import { validateDate } from "@/utils/validate";
 import Address from "../address/Address.vue";
 
 const store = useStore();
@@ -36,26 +36,6 @@ const rules = {
   role: (v) => roles.includes(v) || "Perfil inválido",
 };
 
-const handleCpfInput = (event) => {
-  user.value.cpf = applyCpfMask(event);
-};
-
-const handleCpfBlur = () => {
-  if (user.value?.cpf) {
-    user.value.cpf = validateCpf(user.value.cpf);
-  }
-};
-
-const handleDateInput = (event) => {
-  user.value.dateOfBirth = applyDateMask(event);
-};
-
-const handleValidateDate = () => {
-  if (!validateDate(user.value.dateOfBirth)) {
-    user.value.dateOfBirth = "";
-  }
-};
-
 const updateAddresses = (newAddresses) => {
   user.value.addresses = newAddresses;
 };
@@ -66,7 +46,7 @@ const fetchUser = async (id) => {
     const userData = store.getters["user/user"];
     userId.value = userData?.id;
     user.value.id = userData?.id;
-    user.value.cpf = formatCpf(userData?.cpf);
+    user.value.cpf = userData?.cpf;
     user.value.name = userData?.name;
     user.value.dateOfBirth = userData?.dateOfBirth;
     user.value.email = userData?.email;
@@ -154,17 +134,15 @@ const showMessage = (response) => {
                     v-model="user.cpf"
                     label="CPF"
                     :rules="[rules.required, rules.cpf]"
-                    variant="outlined"
-                    @input="handleCpfInput"
-                    @blur="handleCpfBlur"
                     required
                     maxlength="14"
                     class="custom-text-field"
+                    v-mask="'###.###.###-##'"
                     clearable
                     density="comfortable"
                   >
                     <template #prepend>
-                      <v-icon color="bronze">mdi-card-account-details</v-icon>
+                      <v-icon color="white">mdi-card-account-details</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -174,7 +152,6 @@ const showMessage = (response) => {
                     v-model="user.name"
                     label="Nome"
                     :rules="[rules.required, rules.name]"
-                    variant="outlined"
                     required
                     counter
                     clearable
@@ -183,7 +160,7 @@ const showMessage = (response) => {
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="bronze">mdi-account</v-icon>
+                      <v-icon color="white">mdi-account</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -193,16 +170,14 @@ const showMessage = (response) => {
                     v-model="user.dateOfBirth"
                     label="Data de Nascimento"
                     :rules="[rules.required, rules.date]"
-                    variant="outlined"
                     placeholder="DD/MM/AAAA"
-                    @input="handleDateInput"
-                    @blur="handleValidateDate"
+                    v-mask="'##/##/####'"
                     clearable
                     density="comfortable"
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="bronze">mdi-calendar</v-icon>
+                      <v-icon color="white">mdi-calendar</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -212,13 +187,12 @@ const showMessage = (response) => {
                     v-model="user.email"
                     label="Email"
                     :rules="[rules.required, rules.email]"
-                    variant="outlined"
                     clearable
                     density="comfortable"
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="bronze">mdi-email</v-icon>
+                      <v-icon color="white">mdi-email</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -230,13 +204,12 @@ const showMessage = (response) => {
                     label="Perfil"
                     :rules="[rules.required]"
                     required
-                    variant="outlined"
                     clearable
                     density="comfortable"
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="bronze">mdi-account-tie</v-icon>
+                      <v-icon color="white">mdi-account-tie</v-icon>
                     </template>
 
                     <template #item="{ props: item }">
@@ -263,7 +236,6 @@ const showMessage = (response) => {
                     :rules="[rules.password]"
                     type="password"
                     label="Nova Senha"
-                    variant="outlined"
                     hint="Deve conter: 8 caracteres, maiúscula, minúscula, número e caractere especial"
                     counter
                     clearable
@@ -271,7 +243,7 @@ const showMessage = (response) => {
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="bronze">mdi-lock</v-icon>
+                      <v-icon color="white">mdi-lock</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -358,7 +330,7 @@ const showMessage = (response) => {
 }
 
 .custom-text-field {
-  color: var(--bronze);
+  color: var(--white);
 }
 
 .custom-text-field :deep(input) {

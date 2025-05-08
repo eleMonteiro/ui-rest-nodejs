@@ -49,6 +49,7 @@ const step = ref(1);
 const cartItems = ref([]);
 const isLoadingCep = ref(false);
 const disabledFields = ref(true);
+const isPaymentValid = ref(false);
 
 onMounted(() => {
   loadCart();
@@ -189,6 +190,10 @@ const handleCepBlur = async () => {
     isLoadingCep.value = false;
   }
 };
+
+const handleFinished = (val) => {
+  isPaymentValid.value = val?.value || false;
+};
 </script>
 
 <template>
@@ -219,6 +224,7 @@ const handleCepBlur = async () => {
             :card="card"
             :payment="payment"
             :amount="DEFAULT_DEMAND.total"
+            @update:finished="handleFinished"
             @confirm="finishBuy"
             @update:card="(val) => Object.assign(card, val)"
             @update:payment="(val) => Object.assign(payment, val)"
@@ -240,7 +246,13 @@ const handleCepBlur = async () => {
         >
           {{ nextButtonText }}
         </v-btn>
-        <v-btn v-if="showFinishButton" color="success" variant="flat" @click="finishBuy">
+        <v-btn
+          v-if="showFinishButton"
+          :disabled="!isPaymentValid"
+          color="success"
+          variant="flat"
+          @click="finishBuy"
+        >
           Finalizar Compra
         </v-btn>
       </v-card-actions>
@@ -262,7 +274,7 @@ const handleCepBlur = async () => {
   min-height: 0;
 
   background-color: transparent;
-  color: white;
+  color: var(--white);
 }
 
 .window-full-height {

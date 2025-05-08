@@ -198,7 +198,7 @@ const closeDialog = () => {
                 width="200"
                 class="d-flex align-center justify-center grey lighten-3"
               >
-                <v-icon size="64" color="grey">mdi-image-off</v-icon>
+                <v-icon size="64" color="white">mdi-image-off</v-icon>
               </v-card>
             </v-col>
           </v-row>
@@ -242,7 +242,7 @@ const closeDialog = () => {
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: rgba(255, 255, 255, 0.7) !important;
+  background-color: var(--white) !important;
 }
 
 .v-text-field,

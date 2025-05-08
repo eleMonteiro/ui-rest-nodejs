@@ -134,13 +134,13 @@ const close = () => {
 
 .table thead th {
   background-color: var(--primary) !important;
-  color: white !important;
+  color: var(--white) !important;
   text-align: center !important;
 }
 
 .table tbody td {
   background-color: var(--primary) !important;
-  color: white !important;
+  color: var(--white) !important;
   text-align: center !important;
 }
 </style>

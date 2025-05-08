@@ -29,12 +29,6 @@ const del = (id) => {
 const reset = () => {
   emit("reset");
 };
-
-const formatCPF = (cpf) => {
-  if (!cpf) return null;
-  cpf = cpf.replace(/\D/g, "");
-  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-};
 </script>
 
 <template>
@@ -55,7 +49,7 @@ const formatCPF = (cpf) => {
     </template>
 
     <template #item.cpf="{ item }">
-      {{ formatCPF(item.cpf) }}
+      {{ item.cpf }}
     </template>
 
     <template v-slot:item.actions="{ item }">

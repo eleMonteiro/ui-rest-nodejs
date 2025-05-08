@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch, defineEmits, defineProps } from "vue";
-import { applyCpfMask, validateCpf, formatCpf, applyDateMask, validateDate } from "@/utils/masks";
+import { validateDate } from "@/utils/validate";
 import { useStore } from "vuex";
 import Address from "@/views/address/Address.vue";
 
@@ -120,28 +120,6 @@ const validateStep1 = async () => {
 
 const closeDialog = () => emit("close");
 
-function formatInitialValues() {
-  if (localRecord.value.cpf) {
-    localRecord.value.cpf = formatCpf(localRecord.value.cpf);
-  }
-}
-
-const handleCpfInput = (event) => {
-  localRecord.value.cpf = applyCpfMask(event);
-};
-
-const handleCpfBlur = () => {
-  if (localRecord.value?.cpf) {
-    localRecord.value.cpf = validateCpf(localRecord.value.cpf);
-  }
-};
-
-const handleValidateDate = () => {
-  if (!validateDate(localRecord.value.dateOfBirth)) {
-    localRecord.value.dateOfBirth = "";
-  }
-};
-
 const updateAddresses = (newAddresses) => {
   localRecord.value.addresses = newAddresses;
   emit("update:record", { ...localRecord.value });
@@ -161,15 +139,6 @@ const isStep1Valid = computed(() => {
 });
 
 watch(
-  () => props.isEditing,
-  (editing) => {
-    if (editing) {
-      formatInitialValues();
-    }
-  }
-);
-
-watch(
   () => props.record,
   (newVal) => {
     localRecord.value = {
@@ -184,7 +153,6 @@ watch(
         ? newVal.addresses.map((addr) => ({ ...addr }))
         : [],
     };
-    if (props.isEditing) formatInitialValues();
   },
   { immediate: true, deep: true }
 );
@@ -193,14 +161,6 @@ watch(
   () => localRecord.value,
   (newVal) => {
     emit("update:record", { ...newVal });
-
-    if (newVal.cpf && newVal.cpf.length === 14) {
-      handleCpfBlur();
-    }
-
-    if (newVal.dateOfBirth && newVal.dateOfBirth.length === 10) {
-      handleValidateDate();
-    }
   },
   { deep: true }
 );
@@ -249,8 +209,6 @@ const showMessage = (response) => {
                     v-model="localRecord.cpf"
                     label="CPF"
                     :rules="[rules.required, rules.cpf]"
-                    @input="handleCpfInput"
-                    @blur="handleCpfBlur"
                     hint="Formato: 000.000.000-00"
                     required
                     maxlength="14"
@@ -258,6 +216,7 @@ const showMessage = (response) => {
                     clearable
                     aria-label="CPF do usuário"
                     aria-required="true"
+                    v-mask="'###.###.###-##'"
                     class="custom-text-field"
                   ></v-text-field>
                 </v-col>
@@ -280,8 +239,7 @@ const showMessage = (response) => {
                     :rules="[rules.required, rules.date]"
                     prepend-inner-icon="mdi-calendar"
                     placeholder="DD/MM/AAAA"
-                    @input="applyDateMask"
-                    @blur="handleValidateDate"
+                    v-mask="'##/##/####'"
                     class="custom-text-field"
                   ></v-text-field>
                 </v-col>
@@ -436,8 +394,8 @@ const showMessage = (response) => {
 .v-card-actions {
   padding: 16px;
   margin-top: auto;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: rgba(0, 0, 0, 0.01);
+  border-top: 1px solid rgba(var(--black), 0.01);
+  background-color: rgba(var(--black), 0.01);
 }
 
 .address-container {
@@ -445,7 +403,7 @@ const showMessage = (response) => {
   max-height: 50vh;
   overflow-y: auto;
   padding: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(var(--black), 0.01);
   border-radius: 8px;
 }
 
