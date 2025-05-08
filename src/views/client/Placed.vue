@@ -59,6 +59,10 @@ const viewRequest = (demand) => {
     dialogForm.value = true;
   }, 1000);
 };
+
+const formPayment = (demand) => {
+  return demand?.payment?.method || "PAGAMENTO";
+}
 </script>
 
 <template>
@@ -84,7 +88,7 @@ const viewRequest = (demand) => {
               {{ `Data do Pedido: ${new Date(demand?.dateOfDemand).toLocaleDateString("pt-BR")}` }}
             </v-card-text class="demand-text">
             <v-card-text>
-              {{ `Forma de Pagamento: ${demand?.payment?.method}` }}
+              {{ `Forma de Pagamento: ${formPayment(demand)}` }}
             </v-card-text>
 
             <v-card-actions class="v-card-actions">

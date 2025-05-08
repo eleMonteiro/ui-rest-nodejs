@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineEmits, defineProps } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
 
