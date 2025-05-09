@@ -142,7 +142,7 @@ const showMessage = (response) => {
                     density="comfortable"
                   >
                     <template #prepend>
-                      <v-icon color="white">mdi-card-account-details</v-icon>
+                      <v-icon color="text">mdi-card-account-details</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -160,7 +160,7 @@ const showMessage = (response) => {
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="white">mdi-account</v-icon>
+                      <v-icon color="text">mdi-account</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -177,7 +177,7 @@ const showMessage = (response) => {
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="white">mdi-calendar</v-icon>
+                      <v-icon color="text">mdi-calendar</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -192,7 +192,7 @@ const showMessage = (response) => {
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="white">mdi-email</v-icon>
+                      <v-icon color="text">mdi-email</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -209,7 +209,7 @@ const showMessage = (response) => {
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="white">mdi-account-tie</v-icon>
+                      <v-icon color="text">mdi-account-tie</v-icon>
                     </template>
 
                     <template #item="{ props: item }">
@@ -243,7 +243,7 @@ const showMessage = (response) => {
                     class="custom-text-field"
                   >
                     <template #prepend>
-                      <v-icon color="white">mdi-lock</v-icon>
+                      <v-icon color="text">mdi-lock</v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -291,7 +291,7 @@ const showMessage = (response) => {
 
 .tab-header {
   background-color: var(--color-primary);
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .tab-window {
@@ -330,20 +330,20 @@ const showMessage = (response) => {
 }
 
 .custom-text-field {
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .custom-text-field :deep(input) {
   background-color: var(--color-primary);
-  color: var(--white);
+  color: var(--color-text);
   border: none;
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .custom-text-field :deep(.v-select__selection) {
-  color: var(--white);
+  color: var(--color-text);
 }
 </style>

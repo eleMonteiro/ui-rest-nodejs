@@ -144,7 +144,7 @@ const resetPassword = async () => {
 }
 
 .right a {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 
 .v-card {

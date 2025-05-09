@@ -6,8 +6,8 @@ const props = defineProps({
   text: { type: String, default: "Tem certeza que deseja remover este item?" },
   cancelText: { type: String, default: "Cancelar" },
   confirmText: { type: String, default: "Confirmar" },
-  cancelColor: { type: String, default: "error" },
-  confirmColor: { type: String, default: "success" },
+  cancelColor: { type: String, default: "primary" },
+  confirmColor: { type: String, default: "secondary" },
   width: { type: [String, Number], default: 500 },
   persistent: { type: Boolean, default: false },
 });
@@ -57,8 +57,8 @@ const handleConfirm = () => {
 
 <style scoped>
 .v-card {
-  background-color: var(--bronze);
-  color: var(--white);
+  background-color: var(--color-accent);
+  color: var(--color-text);
   font-size: 1.5em;
 }
 </style>

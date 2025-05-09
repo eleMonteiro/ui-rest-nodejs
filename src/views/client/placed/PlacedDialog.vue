@@ -108,7 +108,7 @@ const close = () => {
         </v-row>
       </template>
       <template #actions>
-        <v-btn class="ms-auto" text="Ok" @click="close"></v-btn>
+        <v-btn class="ms-auto" text="Ok" @click="close" color="text"></v-btn>
       </template>
     </v-card>
   </v-dialog>
@@ -128,19 +128,19 @@ const close = () => {
   max-height: 200px;
   width: 100%;
   background-color: var(--primary);
-  color: var(--white);
+  color: var(--color-text);
   margin-top: 20px;
 }
 
 .table thead th {
   background-color: var(--primary) !important;
-  color: var(--white) !important;
+  color: var(--color-text) !important;
   text-align: center !important;
 }
 
 .table tbody td {
   background-color: var(--primary) !important;
-  color: var(--white) !important;
+  color: var(--color-text) !important;
   text-align: center !important;
 }
 </style>

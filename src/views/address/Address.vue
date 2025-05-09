@@ -200,7 +200,7 @@ const showMessage = (response) => {
             <v-spacer />
             <v-btn
               icon="mdi-plus"
-              color="white"
+              color="text"
               variant="tonal"
               @click="openDialog"
               aria-label="Adicionar novo endereço"
@@ -212,7 +212,7 @@ const showMessage = (response) => {
           <div class="address-actions">
             <v-btn
               icon="mdi-pencil"
-              color="white"
+              color="text"
               variant="text"
               size="small"
               @click="edit(item)"
@@ -220,7 +220,7 @@ const showMessage = (response) => {
             />
             <v-btn
               icon="mdi-delete"
-              color="white"
+              color="text"
               variant="text"
               size="small"
               @click="del(item)"
@@ -335,10 +335,10 @@ const showMessage = (response) => {
         <v-divider />
 
         <v-card-actions class="dialog-actions">
-          <v-btn color="error" variant="flat" @click="closeDialog"> Cancelar </v-btn>
+          <v-btn color="primary" variant="flat" @click="closeDialog"> Cancelar </v-btn>
           <v-spacer />
           <v-btn
-            color="success"
+            color="secondary"
             variant="flat"
             @click="save"
             :loading="isLoadingCep"
@@ -382,7 +382,7 @@ const showMessage = (response) => {
   flex: 1;
   min-height: 100px;
   background-color: transparent !important;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .address-table :deep(.v-data-table__td) {
@@ -395,7 +395,7 @@ const showMessage = (response) => {
 
 .address-title {
   font-weight: 500;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .address-actions {
@@ -408,8 +408,8 @@ const showMessage = (response) => {
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--bronze);
-  color: var(--white);
+  background-color: var(--color-accent);
+  color: var(--color-text);
 }
 
 .dialog-title {

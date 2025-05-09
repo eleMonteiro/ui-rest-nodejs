@@ -249,7 +249,7 @@ const handleFinished = (val) => {
         <v-btn
           v-if="showFinishButton"
           :disabled="!isPaymentValid"
-          color="success"
+          color="secondary"
           variant="flat"
           @click="finishBuy"
         >
@@ -274,7 +274,7 @@ const handleFinished = (val) => {
   min-height: 0;
 
   background-color: transparent;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .window-full-height {

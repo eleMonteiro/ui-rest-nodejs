@@ -71,7 +71,7 @@ const viewRequest = (demand) => {
             <template #loader="{ isActive }">
               <v-progress-linear
                 :active="isActive"
-                color="white"
+                color="text"
                 height="4"
                 indeterminate
               ></v-progress-linear>
@@ -150,8 +150,8 @@ const viewRequest = (demand) => {
 }
 
 .card-demand {
-  background-color: var(--bronze);
-  color: var(--white);
+  background-color: var(--color-accent);
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
 }
@@ -177,6 +177,6 @@ const viewRequest = (demand) => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgba(var(--white), 0.7);
+  color: rgba(var(--color-text), 0.7);
 }
 </style>

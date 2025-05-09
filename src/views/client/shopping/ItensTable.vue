@@ -32,7 +32,7 @@ const headers = [
         <v-tooltip text="Excluir" location="top">
           <template #activator="{ props }">
             <v-icon
-              color="white"
+              color="text"
               icon="mdi-delete"
               size="small"
               @click="$emit('remove-item', item.dishId)"
@@ -57,7 +57,7 @@ const headers = [
   flex: 1;
   display: flex;
   background-color: transparent;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .full-height-table {
@@ -73,7 +73,7 @@ const headers = [
 .header-table,
 .footer-table {
   background-color: transparent;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .header-table {

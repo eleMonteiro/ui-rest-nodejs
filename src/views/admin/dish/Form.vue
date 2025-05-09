@@ -184,7 +184,7 @@ const closeDialog = () => {
                     <v-btn
                       v-if="isHovering"
                       icon="mdi-close"
-                      color="error"
+                      color="text"
                       size="small"
                       class="delete-image-btn"
                       @click="clearImage"
@@ -198,7 +198,7 @@ const closeDialog = () => {
                 width="200"
                 class="d-flex align-center justify-center grey lighten-3"
               >
-                <v-icon size="64" color="white">mdi-image-off</v-icon>
+                <v-icon size="64" color="text">mdi-image-off</v-icon>
               </v-card>
             </v-col>
           </v-row>
@@ -208,7 +208,7 @@ const closeDialog = () => {
       <v-card-actions>
         <v-btn
           text="Cancelar"
-          color="error"
+          color="primary"
           variant="flat"
           @click="closeDialog"
           class="mr-2"
@@ -218,7 +218,7 @@ const closeDialog = () => {
 
         <v-btn
           text="Salvar"
-          color="success"
+          color="secondary"
           variant="flat"
           @click="save"
           :disabled="!record.name || !record.description || !record.price"
@@ -242,7 +242,7 @@ const closeDialog = () => {
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: var(--white) !important;
+  background-color: var(--color-text) !important;
 }
 
 .v-text-field,
@@ -253,15 +253,15 @@ const closeDialog = () => {
 }
 
 .v-card {
-  background-color: var(--bronze);
+  background-color: var(--color-accent);
 }
 
 .custom-text-field {
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .custom-text-field :deep(input) {
-  background-color: var(--bronze);
+  background-color: var(--color-accent);
   color: var(--color-primary);
   border: none;
   font-size: 1em;
@@ -269,7 +269,7 @@ const closeDialog = () => {
 }
 
 .custom-text-field :deep(textarea) {
-  background-color: var(--bronze);
+  background-color: var(--color-accent);
   color: var(--color-primary);
   border: none;
   font-size: 1em;
@@ -277,6 +277,6 @@ const closeDialog = () => {
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 </style>

@@ -126,7 +126,7 @@ const save = async () => {
                 class="custom-text-field"
               >
                 <template #prepend>
-                  <v-icon color="bronze">mdi-card-account-details</v-icon>
+                  <v-icon color="text">mdi-card-account-details</v-icon>
                 </template>
               </v-text-field>
             </v-col>
@@ -144,7 +144,7 @@ const save = async () => {
                 class="custom-text-field"
               >
                 <template #prepend>
-                  <v-icon color="bronze">mdi-account</v-icon>
+                  <v-icon color="text">mdi-account</v-icon>
                 </template>
               </v-text-field>
             </v-col>
@@ -159,7 +159,7 @@ const save = async () => {
                 class="custom-text-field"
               >
                 <template #prepend>
-                  <v-icon color="bronze">mdi-email</v-icon>
+                  <v-icon color="text">mdi-email</v-icon>
                 </template>
               </v-text-field>
             </v-col>
@@ -217,7 +217,7 @@ const save = async () => {
 
 .tab-header {
   background-color: var(--color-primary);
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .tab-window {
@@ -256,20 +256,20 @@ const save = async () => {
 }
 
 .custom-text-field {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 
 .custom-text-field:deep(input) {
   background-color: var(--color-primary);
-  color: var(--white);
+  color: var(--color-text);
   border: none;
 }
 
 .custom-text-field:deep(.v-messages__message) {
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .custom-text-field:deep(.v-select__selection) {
-  color: var(--white);
+  color: var(--color-text);
 }
 </style>

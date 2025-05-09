@@ -16,7 +16,7 @@ export default defineConfig({
     Vuetify({
       autoImport: true,
       styles: {
-        configFile: "src/styles/settings.scss",
+        configFile: "src/styles/variables.scss",
       },
     }),
     Components(),
@@ -45,6 +45,11 @@ export default defineConfig({
     preprocessorOptions: {
       sass: {
         api: "modern-compiler",
+      },
+      scss: {
+        additionalData: `
+          @use "@/styles/variables" as *;
+        `,
       },
     },
   },

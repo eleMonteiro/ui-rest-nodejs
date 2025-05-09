@@ -105,7 +105,7 @@ const showMessage = (response) => {
                 @focus="error = ''"
               >
                 <template #message="{ message }">
-                  <span style="color: var(--white)">{{ message }}</span>
+                  <span style="color: var(--color-text)">{{ message }}</span>
                 </template>
               </v-text-field>
 
@@ -125,14 +125,14 @@ const showMessage = (response) => {
                 class="custom-text-field"
               >
                 <template #message="{ message }">
-                  <span style="color: var(--white)">{{ message }}</span>
+                  <span style="color: var(--color-text)">{{ message }}</span>
                 </template>
               </v-text-field>
 
               <v-checkbox
                 v-model="stayConnected"
                 label="Manter-me conectado"
-                style="color: var(--bronze)"
+                style="color: var(--color-accent)"
               ></v-checkbox>
 
               <v-row>
@@ -215,25 +215,25 @@ const showMessage = (response) => {
   font-size: 25px;
   font-weight: 700;
   margin-bottom: 20px;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .right-inner h2 {
   font-family: "Be Vietnam Pro", sans-serif;
   font-size: 18px;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .right-inner a {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 
 .v-card {
   width: 100%;
   padding: 2rem;
-  box-shadow: 0 4px 12px var(--white) !important;
+  box-shadow: 0 4px 12px var(--color-text) !important;
   background-color: transparent;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .v-card-actions {
@@ -284,19 +284,19 @@ const showMessage = (response) => {
 }
 
 .custom-text-field {
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .custom-text-field :deep(input) {
   background-color: var(--color-primary);
-  color: var(--white);
+  color: var(--color-text);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 
 @media (max-width: 1024px) {

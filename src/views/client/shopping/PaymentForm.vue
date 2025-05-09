@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, watchEffect } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
@@ -263,18 +263,18 @@ const showMessage = (response) => {
 
 <style scoped>
 .custom-text-field {
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .custom-text-field:deep(input) {
   background-color: var(--color-primary);
-  color: var(--white);
+  color: var(--color-text);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
 .custom-text-field:deep(.v-messages__message) {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 </style>

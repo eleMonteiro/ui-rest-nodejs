@@ -68,7 +68,7 @@ const redirectLogin = () => {
   <div>
     <div class="container login">
       <div class="left">
-        <v-icon class="mdi mdi-account" color="white" size="500"></v-icon>
+        <v-icon class="mdi mdi-account" color="text" size="500"></v-icon>
       </div>
       <div class="right">
         <div class="right-inner">
@@ -117,7 +117,7 @@ const redirectLogin = () => {
               <v-btn
                 size="large"
                 text="Login"
-                color="error"
+                color="primary"
                 variant="flat"
                 @click="redirectLogin"
               ></v-btn>
@@ -127,7 +127,7 @@ const redirectLogin = () => {
               <v-btn
                 size="large"
                 text="Criar Conta"
-                color="success"
+                color="secondary"
                 variant="flat"
                 @click="create"
               ></v-btn>
@@ -186,7 +186,7 @@ const redirectLogin = () => {
 .v-card {
   width: 100%;
   padding: 2rem;
-  box-shadow: 0 4px 12px var(--white) !important;
+  box-shadow: 0 4px 12px var(--color-text) !important;
   background-color: transparent;
 }
 

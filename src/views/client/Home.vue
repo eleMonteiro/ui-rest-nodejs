@@ -28,7 +28,7 @@ const menu = ref({
     component: markRaw(Food),
   },
   shopping: {
-    name: "users",
+    name: "shopping",
     icon: "mdi mdi-cart-outline",
     component: markRaw(Shopping),
   },

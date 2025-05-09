@@ -96,18 +96,18 @@ const emit = defineEmits(["cep-blur"]);
 
 <style scoped>
 .custom-text-field {
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .custom-text-field :deep(input) {
   background-color: var(--color-primary);
-  color: var(--white);
+  color: var(--color-text);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 </style>

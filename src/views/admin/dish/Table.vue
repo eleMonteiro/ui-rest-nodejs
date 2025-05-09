@@ -72,7 +72,7 @@ const formatCurrency = (value) => {
 
         <v-spacer></v-spacer>
 
-        <v-btn icon="mdi-plus" @click="add"></v-btn>
+        <v-btn icon="mdi-plus" @click="add" color="text"></v-btn>
       </v-toolbar>
     </template>
 
@@ -89,7 +89,7 @@ const formatCurrency = (value) => {
         <v-tooltip text="Editar" location="top">
           <template #activator="{ props }">
             <v-icon
-              color="white"
+              color="text"
               icon="mdi-pencil"
               size="small"
               @click="edit(item.id)"
@@ -100,7 +100,7 @@ const formatCurrency = (value) => {
         <v-tooltip text="Excluir" location="top">
           <template #activator="{ props }">
             <v-icon
-              color="white"
+              color="text"
               icon="mdi-delete"
               size="small"
               @click="del(item.id)"
@@ -129,12 +129,12 @@ const formatCurrency = (value) => {
   height: 100%;
 
   background-color: transparent;
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .header-table {
   background-color: transparent;
-  color: var(--white);
+  color: var(--color-text);
   text-align: center;
 }
 </style>

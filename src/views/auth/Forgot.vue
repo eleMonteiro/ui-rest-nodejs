@@ -71,13 +71,13 @@ const redirectLogin = () => {
           </v-card-text>
 
           <v-card-actions>
-            <v-btn size="large" color="error" variant="flat" @click="redirectLogin">
+            <v-btn size="large" color="primary" variant="flat" @click="redirectLogin">
               Cancelar
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
               size="large"
-              color="success"
+              color="secondary"
               variant="flat"
               @click="create"
               :disabled="isDisabled"
@@ -132,7 +132,7 @@ const redirectLogin = () => {
 }
 
 .right a {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 
 .v-card {

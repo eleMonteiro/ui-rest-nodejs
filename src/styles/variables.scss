@@ -1,0 +1,26 @@
+$color-primary: #3c1518;
+$color-secondary: #69140e;
+$color-accent: #d58936;
+$color-background: #a44200;
+$color-surface: #f2f3ae;
+$color-text: #ffffff;
+$color-avatar: #823b19;
+$color-success: #a8e6cf;
+$color-info: #d0efff;
+$color-error: #ffb3ba;
+$color-warning: #fff5ba;
+$color-black: #000000;
+
+:export {
+  primary: $color-primary;
+  secondary: $color-secondary;
+  accent: $color-accent;
+  background: $color-background;
+  surface: $color-surface;
+  text: $color-text;
+  avatar: $color-avatar;
+  success: $color-success;
+  info: $color-info;
+  error: $color-error;
+  warning: $color-warning;
+}

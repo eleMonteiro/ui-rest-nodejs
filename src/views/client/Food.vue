@@ -98,7 +98,7 @@ const handleImageError = (dishId) => {
             <template #loader="{ isActive }">
               <v-progress-linear
                 :active="isActive"
-                color="white"
+                color="text"
                 height="4"
                 indeterminate
               ></v-progress-linear>
@@ -174,8 +174,8 @@ const handleImageError = (dishId) => {
 }
 
 .card-dish {
-  background-color: var(--bronze);
-  color: var(--white);
+  background-color: var(--color-accent);
+  color: var(--color-text);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -206,6 +206,6 @@ const handleImageError = (dishId) => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--white);
+  color: var(--color-text);
 }
 </style>

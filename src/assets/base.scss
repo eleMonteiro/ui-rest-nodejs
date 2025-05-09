@@ -1,30 +1,16 @@
+@use '../styles/variables' as vars;
+
 :root {
-  --black-bean: #3c1518;
-  --blood-red: #69140e;
-  --brown: #a44200;
-  --bronze: #d58936;
-  --vanilla: #f2f3ae;
-  --white: #ffffff;
-  --avatar: #823b19;
-  --black: #000000;
-
-  --color-primary: var(--black-bean);
-  --color-secondary: var(--blood-red);
-  --color-accent: var(--bronze);
-  --color-background: var(--vanilla);
-  --color-text: var(--brown);
-  --color-avatar: var(--avatar);
-  --color-border: rgba(60, 60, 60, 0.12);
-  --color-border-hover: rgba(60, 60, 60, 0.29);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--black-bean);
-    --color-text: var(--vanilla);
-    --color-border: rgba(84, 84, 84, 0.48);
-    --color-border-hover: rgba(84, 84, 84, 0.65);
-  }
+  --color-primary: #{vars.$color-primary};
+  --color-secondary: #{vars.$color-secondary};
+  --color-accent: #{vars.$color-accent};
+  --color-background: #{vars.$color-background};
+  --color-surface: #{vars.$color-surface};
+  --color-text: #{vars.$color-text};
+  --color-avatar: #{vars.$color-avatar};
+  --color-black: #{vars.$color-black};
+  --color-border: rgba(80, 80, 80, 0.08);
+  --color-border-hover: rgba(80, 80, 80, 0.2);
 }
 
 html,

@@ -361,7 +361,7 @@ const showMessage = (response) => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background-color: var(--bronze);
+  background-color: var(--color-accent);
 }
 
 .v-stepper__content {
@@ -388,14 +388,14 @@ const showMessage = (response) => {
 }
 
 .v-card {
-  background-color: var(--bronze);
+  background-color: var(--color-accent);
 }
 
 .v-card-actions {
   padding: 16px;
   margin-top: auto;
-  border-top: 1px solid rgba(var(--black), 0.01);
-  background-color: rgba(var(--black), 0.01);
+  border-top: 1px solid rgba(var(--color-black), 0.01);
+  background-color: rgba(var(--color-black), 0.01);
 }
 
 .address-container {
@@ -403,16 +403,16 @@ const showMessage = (response) => {
   max-height: 50vh;
   overflow-y: auto;
   padding: 16px;
-  border: 1px solid rgba(var(--black), 0.01);
+  border: 1px solid rgba(var(--color-black), 0.01);
   border-radius: 8px;
 }
 
 .custom-text-field {
-  color: var(--white);
+  color: var(--color-text);
 }
 
 .custom-text-field :deep(input) {
-  background-color: var(--bronze);
+  background-color: var(--color-accent);
   color: var(--color-primary);
   border: none;
   font-size: 1em;
@@ -420,7 +420,7 @@ const showMessage = (response) => {
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--bronze);
+  color: var(--color-accent);
 }
 
 @media (max-width: 960px) {

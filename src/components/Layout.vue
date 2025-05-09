@@ -93,7 +93,7 @@ const handleMenuClick = (key) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--white);
+  color: var(--color-text);
   font-size: 20px;
   margin-right: 15px;
 }
@@ -117,7 +117,7 @@ const handleMenuClick = (key) => {
 .sidebar {
   width: 80px;
   height: 100%;
-  background: var(--white);
+  background: var(--color-text);
   border-radius: 10px;
   flex-shrink: 0;
 }
