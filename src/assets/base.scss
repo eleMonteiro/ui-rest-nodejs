@@ -1,10 +1,13 @@
-@use '../styles/variables' as vars;
+@use "../styles/variables" as vars;
 
 :root {
   --color-primary: #{vars.$color-primary};
   --color-secondary: #{vars.$color-secondary};
   --color-accent: #{vars.$color-accent};
   --color-background: #{vars.$color-background};
+  --color-background-card: #{vars.$color-background-card};
+  --color-background-input: #{vars.$color-background-input};
+  --color-text-input: #{vars.$color-text-input};
   --color-surface: #{vars.$color-surface};
   --color-text: #{vars.$color-text};
   --color-avatar: #{vars.$color-avatar};
@@ -26,7 +29,6 @@ body,
   background-color: var(--color-accent) !important;
 }
 
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -39,18 +41,8 @@ body {
   background: var(--color-accent);
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;

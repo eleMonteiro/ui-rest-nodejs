@@ -280,7 +280,8 @@ const showMessage = (response) => {
                     aria-label="Perfil do usuário"
                     aria-required="true"
                     class="custom-text-field"
-                  ></v-select>
+                  >
+                  </v-select>
                 </v-col>
               </v-row>
             </v-form>
@@ -361,7 +362,7 @@ const showMessage = (response) => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-accent);
+  background-color: var(--color-background-card);
 }
 
 .v-stepper__content {
@@ -388,7 +389,7 @@ const showMessage = (response) => {
 }
 
 .v-card {
-  background-color: var(--color-accent);
+  background-color: var(--color-background-card);
 }
 
 .v-card-actions {
@@ -408,19 +409,23 @@ const showMessage = (response) => {
 }
 
 .custom-text-field {
-  color: var(--color-text);
+  color: var(--color-text-input);
+}
+
+.custom-text-field :deep(.v-input__control) {
+  background-color: var(--color-background-input);
 }
 
 .custom-text-field :deep(input) {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-background-input);
+  color: var(--color-text-input);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--color-accent);
+  color: var(--color-text-input);
 }
 
 @media (max-width: 960px) {

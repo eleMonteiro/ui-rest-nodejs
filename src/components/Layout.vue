@@ -99,8 +99,8 @@ const handleMenuClick = (key) => {
 }
 
 .user-info {
-  font-size: 14px;
-  color: var(--color-avatar);
+  font-size: 1em;
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
   justify-content: center;

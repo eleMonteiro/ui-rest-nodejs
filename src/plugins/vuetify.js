@@ -8,13 +8,11 @@ import { aliases, mdi } from "vuetify/iconsets/mdi";
 const myTheme = {
   dark: false,
   colors: {
-    background: "#3c1518",
-    surface: "#ffffff",
     primary: "#3c1518",
     secondary: "#69140e",
     accent: "#d58936",
     background: "#a44200",
-    surface: "#f2f3ae",
+    surface: "#ffffff",
     avatar: "#823b19",
     error: "#ffb3ba",
     info: "#d0efff",
@@ -23,7 +21,7 @@ const myTheme = {
     text: "#ffffff",
     "on-primary": "#ffffff",
     "on-secondary": "#ffffff",
-    "on-surface": "#ffffff",
+    "on-surface": "#3c1518",
   },
 };
 
