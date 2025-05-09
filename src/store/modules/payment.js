@@ -4,9 +4,9 @@ import { handleApiError, handleApiResponse } from "@/utils/apiResponse";
 const state = {};
 
 const actions = {
-  async downloadBoleto(_, payload) {
+  async downloadSlip(_, payload) {
     try {
-      const response = await api.post("/payments/boleto-pdf", payload, {
+      const response = await api.post("/payments/slip-pdf", payload, {
         responseType: "blob",
       });
 
@@ -15,7 +15,7 @@ const actions = {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "boleto_simulado.pdf");
+      link.setAttribute("download", `mockBankSlip_${new Date().toISOString().split("T")[0]}.pdf`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

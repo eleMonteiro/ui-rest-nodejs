@@ -45,7 +45,7 @@ const localPayment = reactive({
 const formPayment = ref("CREDITO");
 const newCard = ref(false);
 const shouldShowCardForm = computed(() => ["CREDITO", "DEBITO"].includes(formPayment.value));
-const shouldShowBoleto = computed(() => formPayment.value === "BOLETO");
+const shouldShowSlip = computed(() => formPayment.value === "BOLETO");
 const disableFields = ref(false);
 const isPaymentValid = ref(false);
 
@@ -134,9 +134,11 @@ const createCard = async () => {
       Object.assign(localCard, card);
       localPayment.cardId = card.id;
       disableFields.value = true;
+      isPaymentValid.value = true;
     } else {
       localPayment.cardId = null;
       localCard.id = null;
+      isPaymentValid.value = false;
     }
     showMessage(response);
   } catch (error) {
@@ -144,12 +146,12 @@ const createCard = async () => {
   }
 };
 
-const downloadBoleto = () => {
+const downloadSlip = () => {
   const hoje = new Date();
   hoje.setMonth(hoje.getMonth() + 1);
   const vencimento = hoje.toISOString().slice(0, 10);
 
-  store.dispatch("payment/downloadBoleto", {
+  store.dispatch("payment/downloadSlip", {
     valor: props.amount,
     vencimento: vencimento,
     codigoBarras: Math.random().toString(36).substring(2, 15),
@@ -184,9 +186,9 @@ const showMessage = (response) => {
       </v-col>
     </v-row>
 
-    <v-row v-if="shouldShowBoleto">
+    <v-row v-if="shouldShowSlip">
       <v-col cols="12">
-        <v-btn @click="downloadBoleto" color="primary" class="ma-2">Baixar Boleto</v-btn>
+        <v-btn @click="downloadSlip" color="primary" class="ma-2">Baixar Boleto</v-btn>
       </v-col>
     </v-row>
 

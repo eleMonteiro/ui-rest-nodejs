@@ -66,7 +66,7 @@ const headers = [
   flex-direction: column;
 }
 
-.full-height-table::v-deep .v-data-table__wrapper {
+.full-height-table :v-deep(.v-data-table__wrapper) {
   flex: 1;
 }
 
