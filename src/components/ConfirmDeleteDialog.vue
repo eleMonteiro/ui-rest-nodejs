@@ -57,8 +57,8 @@ const handleConfirm = () => {
 
 <style scoped>
 .v-card {
-  background-color: var(--color-accent);
-  color: var(--color-text);
+  background-color: var(--color-background-card);
+  color: var(--color-text-input);
   font-size: 1.5em;
 }
 </style>

@@ -176,8 +176,8 @@ const closeDialog = () => {
                   <div v-bind="props" class="image-container">
                     <v-img
                       :src="localImagePreview"
-                      max-height="200"
-                      max-width="200"
+                      max-height="100"
+                      max-width="100"
                       contain
                       class="elevation-3 rounded-lg"
                     ></v-img>
@@ -194,8 +194,8 @@ const closeDialog = () => {
               </template>
               <v-card
                 v-else
-                height="200"
-                width="200"
+                height="100"
+                width="100"
                 class="d-flex align-center justify-center grey lighten-3"
               >
                 <v-icon size="64" color="text">mdi-image-off</v-icon>
@@ -242,7 +242,11 @@ const closeDialog = () => {
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: var(--color-text) !important;
+  background-color: var(--color-text-input) !important;
+}
+
+.custom-text-field :deep(.v-input__control) {
+  background-color: var(--color-background-input);
 }
 
 .v-text-field,
@@ -253,30 +257,30 @@ const closeDialog = () => {
 }
 
 .v-card {
-  background-color: var(--color-accent);
+  background-color: var(--color-background-card);
 }
 
 .custom-text-field {
-  color: var(--color-text);
+  color: var(--color-text-input);
 }
 
 .custom-text-field :deep(input) {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-background-input);
+  color: var(--color-text-input);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
 .custom-text-field :deep(textarea) {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-background-input);
+  color: var(--color-text-input);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--color-accent);
+  color: var(--color-text-input);
 }
 </style>

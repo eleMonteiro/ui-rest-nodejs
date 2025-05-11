@@ -231,7 +231,6 @@ const showMessage = (response) => {
 .v-card {
   width: 100%;
   padding: 2rem;
-  box-shadow: 0 4px 12px var(--color-text) !important;
   background-color: transparent;
   color: var(--color-text);
 }

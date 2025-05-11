@@ -152,18 +152,22 @@ const resetPassword = async () => {
 }
 
 .custom-text-field {
-  color: var(--color-primary);
+  color: var(--color-background-input);
 }
 
 .custom-text-field :deep(input) {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-background-input);
+  color: var(--color-text-input);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--color-primary);
+  color: var(--color-text-input);
+}
+
+.custom-text-field :deep(.v-input__control) {
+  background-color: var(--color-background-input);
 }
 </style>
