@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import Filters from "@/views/admin/dish/Filters.vue";
 
 const props = defineProps({
   pagination: {
@@ -27,6 +28,14 @@ const CATEGORY_OPTIONS = [
   { value: "PETISCOS", label: "Petiscos" },
 ];
 
+const filter = ref({
+  id: null,
+  name: null,
+  description: null,
+  category: null,
+  price: null,
+});
+
 const add = () => {
   emit("add");
 };
@@ -44,7 +53,11 @@ const reset = () => {
 };
 
 const updateTable = (options) => {
-  emit("update-table", options);
+  emit("update-table", options, filter);
+};
+
+const fetchFilter = (filter) => {
+  emit("filter", props.pagination, filter);
 };
 
 const formatCurrency = (value) => {
@@ -56,6 +69,7 @@ const formatCurrency = (value) => {
 </script>
 
 <template>
+  <Filters @filter="fetchFilter" />
   <v-data-table-server
     :headers="headers"
     :items="itens"
@@ -126,7 +140,7 @@ const formatCurrency = (value) => {
 <style scoped>
 .table {
   width: 100%;
-  height: 100%;
+  height: 90%;
 
   background-color: transparent;
   color: var(--color-text);

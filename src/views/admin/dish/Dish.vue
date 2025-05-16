@@ -1,9 +1,10 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
+import { filterFIQL } from "@/utils/fiql";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
-import Table from "./Table.vue";
-import Form from "./Form.vue";
+import Table from "@/views/admin/dish/Table.vue";
+import Form from "@/views/admin/dish/Form.vue";
 
 const store = useStore();
 
@@ -21,6 +22,20 @@ const pagination = ref({
   page: 1,
   pageSize: 5,
   totalPages: 0,
+  sort: {
+    field: "id",
+    order: "asc",
+  },
+  filter: {
+    id: null,
+    name: null,
+    description: null,
+    category: null,
+    price: {
+      op: "eq",
+      value: null,
+    },
+  },
 });
 const record = ref({ ...DEFAULT_RECORD });
 const recordId = ref(null);
@@ -47,9 +62,15 @@ onMounted(async () => {
   fetchDishes();
 });
 
-const updateTable = ({ page, itemsPerPage }) => {
+const updateTable = (options, filter) => {
+  const { page, itemsPerPage, sortBy } = options;
   pagination.value.page = page;
   pagination.value.pageSize = itemsPerPage;
+  pagination.value.filter = { ...filter };
+  pagination.value.sort = {
+    field: sortBy && sortBy.length > 0 ? sortBy[0].key : "id",
+    order: sortBy && sortBy.length > 0 ? sortBy[0].order : "asc",
+  };
   fetchDishes();
 };
 
@@ -58,15 +79,19 @@ const fetchDishes = async () => {
     const response = await store.dispatch("dish/getDishes", {
       page: pagination.value.page,
       pageSize: pagination.value.pageSize,
+      sort: pagination.value.sort,
+      filter: filterFIQL(pagination.value.filter),
     });
 
     if (response?.success) {
       itens.value = store.getters["dish/dishes"];
       pagination.value = store.getters["dish/pagination"];
     } else {
+      itens.value = [];
       showMessage(response);
     }
   } catch (error) {
+    itens.value = [];
     showMessage(error);
   }
 };
@@ -193,6 +218,7 @@ const handleClearPreview = () => {
       @delete="del"
       @reset="reset"
       @update-table="updateTable"
+      @filter="updateTable"
     ></Table>
 
     <Form

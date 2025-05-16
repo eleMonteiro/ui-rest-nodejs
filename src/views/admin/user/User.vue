@@ -1,9 +1,10 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import Table from "./Table.vue";
+import Table from "@/views/admin/user/Table.vue";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
-import Form from "./Form.vue";
+import Form from "@/views/admin/user/Form.vue";
+import { filterFIQL } from "@/utils/fiql";
 
 const store = useStore();
 
@@ -34,14 +35,57 @@ const headers = [
   { title: "", key: "actions", sortable: false, align: "center" },
 ];
 
+const pagination = ref({
+  total: 0,
+  page: 1,
+  pageSize: 5,
+  totalPages: 0,
+  sort: {
+    field: "id",
+    order: "asc",
+  },
+  filter: {
+    id: null,
+  },
+});
+
 onMounted(async () => {
   reset();
   fetchUsers();
 });
 
+const updateTable = (options, filter) => {
+  const { page, itemsPerPage, sortBy } = options
+  pagination.value.page = page;
+  pagination.value.pageSize = itemsPerPage;
+  pagination.value.filter = { ...filter };
+  pagination.value.sort = {
+    field: sortBy && sortBy.length > 0 ? sortBy[0].key : "id",
+    order: sortBy && sortBy.length > 0 ? sortBy[0].order : "asc",
+  };
+  fetchUsers();
+};
+
 const fetchUsers = async () => {
-  await store.dispatch("user/getUsers");
-  itens.value = store.getters["user/users"];
+  try {
+    const response = await store.dispatch("user/getUsers", {
+      page: pagination.value.page,
+      pageSize: pagination.value.pageSize,
+      sort: pagination.value.sort,
+      filter: filterFIQL(pagination.value.filter),
+    });
+
+    if (response?.success) {
+      itens.value = store.getters["user/users"];
+      pagination.value = store.getters["user/pagination"];
+    } else {
+      itens.value = [];
+      showMessage(response);
+    }
+  } catch (error) {
+    itens.value = [];
+    showMessage(error);
+  }
 };
 
 const add = () => {
@@ -140,10 +184,13 @@ const closeDialogForm = () => {
     <Table
       :itens="itens"
       :headers="headers"
+      :pagination="pagination"
       @add="add"
       @edit="edit"
       @delete="del"
       @reset="reset"
+      @update-table="updateTable"
+      @filter="updateTable"
     ></Table>
 
     <Form

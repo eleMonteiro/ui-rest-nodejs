@@ -4,10 +4,10 @@ import { ref, onMounted } from "vue";
 import HomeLayout from "@/components/Layout.vue";
 import { useStore } from "vuex";
 import router from "@/router";
-import Placed from "./Placed.vue";
-import Food from "./Food.vue";
-import Shopping from "./Shopping.vue";
-import Profile from "./Profile.vue";
+import Placed from "@/views/client/Placed.vue";
+import Food from "@/views/client/Food.vue";
+import Shopping from "@/views/client/Shopping.vue";
+import Profile from "@/views/Profile.vue";
 
 const store = useStore();
 
@@ -35,8 +35,8 @@ const menu = ref({
   logout: {
     name: "logout",
     icon: "mdi mdi-logout",
-    action: () => {
-      store.dispatch("auth/logout");
+    action: async () => {
+      await store.dispatch("auth/logout");
       router.push("/login");
     },
   },

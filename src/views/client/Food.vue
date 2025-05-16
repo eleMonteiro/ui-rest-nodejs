@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
-import noneImg from "../../assets/none-img.png";
+import noneImg from "@/assets/none-img.png";
 
 const defaultImg = ref(noneImg);
 const errorCache = ref({});

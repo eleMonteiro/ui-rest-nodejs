@@ -1,11 +1,10 @@
 <script setup>
 import { ref, onMounted, computed, reactive } from "vue";
 import { useStore } from "vuex";
-import ItensTable from "./shopping/ItensTable.vue";
-import AddressForm from "./shopping/AddressForm.vue";
+import ItensTable from "@/views/client/shopping/ItensTable.vue";
+import AddressForm from "@/views/client/shopping/AddressForm.vue";
 import Cookies from "js-cookie";
-import PaymentForm from "./shopping/PaymentForm.vue";
-import demand from "@/store/modules/demand";
+import PaymentForm from "@/views/client/shopping/PaymentForm.vue";
 
 const store = useStore();
 

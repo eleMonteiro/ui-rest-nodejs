@@ -8,12 +8,17 @@ const state = {
 };
 
 const actions = {
-  async getDishes({ commit }, { page = 1, pageSize = 10 }) {
+  async getDishes(
+    { commit },
+    { page = 1, pageSize = 10, sort = { field: "id", order: "asc" }, filter = "" }
+  ) {
     try {
       const response = await api.get("/dishes", {
         params: {
           page,
           pageSize,
+          sort,
+          filter,
         },
       });
       const { data } = response?.data;

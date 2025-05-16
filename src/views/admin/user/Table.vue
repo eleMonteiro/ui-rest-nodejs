@@ -1,7 +1,12 @@
 <script setup>
 import { ref } from "vue";
+import Filters from "@/views/admin/user/Filters.vue";
 
 const props = defineProps({
+  pagination: {
+    type: Object,
+    required: true,
+  },
   itens: {
     type: Array,
     required: true,
@@ -12,7 +17,14 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["add", "edit", "delete", "reset"]);
+const emit = defineEmits(["add", "edit", "delete", "reset", "update-table"]);
+
+const filter = ref({
+  id: null,
+  name: null,
+  cpf: null,
+  perfil: null,
+});
 
 const add = () => {
   emit("add");
@@ -29,13 +41,26 @@ const del = (id) => {
 const reset = () => {
   emit("reset");
 };
+
+const updateTable = (options) => {
+  emit("update-table", options, filter);
+};
+
+const fetchFilter = (filter) => {
+  emit("filter", props.pagination, filter);
+};
 </script>
 
 <template>
+  <Filters @filter="fetchFilter" />
   <v-data-table
     :headers="headers"
-    :hide-default-footer="itens.length < 11"
     :items="itens"
+    :items-length="pagination.total"
+    :loading="loading"
+    :items-per-page-options="[5, 10, 25, 50]"
+    :items-per-page-text="'Itens por página'"
+    @update:options="updateTable"
     class="table"
   >
     <template #top>
@@ -94,7 +119,7 @@ const reset = () => {
 <style scoped>
 .table {
   width: 100%;
-  height: 100%;
+  height: 90%;
 
   background-color: transparent;
   color: var(--color-text);

@@ -3,7 +3,7 @@ import { markRaw } from "vue";
 import { ref, onMounted } from "vue";
 import HomeLayout from "@/components/Layout.vue";
 import Dish from "@/views/admin/dish/Dish.vue";
-import Profile from "@/views/admin/Profile.vue";
+import Profile from "@/views/Profile.vue";
 import User from "@/views/admin/user/User.vue";
 import { useStore } from "vuex";
 import router from "@/router";
@@ -29,8 +29,8 @@ const menu = ref({
   logout: {
     name: "logout",
     icon: "mdi mdi-logout",
-    action: () => {
-      store.dispatch("auth/logout");
+    action: async () => {
+      await store.dispatch("auth/logout");
       router.push("/login");
     },
   },

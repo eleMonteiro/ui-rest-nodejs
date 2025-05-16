@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import Address from "../address/Address.vue";
+import Address from "@/views/address/Address.vue";
 
 const store = useStore();
 const user = ref({

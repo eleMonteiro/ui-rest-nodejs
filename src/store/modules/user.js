@@ -3,15 +3,27 @@ import { handleApiResponse, handleApiError } from "@/utils/apiResponse";
 
 const state = {
   users: [],
+  pagination: {},
   user: null,
 };
 
 const actions = {
-  async getUsers({ commit }) {
+  async getUsers(
+    { commit },
+    { page = 1, pageSize = 10, sort = { field: "id", order: "asc" }, filter = "" }
+  ) {
     try {
-      const response = await api.get("/users");
+      const response = await api.get("/users", {
+        params: {
+          page,
+          pageSize,
+          sort,
+          filter,
+        },
+      });
       const { data } = response?.data;
-      commit("SET_USERS", data);
+      commit("SET_USERS", data?.users);
+      commit("SET_PAGINATION", data?.pagination);
       return handleApiResponse(response, "Users fetched successfully");
     } catch (error) {
       return handleApiError(error, "Error fetching users");
@@ -82,6 +94,10 @@ const mutations = {
   SET_USER(state, user) {
     state.user = user;
   },
+
+  SET_PAGINATION(state, pagination) {
+    state.pagination = pagination;
+  },
 };
 
 const getters = {
@@ -91,6 +107,10 @@ const getters = {
 
   user(state) {
     return state.user;
+  },
+
+  pagination(state) {
+    return state.pagination;
   },
 };
 

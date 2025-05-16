@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import Dialog from "./placed/PlacedDialog.vue";
+import Dialog from "@/views/client/placed/PlacedDialog.vue";
 
 const loading = ref({});
 const page = ref(1);

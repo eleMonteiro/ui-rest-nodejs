@@ -48,6 +48,15 @@ const shouldShowCardForm = computed(() => ["CREDITO", "DEBITO"].includes(formPay
 const shouldShowSlip = computed(() => formPayment.value === "BOLETO");
 const disableFields = ref(false);
 const isPaymentValid = ref(false);
+const validForm = computed(() => {
+  return (
+    !localCard.cardNumber ||
+    !localCard.cardHolderName ||
+    !localCard.expirationDate ||
+    !localCard.cvv ||
+    localCard.cardNumber.length < 16
+  );
+});
 
 watch(
   () => localCard,
@@ -276,7 +285,13 @@ const showMessage = (response) => {
           </v-text-field>
         </v-col>
       </v-row>
-      <v-btn v-if="newCard" color="secondary" variant="flat" @click="createCard">
+      <v-btn
+        v-if="newCard"
+        :disabled="validForm"
+        color="secondary"
+        variant="flat"
+        @click="createCard"
+      >
         Salvar Cartão</v-btn
       >
     </v-form>
