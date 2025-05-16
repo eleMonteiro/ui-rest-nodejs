@@ -65,6 +65,7 @@ const localItens = computed({
 
 const openDialog = () => {
   dialog.value = true;
+  isEditing.value = false;
 };
 
 const closeDialog = () => {
@@ -96,30 +97,44 @@ const deleteItem = async () => {
   localItens.value.splice(index, 1);
   showMessage({
     success: true,
-    message: "Endereço removido com sucesso!",
+    message: "Endereço removido da grid com sucesso!",
   });
 };
 
 const save = () => {
   if (!formValid.value) return;
+  if (!isEditing.value && existAddress(editedItem.value)) {
+    showMessage({
+      success: false,
+      message: "Endereço já cadastrado!",
+    });
+    return;
+  }
 
   const updatedItems = [...localItens.value];
   if (isEditing.value) {
     updatedItems[editedIndex.value] = { ...editedItem.value };
     showMessage({
       success: true,
-      message: "Endereço atualizado com sucesso!",
+      message: "Endereço atualizado na grid com sucesso!",
     });
   } else {
     updatedItems.push({ ...editedItem.value });
     showMessage({
       success: true,
-      message: "Endereço adicionado com sucesso!",
+      message: "Endereço adicionado na grid com sucesso!",
     });
   }
 
   emit("update:itens", updatedItems);
   closeDialog();
+};
+
+const existAddress = (address) => {
+  const existingAddress = localItens.value.find(
+    (item) => item.cep === address.cep.replace(/\D/g, "")
+  );
+  return existingAddress !== undefined;
 };
 
 const fetchAddressByCep = async () => {
@@ -252,6 +267,7 @@ const showMessage = (response) => {
                     v-model="editedItem.cep"
                     label="CEP *"
                     :loading="isLoadingCep"
+                    :disabled="isEditing"
                     :rules="[
                       (v) => !!v || 'CEP é obrigatório',
                       (v) => v.length === 10 || 'CEP inválido',
