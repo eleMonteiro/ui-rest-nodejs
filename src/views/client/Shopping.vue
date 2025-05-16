@@ -5,6 +5,7 @@ import ItensTable from "./shopping/ItensTable.vue";
 import AddressForm from "./shopping/AddressForm.vue";
 import Cookies from "js-cookie";
 import PaymentForm from "./shopping/PaymentForm.vue";
+import demand from "@/store/modules/demand";
 
 const store = useStore();
 
@@ -165,6 +166,13 @@ const reset = () => {
 
 const handleCepBlur = async () => {
   isLoadingCep.value = true;
+  if (!address.value.cep) {
+    Object.assign(address.value, RECORD_DEFAULT);
+    DEFAULT_DEMAND.addressId = null;
+    isLoadingCep.value = false;
+    return;
+  }
+
   try {
     const response = await store.dispatch("cep/getAddressByFilter", {
       cep: address.value.cep,

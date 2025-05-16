@@ -19,6 +19,7 @@ const myTheme = {
     success: "#a8e6cf",
     warning: "#fff5ba",
     text: "#ffffff",
+    bgCard: "#d8bfaa",
     "on-primary": "#ffffff",
     "on-secondary": "#ffffff",
     "on-surface": "#3c1518",

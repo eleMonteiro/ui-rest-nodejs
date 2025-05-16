@@ -115,7 +115,6 @@ const save = async () => {
                 v-model="user.cpf"
                 label="CPF"
                 :rules="[rules.required, rules.cpf]"
-                variant="outlined"
                 required
                 maxlength="14"
                 clearable
@@ -136,7 +135,6 @@ const save = async () => {
                 v-model="user.name"
                 label="Nome"
                 :rules="[rules.required, rules.name]"
-                variant="outlined"
                 required
                 counter
                 clearable
@@ -153,7 +151,6 @@ const save = async () => {
                 v-model="user.email"
                 label="Email"
                 :rules="[rules.required, rules.email]"
-                variant="outlined"
                 clearable
                 autocomplete="email"
                 class="custom-text-field"
@@ -256,20 +253,24 @@ const save = async () => {
 }
 
 .custom-text-field {
-  color: var(--color-accent);
+  color: var(--color-text-input);
 }
 
 .custom-text-field:deep(input) {
-  background-color: var(--color-primary);
-  color: var(--color-text);
+  background-color: var(--color-background-input);
+  color: var(--color-text-input);
   border: none;
 }
 
 .custom-text-field:deep(.v-messages__message) {
-  color: var(--color-text);
+  color: var(--color-text-input);
 }
 
 .custom-text-field:deep(.v-select__selection) {
-  color: var(--color-text);
+  color: var(--color-text-input);
+}
+
+.custom-text-field :deep(.v-input__control) {
+  background-color: var(--color-background-input);
 }
 </style>

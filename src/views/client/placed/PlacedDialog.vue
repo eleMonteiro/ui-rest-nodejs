@@ -62,7 +62,7 @@ const close = () => {
 
 <template>
   <v-dialog v-model="dialogVisible" max-width="800" @click:outside="close">
-    <v-card color="primary">
+    <v-card color="bgCard">
       <template #text>
         <v-row dense class="text">
           <v-col cols="12">
@@ -108,7 +108,7 @@ const close = () => {
         </v-row>
       </template>
       <template #actions>
-        <v-btn class="ms-auto" text="Ok" @click="close" color="text"></v-btn>
+        <v-btn text="Ok" @click="close" color="primary" variant="tonal"></v-btn>
       </template>
     </v-card>
   </v-dialog>
@@ -127,20 +127,17 @@ const close = () => {
 .table {
   max-height: 200px;
   width: 100%;
-  background-color: var(--primary);
-  color: var(--color-text);
+  background-color: var(--color-background-card);
+  color: var(--color-text-input);
   margin-top: 20px;
 }
 
 .table thead th {
-  background-color: var(--primary) !important;
-  color: var(--color-text) !important;
+  background-color: var(--color-background-card) !important;
   text-align: center !important;
 }
 
 .table tbody td {
-  background-color: var(--primary) !important;
-  color: var(--color-text) !important;
   text-align: center !important;
 }
 </style>

@@ -19,10 +19,14 @@ const emit = defineEmits(["cep-blur"]);
           :loading="isLoadingCep"
           :rules="[(v) => !!v || 'CEP é obrigatório', (v) => v.length === 10 || 'CEP inválido']"
           @blur="emit('cep-blur')"
-          prepend-inner-icon="mdi-map-marker"
           v-mask="'##.###-###'"
           class="custom-text-field"
-        />
+        >
+          <template #prepend>
+            <v-icon v-if="isLoadingCep" color="text">mdi-loading</v-icon>
+            <v-icon color="text" v-else>mdi-map-marker</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
 
       <v-col cols="12" sm="6" md="4">
@@ -30,10 +34,12 @@ const emit = defineEmits(["cep-blur"]);
           :disabled="disabledFields"
           v-model="props.address.road"
           label="Logradouro *"
-          clearable
-          prepend-inner-icon="mdi-road"
           class="custom-text-field"
-        />
+        >
+          <template #prepend>
+            <v-icon color="text">mdi-road</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
 
       <v-col cols="12" sm="6" md="4">
@@ -41,10 +47,12 @@ const emit = defineEmits(["cep-blur"]);
           :disabled="disabledFields"
           v-model="props.address.number"
           label="Número *"
-          clearable
-          prepend-inner-icon="mdi-numeric"
           class="custom-text-field"
-        />
+        >
+          <template #prepend>
+            <v-icon color="text">mdi-numeric</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
 
       <v-col cols="12" sm="6" md="4">
@@ -52,10 +60,12 @@ const emit = defineEmits(["cep-blur"]);
           :disabled="disabledFields"
           v-model="props.address.complement"
           label="Complemento"
-          clearable
-          prepend-inner-icon="mdi-home-plus"
           class="custom-text-field"
-        />
+        >
+          <template #prepend>
+            <v-icon color="text">mdi-home-plus</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
 
       <v-col cols="12" sm="6" md="2">
@@ -63,10 +73,12 @@ const emit = defineEmits(["cep-blur"]);
           :disabled="disabledFields"
           v-model="props.address.neighborhood"
           label="Bairro *"
-          clearable
-          prepend-inner-icon="mdi-google-maps"
           class="custom-text-field"
-        />
+        >
+          <template #prepend>
+            <v-icon color="text">mdi-google-maps</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
 
       <v-col cols="12" sm="6" md="2">
@@ -74,10 +86,12 @@ const emit = defineEmits(["cep-blur"]);
           :disabled="disabledFields"
           v-model="props.address.city"
           label="Cidade *"
-          clearable
-          prepend-inner-icon="mdi-city"
           class="custom-text-field"
-        />
+        >
+          <template #prepend>
+            <v-icon color="text">mdi-city</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
 
       <v-col cols="12" sm="6" md="2">
@@ -85,10 +99,12 @@ const emit = defineEmits(["cep-blur"]);
           :disabled="disabledFields"
           v-model="props.address.uf"
           label="UF *"
-          clearable
-          prepend-inner-icon="mdi-map-marker-radius"
           class="custom-text-field"
-        />
+        >
+          <template #prepend>
+            <v-icon color="text">mdi-map-marker-radius</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
     </v-row>
   </v-form>
@@ -96,18 +112,22 @@ const emit = defineEmits(["cep-blur"]);
 
 <style scoped>
 .custom-text-field {
-  color: var(--color-text);
+  color: var(--color-text-input);
 }
 
-.custom-text-field :deep(input) {
-  background-color: var(--color-primary);
-  color: var(--color-text);
+.custom-text-field:deep(input) {
+  background-color: var(--color-background-input);
+  color: var(--color-text-input);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
-.custom-text-field :deep(.v-messages__message) {
-  color: var(--color-accent);
+.custom-text-field:deep(.v-messages__message) {
+  color: var(--color-text-input);
+}
+
+.custom-text-field:deep(.v-input__control) {
+  background-color: var(--color-background-input);
 }
 </style>

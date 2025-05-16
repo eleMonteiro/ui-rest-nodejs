@@ -37,7 +37,7 @@ const localCard = reactive({
 });
 
 const localPayment = reactive({
-  method: "",
+  method: "CREDITO",
   amount: 0,
   cardId: null,
 });
@@ -108,7 +108,11 @@ const fetchCard = async (cardNumber) => {
     const response = await store.dispatch("card/getCardsByFilter", { cardNumber });
     if (response?.success) {
       const card = store.getters["card/cards"][0];
-      Object.assign(localCard, card);
+      const cardNumber = localCard?.cardNumber?.replace(/\s/g, "");
+      Object.assign(localCard, {
+        ...card,
+        cardNumber: cardNumber,
+      });
       localPayment.cardId = card.id;
       disableFields.value = true;
       isPaymentValid.value = true;
@@ -119,6 +123,8 @@ const fetchCard = async (cardNumber) => {
       isPaymentValid.value = false;
     }
 
+    emit("update:card", localCard);
+    emit("update:payment", localPayment);
     emit("update:finished", isPaymentValid);
   } catch (error) {
     showMessage(error);
@@ -188,16 +194,16 @@ const showMessage = (response) => {
 
     <v-row v-if="shouldShowSlip">
       <v-col cols="12">
-        <v-btn @click="downloadSlip" color="primary" class="ma-2">Baixar Boleto</v-btn>
+        <v-btn @click="downloadSlip" color="text" variant="outlined">Baixar Boleto</v-btn>
       </v-col>
     </v-row>
 
     <v-form v-if="shouldShowCardForm">
       <v-checkbox
+        v-if="!disableFields"
         v-model="newCard"
-        :disable="disableFields"
         label="Novo Cartão"
-        color="primary"
+        color="white"
         hide-details
       />
 
@@ -206,9 +212,12 @@ const showMessage = (response) => {
         label="Bandeira do Cartão"
         readonly
         disabled
-        prepend-inner-icon="mdi-credit-card-outline"
         class="custom-text-field"
-      />
+      >
+        <template #prepend>
+          <v-icon color="text">mdi-credit-card-outline</v-icon>
+        </template>
+      </v-text-field>
 
       <v-text-field
         autocapitalize="off"
@@ -216,20 +225,26 @@ const showMessage = (response) => {
         v-model="localCard.cardNumber"
         label="Número do Cartão"
         clearable
-        prepend-inner-icon="mdi-credit-card-outline"
         @blur="handleNumberCardBlur"
         v-mask="'#### #### #### ####'"
         class="custom-text-field"
-      />
+      >
+        <template #prepend>
+          <v-icon color="text">mdi-credit-card-outline</v-icon>
+        </template>
+      </v-text-field>
 
       <v-text-field
         v-model="localCard.cardHolderName"
         :disabled="disableFields"
         label="Nome do Titular"
         clearable
-        prepend-inner-icon="mdi-account"
         class="custom-text-field"
-      />
+      >
+        <template #prepend>
+          <v-icon color="text">mdi-account</v-icon>
+        </template>
+      </v-text-field>
 
       <v-row>
         <v-col cols="6">
@@ -238,25 +253,30 @@ const showMessage = (response) => {
             :disabled="disableFields"
             label="Validade (MM/AA)"
             clearable
-            prepend-inner-icon="mdi-calendar"
             v-mask="'##/##'"
             class="custom-text-field"
-          />
+          >
+            <template #prepend>
+              <v-icon color="text">mdi-calendar</v-icon>
+            </template>
+          </v-text-field>
         </v-col>
         <v-col cols="6">
           <v-text-field
             v-model="localCard.cvv"
-            :disabled="disableFields"
             label="CVC"
             clearable
-            prepend-inner-icon="mdi-lock"
             :rules="[(v) => /^\d{3,4}$/.test(v) || 'CVC deve ter 3 ou 4 dígitos']"
             v-mask="'####'"
             class="custom-text-field"
-          />
+          >
+            <template #prepend>
+              <v-icon color="text">mdi-lock</v-icon>
+            </template>
+          </v-text-field>
         </v-col>
       </v-row>
-      <v-btn v-if="newCard" color="success" variant="flat" @click="createCard">
+      <v-btn v-if="newCard" color="secondary" variant="flat" @click="createCard">
         Salvar Cartão</v-btn
       >
     </v-form>
@@ -265,18 +285,22 @@ const showMessage = (response) => {
 
 <style scoped>
 .custom-text-field {
-  color: var(--color-text);
+  color: var(--color-text-input);
 }
 
 .custom-text-field:deep(input) {
-  background-color: var(--color-primary);
-  color: var(--color-text);
+  background-color: var(--color-background-input);
+  color: var(--color-text-input);
   border: none;
   font-size: 1em;
   font-weight: 200;
 }
 
 .custom-text-field:deep(.v-messages__message) {
-  color: var(--color-accent);
+  color: var(--color-text-input);
+}
+
+.custom-text-field:deep(.v-input__control) {
+  background-color: var(--color-background-input);
 }
 </style>

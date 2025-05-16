@@ -100,10 +100,12 @@ const showMessage = (response) => {
                 placeholder="Digite seu e-mail"
                 autocomplete="email"
                 clearable
-                prepend-inner-icon="mdi-email-outline"
                 :error-messages="error"
                 @focus="error = ''"
               >
+                <template #prepend>
+                  <v-icon color="text">mdi-email-outline</v-icon>
+                </template>
                 <template #message="{ message }">
                   <span style="color: var(--color-text)">{{ message }}</span>
                 </template>
@@ -119,11 +121,13 @@ const showMessage = (response) => {
                 @click:append-inner="showPassword = !showPassword"
                 autocomplete="current-password"
                 clearable
-                prepend-inner-icon="mdi-lock-outline"
                 :error-messages="error"
                 @focus="error = ''"
                 class="custom-text-field"
               >
+                <template #prepend>
+                  <v-icon color="text">mdi-lock-outline</v-icon>
+                </template>
                 <template #message="{ message }">
                   <span style="color: var(--color-text)">{{ message }}</span>
                 </template>

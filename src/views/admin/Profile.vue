@@ -330,20 +330,24 @@ const showMessage = (response) => {
 }
 
 .custom-text-field {
-  color: var(--color-text);
+  color: var(--color-text-input);
 }
 
 .custom-text-field :deep(input) {
-  background-color: var(--color-primary);
-  color: var(--color-text);
+  background-color: var(--color-background-input);
+  color: var(--color-text-input);
   border: none;
 }
 
 .custom-text-field :deep(.v-messages__message) {
-  color: var(--color-text);
+  color: var(--color-text-input);
 }
 
 .custom-text-field :deep(.v-select__selection) {
-  color: var(--color-text);
+  color: var(--color-text-input);
+}
+
+.custom-text-field :deep(.v-input__control) {
+  background-color: var(--color-background-input);
 }
 </style>
