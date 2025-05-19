@@ -70,7 +70,7 @@ const formPayment = (demand) => {
     <Dialog :dialog="dialogForm" :record="record" @close="dialogForm = false" />
     <div class="content-wrapper">
       <v-row class="card-row" :dense="true" no-gutters>
-        <v-col v-for="demand in demands" :key="demand.id" cols="12" md="3" align-self="stretch">
+        <v-col v-for="demand in demands" :key="demand.id" align-self="stretch">
           <v-card class="card-demand" :disabled="loading[demand.id]" :loading="loading[demand.id]">
             <template #loader="{ isActive }">
               <v-progress-linear
@@ -126,31 +126,20 @@ const formPayment = (demand) => {
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
 }
 
 .content-wrapper {
   flex-grow: 1;
   display: flex;
   flex-direction: row;
-  justify-content: stretch;
+  justify-content: center;
+  align-items: center;
   width: 100%;
 }
 
-.pagination-wrapper {
-  display: flex;
-  align-self: center;
-  margin-top: 16px;
-}
-
-.content-wrapper > .card-row {
-  min-height: 200px;
-  overflow-y: auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
+.card-row {
+  gap: 1rem;
+  width: 100%;
 }
 
 .card-demand {
@@ -158,6 +147,9 @@ const formPayment = (demand) => {
   color: var(--color-text);
   display: flex;
   flex-direction: column;
+
+  max-width: 250px;
+  min-height: 250px;
 }
 
 .card-demand .v-card-title,
