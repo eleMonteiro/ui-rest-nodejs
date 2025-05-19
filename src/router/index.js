@@ -8,16 +8,22 @@ const router = createRouter({
   routes: paths,
 });
 
-router.afterEach((to, from) => {});
+router.afterEach((to) => {
+  const title = to.meta.title || "Meu App";
+  document.title = title;
+});
 
 router.beforeEach(async (to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const response = await store.dispatch("auth/checkTokenValidity");
-    const role = store.getters["auth/roleUser"];
-    const requiredProfile = to.meta.profile;
+  const response = await store.dispatch("auth/checkTokenValidity");
+  const role = store.getters["auth/roleUser"];
+  const requiredProfile = to.meta.profile;
 
-    if (!response?.status || response?.status !== 200) {
-      if (to.path !== "/login") {
+  const isAuthenticated = response?.status === 200;
+  const isLoginPage = to.path === "/login";
+
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      if (!isLoginPage) {
         next("/login");
       } else {
         next();
@@ -27,6 +33,18 @@ router.beforeEach(async (to, from, next) => {
 
     if (requiredProfile && role !== requiredProfile) {
       next("/not-authorized");
+      return;
+    }
+  }
+
+  if (isAuthenticated && isLoginPage) {
+    if (role === "CLIENTE") {
+      next("/home-client");
+      return;
+    }
+
+    if (role === "ADMIN") {
+      next("/home");
       return;
     }
   }
