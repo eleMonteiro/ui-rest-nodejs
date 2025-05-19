@@ -140,6 +140,12 @@ const formPayment = (demand) => {
 .card-row {
   gap: 1rem;
   width: 100%;
+
+  justify-content: space-evenly;
+}
+
+.card-row .v-col {
+  max-width: 250px;
 }
 
 .card-demand {
@@ -148,8 +154,8 @@ const formPayment = (demand) => {
   display: flex;
   flex-direction: column;
 
-  max-width: 250px;
-  min-height: 250px;
+  width: 250px;
+  min-height: 200px;
 }
 
 .card-demand .v-card-title,
@@ -168,7 +174,7 @@ const formPayment = (demand) => {
   line-height: 1.2;
 }
 
-.dish-description {
+.demand-text {
   font-size: 0.8em;
   white-space: nowrap;
   overflow: hidden;

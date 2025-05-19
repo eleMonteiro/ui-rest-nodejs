@@ -92,8 +92,8 @@ const handleImageError = (dishId) => {
 <template>
   <div class="cards-container">
     <div class="content-wrapper">
-      <v-row class="card-row" :dense="true">
-        <v-col v-for="dish in dishes" :key="dish.id" cols="12" md="3">
+      <v-row class="card-row" :dense="true" no-gutters>
+        <v-col v-for="dish in dishes" :key="dish.id" align-self="stretch">
           <v-card class="card-dish" :disabled="loading[dish.id]" :loading="loading[dish.id]">
             <template #loader="{ isActive }">
               <v-progress-linear
@@ -148,47 +148,46 @@ const handleImageError = (dishId) => {
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
 }
 
 .content-wrapper {
   flex-grow: 1;
   display: flex;
   flex-direction: row;
-  justify-content: stretch;
+  justify-content: center;
+  align-items: center;
   width: 100%;
 }
 
-.pagination-wrapper {
-  display: flex;
-  align-self: center;
-  margin-top: 16px;
+.card-row {
+  gap: 1rem;
+  width: 100%;
+  justify-content: space-evenly;
 }
 
-.content-wrapper > .card-row {
-  min-height: 400px;
-  overflow-y: auto;
-  display: flex;
-  justify-content: center;
+.card-row .v-col {
+  max-width: 400px;
 }
 
 .card-dish {
   background-color: var(--color-accent);
   color: var(--color-text);
-  height: 100%;
   display: flex;
   flex-direction: column;
+
+  width: 400px;
+  min-height: 250px;
 }
 
 .card-dish .v-img {
   flex: 0 0 auto;
-  height: 150px;
+  height: 200px;
 }
 
 .card-dish .v-card-title,
 .card-dish .v-card-subtitle,
-.card-dish .v-card-actions {
+.card-dish .v-card-actions,
+.card-dish .v-card-text {
   flex: 0 0 auto;
   padding: 8px 12px;
 }
@@ -206,6 +205,6 @@ const handleImageError = (dishId) => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--color-text);
+  color: rgba(var(--color-text), 0.7);
 }
 </style>
