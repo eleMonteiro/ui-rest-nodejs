@@ -53,7 +53,7 @@ const fetchFilter = (filter) => {
 
 <template>
   <Filters @filter="fetchFilter" />
-  <v-data-table
+  <v-data-table-server
     :headers="headers"
     :items="itens"
     :items-length="pagination.total"
@@ -113,7 +113,7 @@ const fetchFilter = (filter) => {
         @click="reset"
       ></v-btn>
     </template>
-  </v-data-table>
+  </v-data-table-server>
 </template>
 
 <style scoped>

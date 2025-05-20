@@ -145,7 +145,7 @@ const formPayment = (demand) => {
 }
 
 .card-row .v-col {
-  max-width: 250px;
+  max-width: 300px;
 }
 
 .card-demand {

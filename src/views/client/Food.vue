@@ -2,14 +2,21 @@
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
-import noneImg from "@/assets/none-img.png";
 
-const defaultImg = ref(noneImg);
 const errorCache = ref({});
 const loading = ref({});
 const page = ref(1);
 const pagination = ref({});
 const dishes = ref([]);
+
+const CATEGORY_OPTIONS = [
+  { value: "ENTRADA", label: "Entrada", icon: "mdi-food-variant" },
+  { value: "PRATO_PRINCIPAL", label: "Prato Principal", icon: "mdi-silverware-fork-knife" },
+  { value: "SOBREMESA", label: "Sobremesa", icon: "mdi-cupcake" },
+  { value: "BEBIDA", label: "Bebida", icon: "mdi-glass-cocktail" },
+  { value: "LANCHES", label: "Lanches", icon: "mdi-hamburger" },
+  { value: "PETISCOS", label: "Petiscos", icon: "mdi-food-drumstick" },
+];
 
 const store = useStore();
 
@@ -21,12 +28,28 @@ watch(page, async () => {
   await fetchDishes();
 });
 
+const category = (value) => {
+  return (
+    CATEGORY_OPTIONS.find((option) => option.value === value) || {
+      label: "Nenhuma",
+      icon: "mdi-help-circle",
+    }
+  );
+};
+
 const fetchDishes = async () => {
   try {
+    const sort = {
+      field: "id",
+      order: "asc",
+    };
+
     const response = await store.dispatch("dish/getDishes", {
       page: page.value,
       pageSize: 10,
+      sort,
     });
+
     if (response?.success) {
       dishes.value = store.getters["dish/dishes"];
       pagination.value = store.getters["dish/pagination"];
@@ -85,7 +108,6 @@ const addToCart = (dish) => {
 
 const handleImageError = (dishId) => {
   errorCache.value[dishId] = true;
-  return defaultImg;
 };
 </script>
 
@@ -103,20 +125,39 @@ const handleImageError = (dishId) => {
                 indeterminate
               ></v-progress-linear>
             </template>
-            <v-img
-              :src="errorCache[dish.id] || !dish.image ? defaultImg : dish.image"
-              :alt="dish.name"
-              aspect-ratio="16/9"
-              class="v-img"
-              cover
-              @error="handleImageError(dish.id)"
-            ></v-img>
+            <template v-if="!errorCache[dish.id] && dish.image">
+              <v-img
+                :src="dish.image"
+                :alt="dish.name"
+                aspect-ratio="16/9"
+                class="v-img"
+                cover
+                @error="handleImageError(dish.id)"
+              ></v-img>
+            </template>
+            <template v-else>
+              <div class="icon-content">
+                <div class="icon-text">
+                  <v-icon :icon="category(dish?.category)?.icon" size="128"></v-icon>
+                </div>
+              </div>
+            </template>
+
             <v-card-title class="dish-title">{{ dish.name }}</v-card-title>
 
             <v-card-actions class="v-card-actions">
-              <v-chip variant="flat" color="primary">{{ dish?.category?.toUpperCase() }}</v-chip>
+              <v-tooltip :text="category(dish?.category)?.label.toUpperCase()" location="top">
+                <template v-slot:activator="{ props }">
+                  <v-icon
+                    v-bind="props"
+                    :icon="category(dish?.category)?.icon"
+                    class="text-wrap"
+                    size="24"
+                  ></v-icon>
+                </template>
+              </v-tooltip>
               <v-spacer></v-spacer>
-              <v-chip variant="flat" color="secondary">R$ {{ dish?.price?.toFixed(2) }}</v-chip>
+              <span class="text-wrap"> R$ {{ dish?.price?.toFixed(2) }} </span>
               <v-spacer></v-spacer>
               <v-btn
                 color="primary"
@@ -166,7 +207,7 @@ const handleImageError = (dishId) => {
 }
 
 .card-row .v-col {
-  max-width: 400px;
+  max-width: 300px;
 }
 
 .card-dish {
@@ -175,21 +216,13 @@ const handleImageError = (dishId) => {
   display: flex;
   flex-direction: column;
 
-  width: 400px;
+  width: 300px;
   min-height: 250px;
 }
 
 .card-dish .v-img {
   flex: 0 0 auto;
   height: 200px;
-}
-
-.card-dish .v-card-title,
-.card-dish .v-card-subtitle,
-.card-dish .v-card-actions,
-.card-dish .v-card-text {
-  flex: 0 0 auto;
-  padding: 8px 12px;
 }
 
 .dish-title {
@@ -206,5 +239,26 @@ const handleImageError = (dishId) => {
   overflow: hidden;
   text-overflow: ellipsis;
   color: rgba(var(--color-text), 0.7);
+}
+
+.text-wrap {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.icon-content {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--color-primary);
 }
 </style>

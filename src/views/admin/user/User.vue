@@ -55,7 +55,7 @@ onMounted(async () => {
 });
 
 const updateTable = (options, filter) => {
-  const { page, itemsPerPage, sortBy } = options
+  const { page, itemsPerPage, sortBy } = options;
   pagination.value.page = page;
   pagination.value.pageSize = itemsPerPage;
   pagination.value.filter = { ...filter };
