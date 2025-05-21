@@ -15,9 +15,13 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(["add", "edit", "delete", "reset", "update-table"]);
+const emit = defineEmits(["add", "edit", "delete", "reset", "update-table", "filter"]);
 
 const filter = ref({
   id: null,

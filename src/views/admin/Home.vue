@@ -25,6 +25,11 @@ const menu = ref({
     name: "users",
     icon: "mdi mdi-account",
     component: markRaw(User),
+    props: {
+      record: null,
+      dialog: false,
+      isEditing: false,
+    },
   },
   logout: {
     name: "logout",

@@ -59,7 +59,6 @@ const headers = [
 
 onMounted(async () => {
   reset();
-  fetchDishes();
 });
 
 const updateTable = (options, filter) => {

@@ -15,9 +15,13 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(["add", "edit", "delete", "reset"]);
+const emit = defineEmits(["add", "edit", "delete", "reset", "update-table", "filter"]);
 
 const CATEGORY_OPTIONS = [
   { value: "ENTRADA", label: "Entrada" },

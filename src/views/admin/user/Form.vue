@@ -9,7 +9,7 @@ const props = defineProps({
   isEditing: Boolean,
   record: {
     type: Object,
-    required: true,
+    required: false,
     default: () => ({
       id: "",
       cpf: "",
@@ -21,13 +21,7 @@ const props = defineProps({
       addresses: [],
     }),
     validator: (value) => {
-      const requiredProps = ["cpf", "name", "dateOfBirth", "role", "addresses"];
-      return (
-        typeof value === "object" &&
-        value !== null &&
-        requiredProps.every((prop) => prop in value) &&
-        Array.isArray(value.addresses)
-      );
+      return value != null && "id" in value;
     },
   },
 });

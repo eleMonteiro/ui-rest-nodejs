@@ -9,6 +9,7 @@ import { filterFIQL } from "@/utils/fiql";
 const store = useStore();
 
 const DEFAULT_RECORD = {
+  id: null,
   name: "",
   cpf: "",
   dateOfBirth: "",
@@ -51,7 +52,6 @@ const pagination = ref({
 
 onMounted(async () => {
   reset();
-  fetchUsers();
 });
 
 const updateTable = (options, filter) => {
@@ -194,7 +194,7 @@ const closeDialogForm = () => {
     ></Table>
 
     <Form
-      v-model:dialog="dialogForm"
+      :dialog="dialogForm"
       :isEditing="isEditing"
       :record="record"
       @save="save"
