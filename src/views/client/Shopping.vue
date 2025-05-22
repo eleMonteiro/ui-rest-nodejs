@@ -199,6 +199,7 @@ const handleCepBlur = async () => {
 };
 
 const handleFinished = (val) => {
+  console.log("handleFinished", val);
   isPaymentValid.value = val?.value || false;
 };
 </script>

@@ -145,7 +145,7 @@ const handleImageError = (dishId) => {
 
             <v-card-title class="dish-title">{{ dish.name }}</v-card-title>
 
-            <v-card-actions class="v-card-actions">
+            <v-card-actions>
               <v-tooltip :text="category(dish?.category)?.label.toUpperCase()" location="top">
                 <template v-slot:activator="{ props }">
                   <v-icon
@@ -157,7 +157,13 @@ const handleImageError = (dishId) => {
                 </template>
               </v-tooltip>
               <v-spacer></v-spacer>
-              <span class="text-wrap"> R$ {{ dish?.price?.toFixed(2) }} </span>
+              <v-chip
+                variant="elevated"
+                prepend-icon="mdi mdi-currency-brl"
+                class="text-wrap price"
+              >
+                {{ dish?.price?.toFixed(2) }}
+              </v-chip>
               <v-spacer></v-spacer>
               <v-btn
                 color="primary"
@@ -211,8 +217,8 @@ const handleImageError = (dishId) => {
 }
 
 .card-dish {
-  background-color: var(--color-accent);
-  color: var(--color-text);
+  background-color: var(--color-background-card);
+  color: var(--color-primary);
   display: flex;
   flex-direction: column;
 
@@ -223,10 +229,12 @@ const handleImageError = (dishId) => {
 .card-dish .v-img {
   flex: 0 0 auto;
   height: 200px;
+  mix-blend-mode: multiply;
 }
 
 .dish-title {
   font-size: 1rem;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -244,7 +252,11 @@ const handleImageError = (dishId) => {
 .text-wrap {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--color-primary);
+}
+
+.price {
+  background-color: var(--color-text);
 }
 
 .icon-content {
@@ -252,6 +264,8 @@ const handleImageError = (dishId) => {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background-color: var(--color-background-card);
 }
 
 .icon-text {

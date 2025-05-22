@@ -12,6 +12,14 @@ const record = ref({});
 
 const store = useStore();
 
+const FORM_PAYMENT = [
+  { value: "DINHEIRO", label: "Dinheiro", icon: "mdi-cash" },
+  { value: "CREDITO", label: "Cartão de Crédito", icon: "mdi-credit-card" },
+  { value: "DEBITO", label: "Cartão de Débito", icon: "mdi-credit-card-outline" },
+  { value: "PIX", label: "PIX", icon: "mdi-qrcode" },
+  { value: "BOLETO", label: "Boleto", icon: "mdi-receipt" },
+];
+
 onMounted(async () => {
   await fetchDemands();
 });
@@ -61,8 +69,14 @@ const viewRequest = (demand) => {
 };
 
 const formPayment = (demand) => {
-  return demand?.payment?.method || "PAGAMENTO";
-}
+  const value = demand?.payment?.method;
+  return (
+    FORM_PAYMENT.find((option) => option.value === value) || {
+      label: "Pagamento não identificado",
+      icon: "mdi-help-circle",
+    }
+  );
+};
 </script>
 
 <template>
@@ -81,20 +95,36 @@ const formPayment = (demand) => {
               ></v-progress-linear>
             </template>
 
-            <v-card-title class="demand-title">
-              {{ `Número do Pedido: #${demand.id}` }}
+            <v-card-title class="demand-text title">
+              <v-icon icon="mdi-cart" size="1.5rem" class="mr-2" color="primary"></v-icon>
+              Pedido
             </v-card-title>
+
+            <v-card-subtitle class="demand-text">
+              <v-icon icon="mdi-tag" size="1.5rem" class="mr-2" color="primary"></v-icon>
+              {{ `#${demand.id}` }}
+            </v-card-subtitle>
+
             <v-card-text class="demand-text">
-              {{ `Data do Pedido: ${new Date(demand?.dateOfDemand).toLocaleDateString("pt-BR")}` }}
-            </v-card-text class="demand-text">
-            <v-card-text>
-              {{ `Forma de Pagamento: ${formPayment(demand)}` }}
+              <v-icon icon="mdi-calendar" size="1.5rem" class="mr-2" color="primary"></v-icon>
+              {{ `${new Date(demand?.dateOfDemand).toLocaleDateString("pt-BR")}` }}
+            </v-card-text>
+            <v-card-text class="demand-text">
+              <v-icon
+                :icon="formPayment(demand)?.icon"
+                size="1.5rem"
+                class="mr-2"
+                color="primary"
+              ></v-icon>
+              {{ `${formPayment(demand)?.label}` }}
             </v-card-text>
 
+            <v-spacer></v-spacer>
+
             <v-card-actions class="v-card-actions">
-              <v-chip variant="flat" color="secondary">{{
-                `R$ ${demand?.total?.toFixed(2)}`
-              }}</v-chip>
+              <v-chip prepend-icon="mdi mdi-currency-brl" variant="flat" class="text-wrap price">
+                {{ `${demand?.total?.toFixed(2)}` }}
+              </v-chip>
               <v-spacer></v-spacer>
               <v-btn
                 color="primary"
@@ -149,8 +179,8 @@ const formPayment = (demand) => {
 }
 
 .card-demand {
-  background-color: var(--color-accent);
-  color: var(--color-text);
+  background-color: var(--color-background-card);
+  color: var(--color-primary);
   display: flex;
   flex-direction: column;
 
@@ -166,19 +196,23 @@ const formPayment = (demand) => {
   padding: 8px 12px;
 }
 
-.demand-title {
+.demand-text {
   font-size: 1rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.2;
+  font-weight: 400;
 }
 
-.demand-text {
-  font-size: 0.8em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: rgba(var(--color-text), 0.7);
+.demand-text.title {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.text-wrap {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.price {
+  background-color: var(--color-text);
 }
 </style>

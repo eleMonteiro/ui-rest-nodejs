@@ -66,12 +66,14 @@ const close = () => {
       <template #text>
         <v-row dense class="text">
           <v-col cols="12">
-            <span>{{ `Número: #${record.id}` }}</span>
+            <v-icon icon="mdi-tag" size="1.5rem" class="mr-2" color="primary"></v-icon>
+            <span>{{ `#${record.id}` }}</span>
           </v-col>
           <v-col cols="12">
+            <v-icon icon="mdi-calendar" size="1.5rem" class="mr-2" color="primary"></v-icon>
             <span>
               {{
-                `Data: ${new Date(record?.dateOfDemand).toLocaleDateString("pt-BR", {
+                `${new Date(record?.dateOfDemand).toLocaleDateString("pt-BR", {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
@@ -80,35 +82,74 @@ const close = () => {
             </span>
           </v-col>
           <v-col cols="12">
-            <span>{{ `Endereço: ${record?.address}` }}</span>
+            <v-icon icon="mdi-map-marker" size="1.5rem" class="mr-2" color="primary"></v-icon>
+            <span>{{ `${record?.address}` }}</span>
           </v-col>
         </v-row>
         <v-row>
           <v-table height="auto" class="table" fixed-header>
-            <thead class="table-header">
+            <thead>
               <tr>
-                <th>Prato</th>
-                <th>Quantidade</th>
-                <th>Valor Total</th>
+                <th class="text">
+                  <v-tooltip text="Item" location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-icon
+                        v-bind="props"
+                        icon="mdi-invoice-list"
+                        size="1.5rem"
+                        class="mr-2"
+                        color="primary"
+                      ></v-icon>
+                    </template>
+                  </v-tooltip>
+                </th>
+                <th class="text">
+                  <v-tooltip text="Quantidade" location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-icon
+                        v-bind="props"
+                        icon="mdi-counter"
+                        size="1.5rem"
+                        class="mr-2"
+                        color="primary"
+                      ></v-icon>
+                    </template>
+                  </v-tooltip>
+                </th>
+                <th class="text">
+                  <v-tooltip text="Valor" location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-icon
+                        v-bind="props"
+                        icon="mdi-currency-brl"
+                        size="1.5rem"
+                        class="mr-2"
+                        color="primary"
+                      ></v-icon>
+                    </template>
+                  </v-tooltip>
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in items" :key="item.id">
-                <td>{{ item.dish.name }}</td>
-                <td>{{ item.amount }}</td>
-                <td>R$ {{ item.totalPrice.toFixed(2) }}</td>
+                <td class="text">
+                  {{ item.dish.name }}
+                </td>
+                <td class="text">
+                  {{ item.amount }}
+                </td>
+
+                <td class="text">
+                  {{ item.totalPrice.toFixed(2) }}
+                </td>
               </tr>
             </tbody>
           </v-table>
         </v-row>
-        <v-row class="valor-total">
-          <v-col cols="12">
-            <span>{{ `Valor Total: R$ ${record?.total?.toFixed(2)}` }}</span>
-          </v-col>
-        </v-row>
       </template>
       <template #actions>
-        <v-btn text="Ok" @click="close" color="primary" variant="tonal"></v-btn>
+        <v-btn text="Ok" @click="close" color="primary"></v-btn>
       </template>
     </v-card>
   </v-dialog>
@@ -120,7 +161,6 @@ const close = () => {
 }
 
 .valor-total {
-  font-size: medium;
   text-align: right;
 }
 

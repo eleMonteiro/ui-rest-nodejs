@@ -85,6 +85,13 @@ watch(formPayment, (newMethod) => {
 
   emit("update:card", localCard);
   emit("update:payment", localPayment);
+  if (newMethod === "PIX" || newMethod === "DINHEIRO") {
+    isPaymentValid.value = true;
+    emit("update:finished", isPaymentValid);
+  } else {
+    isPaymentValid.value = false;
+    emit("update:finished", isPaymentValid);
+  }
 });
 
 const handleNumberCardBlur = async () => {
