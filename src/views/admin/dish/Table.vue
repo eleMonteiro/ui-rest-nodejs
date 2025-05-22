@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import { CATEGORY_OPTIONS } from "@/constants/category";
 import Filters from "@/views/admin/dish/Filters.vue";
 
 const props = defineProps({
@@ -22,15 +23,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["add", "edit", "delete", "reset", "update-table", "filter"]);
-
-const CATEGORY_OPTIONS = [
-  { value: "ENTRADA", label: "Entrada" },
-  { value: "PRATO_PRINCIPAL", label: "Prato Principal" },
-  { value: "SOBREMESA", label: "Sobremesa" },
-  { value: "BEBIDA", label: "Bebida" },
-  { value: "LANCHES", label: "Lanches" },
-  { value: "PETISCOS", label: "Petiscos" },
-];
 
 const filter = ref({
   id: null,

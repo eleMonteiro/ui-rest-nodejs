@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, reactive } from "vue";
 import { useStore } from "vuex";
+import { FORM_PAYMENT } from "@/constants/formPayment";
 import ItensTable from "@/views/client/shopping/ItensTable.vue";
 import AddressForm from "@/views/client/shopping/AddressForm.vue";
 import Cookies from "js-cookie";
@@ -231,6 +232,7 @@ const handleFinished = (val) => {
             :userId="userId"
             :card="card"
             :payment="payment"
+            :formPayments="FORM_PAYMENT"
             :amount="DEFAULT_DEMAND.total"
             @update:finished="handleFinished"
             @confirm="finishBuy"

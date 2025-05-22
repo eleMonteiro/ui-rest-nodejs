@@ -1,17 +1,8 @@
 <script setup>
 import { ref } from "vue";
+import { CATEGORY_OPTIONS } from "@/constants/category";
 
 const emit = defineEmits(["filter"]);
-
-const CATEGORY_OPTIONS = [
-  { value: "", label: "Nenhuma" },
-  { value: "ENTRADA", label: "Entrada" },
-  { value: "PRATO_PRINCIPAL", label: "Prato Principal" },
-  { value: "SOBREMESA", label: "Sobremesa" },
-  { value: "BEBIDA", label: "Bebida" },
-  { value: "LANCHES", label: "Lanches" },
-  { value: "PETISCOS", label: "Petiscos" },
-];
 
 const localFilter = ref({
   id: null,

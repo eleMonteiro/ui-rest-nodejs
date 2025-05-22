@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, watch } from "vue";
+import { CATEGORY_OPTIONS } from "@/constants/category";
 
 const props = defineProps({
   dialog: Boolean,
@@ -11,14 +12,6 @@ const props = defineProps({
 const emit = defineEmits(["update:dialog", "update:imageFile", "save", "close", "clear-preview"]);
 const localImageFile = ref(null);
 const localImagePreview = ref(props.imagePreview);
-const CATEGORY_OPTIONS = [
-  { value: "ENTRADA", label: "Entrada" },
-  { value: "PRATO_PRINCIPAL", label: "Prato Principal" },
-  { value: "SOBREMESA", label: "Sobremesa" },
-  { value: "BEBIDA", label: "Bebida" },
-  { value: "LANCHES", label: "Lanches" },
-  { value: "PETISCOS", label: "Petiscos" },
-];
 
 watch(localImageFile, (newFile) => {
   if (newFile) {

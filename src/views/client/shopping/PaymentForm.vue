@@ -21,6 +21,10 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  formPayments: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits(["update:card", "update:payment", "update:finished", "confirm"]);
@@ -195,15 +199,19 @@ const showMessage = (response) => {
 </script>
 
 <template>
-  <v-container style="max-width: 500px">
+  <v-container>
     <v-row>
       <v-col cols="12">
         <v-radio-group v-model="formPayment" inline>
-          <v-radio label="Crédito" value="CREDITO" />
-          <v-radio label="Débito" value="DEBITO" />
-          <v-radio label="Boleto" value="BOLETO" />
-          <v-radio label="Pix" value="PIX" />
-          <v-radio label="Dinheiro" value="DINHEIRO" />
+          <v-radio
+            v-for="payment in props.formPayments"
+            :key="payment.value"
+            :value="payment.value"
+          >
+            <template #label>
+              {{ payment.label }}
+            </template>
+          </v-radio>
         </v-radio-group>
       </v-col>
     </v-row>

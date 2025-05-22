@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
+import { CATEGORY_OPTIONS } from "@/constants/category";
 import Cookies from "js-cookie";
 
 const errorCache = ref({});
@@ -8,15 +9,6 @@ const loading = ref({});
 const page = ref(1);
 const pagination = ref({});
 const dishes = ref([]);
-
-const CATEGORY_OPTIONS = [
-  { value: "ENTRADA", label: "Entrada", icon: "mdi-food-variant" },
-  { value: "PRATO_PRINCIPAL", label: "Prato Principal", icon: "mdi-silverware-fork-knife" },
-  { value: "SOBREMESA", label: "Sobremesa", icon: "mdi-cupcake" },
-  { value: "BEBIDA", label: "Bebida", icon: "mdi-glass-cocktail" },
-  { value: "LANCHES", label: "Lanches", icon: "mdi-hamburger" },
-  { value: "PETISCOS", label: "Petiscos", icon: "mdi-food-drumstick" },
-];
 
 const store = useStore();
 
