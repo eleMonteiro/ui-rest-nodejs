@@ -1,4 +1,6 @@
 <script setup>
+import { formatMoney } from "@/utils/format";
+
 defineProps({
   items: Array,
 });
@@ -23,8 +25,10 @@ const headers = [
     hide-default-header
     class="table"
   >
+    <template v-slot:item.price="{ item }"> R$ {{ formatMoney(item.price) }} </template>
+
     <template v-slot:item.total="{ item }">
-      R$ {{ (item.price * item.amount).toFixed(2) }}
+      R$ {{ formatMoney(item.price * item.amount) }}
     </template>
 
     <template v-slot:item.actions="{ item }">
@@ -46,7 +50,7 @@ const headers = [
     <template #bottom>
       <v-toolbar class="footer-table">
         Total: R$
-        {{ items.reduce((sum, i) => sum + i.price * i.amount, 0).toFixed(2) }}
+        {{ formatMoney(items.reduce((sum, i) => sum + i.price * i.amount, 0)) }}
       </v-toolbar>
     </template>
   </v-data-table>

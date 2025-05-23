@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useStore } from "vuex";
+import { formatMoney, formatDateLong } from "@/utils/format";
 
 const props = defineProps({
   dialog: {
@@ -72,13 +73,7 @@ const close = () => {
           <v-col cols="12">
             <v-icon icon="mdi-calendar" size="1.5rem" class="mr-2" color="primary"></v-icon>
             <span>
-              {{
-                `${new Date(record?.dateOfDemand).toLocaleDateString("pt-BR", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}`
-              }}
+              {{ formatDateLong(record?.dateOfDemand) }}
             </span>
           </v-col>
           <v-col cols="12">
@@ -141,7 +136,7 @@ const close = () => {
                 </td>
 
                 <td class="text">
-                  {{ item.totalPrice.toFixed(2) }}
+                  {{ formatMoney(item.totalPrice) }}
                 </td>
               </tr>
             </tbody>

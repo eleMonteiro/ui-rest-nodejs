@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { CATEGORY_OPTIONS } from "@/constants/category";
+import { formatMoney } from "@/utils/format";
 import Filters from "@/views/admin/dish/Filters.vue";
 
 const props = defineProps({
@@ -55,13 +56,6 @@ const updateTable = (options) => {
 const fetchFilter = (filter) => {
   emit("filter", props.pagination, filter);
 };
-
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
-};
 </script>
 
 <template>
@@ -86,9 +80,7 @@ const formatCurrency = (value) => {
       </v-toolbar>
     </template>
 
-    <template v-slot:item.price="{ item }">
-      {{ formatCurrency(item.price) }}
-    </template>
+    <template v-slot:item.price="{ item }"> R$ {{ formatMoney(item.price) }} </template>
 
     <template v-slot:item.category="{ item }">
       {{ CATEGORY_OPTIONS.find((option) => option.value === item.category)?.label }}

@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { FORM_PAYMENT } from "@/constants/formPayment";
+import { formatMoney, formatDate } from "@/utils/format";
 import Dialog from "@/views/client/placed/PlacedDialog.vue";
 
 const loading = ref({});
@@ -65,7 +66,7 @@ const formPayment = (demand) => {
   const value = demand?.payment?.method;
   return (
     FORM_PAYMENT.find((option) => option.value === value) || {
-      label: "Pagamento não identificado",
+      label: "Não identificado",
       icon: "mdi-help-circle",
     }
   );
@@ -100,7 +101,7 @@ const formPayment = (demand) => {
 
             <v-card-text class="demand-text">
               <v-icon icon="mdi-calendar" size="1.5rem" class="mr-2" color="primary"></v-icon>
-              {{ `${new Date(demand?.dateOfDemand).toLocaleDateString("pt-BR")}` }}
+              {{ formatDate(demand?.dateOfDemand) }}
             </v-card-text>
             <v-card-text class="demand-text">
               <v-icon
@@ -116,7 +117,7 @@ const formPayment = (demand) => {
 
             <v-card-actions class="v-card-actions">
               <v-chip prepend-icon="mdi mdi-currency-brl" variant="flat" class="text-wrap price">
-                {{ `${demand?.total?.toFixed(2)}` }}
+                {{ `${formatMoney(demand?.total)}` }}
               </v-chip>
               <v-spacer></v-spacer>
               <v-btn
@@ -178,7 +179,7 @@ const formPayment = (demand) => {
   flex-direction: column;
 
   width: 250px;
-  min-height: 200px;
+  height: 250px;
 }
 
 .card-demand .v-card-title,

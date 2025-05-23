@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { CATEGORY_OPTIONS } from "@/constants/category";
+import { formatMoney } from "@/utils/format";
 import Cookies from "js-cookie";
 
 const errorCache = ref({});
@@ -154,7 +155,7 @@ const handleImageError = (dishId) => {
                 prepend-icon="mdi mdi-currency-brl"
                 class="text-wrap price"
               >
-                {{ dish?.price?.toFixed(2) }}
+                {{ formatMoney(dish?.price) }}
               </v-chip>
               <v-spacer></v-spacer>
               <v-btn
