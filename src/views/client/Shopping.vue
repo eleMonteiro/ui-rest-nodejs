@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, reactive } from "vue";
 import { useStore } from "vuex";
 import { FORM_PAYMENT } from "@/constants/formPayment";
+import { formatMoney } from "@/utils/format";
 import ItensTable from "@/views/client/shopping/ItensTable.vue";
 import AddressForm from "@/views/client/shopping/AddressForm.vue";
 import Cookies from "js-cookie";
@@ -96,11 +97,17 @@ const loadCart = () => {
 };
 
 const removeItem = (dishId) => {
+  const name = cartItems.value.find((item) => item.dishId === dishId)?.name;
   cartItems.value = cartItems.value.filter((item) => item.dishId !== dishId);
   Cookies.set("cart", JSON.stringify(cartItems.value), { expires: 7 });
 
   DEFAULT_DEMAND.items = cartItems.value;
   DEFAULT_DEMAND.total = cartItems.value.reduce((sum, item) => sum + item.totalPrice, 0);
+
+  showMessage({
+    success: true,
+    message: `Dish ${name} remove to the cart!`,
+  });
 };
 
 const formatAddress = () => {
@@ -215,6 +222,9 @@ const handleFinished = (val) => {
 
       <v-window v-model="step" class="window-full-height">
         <v-window-item :value="1" class="window-item-full">
+          <span class="totalPrice">
+            Total: R$ {{ formatMoney(cartItems.reduce((sum, i) => sum + i.price * i.amount, 0)) }}
+          </span>
           <ItensTable :items="cartItems" @remove-item="removeItem" />
         </v-window-item>
 
@@ -299,5 +309,12 @@ const handleFinished = (val) => {
   display: flex;
   flex-direction: column;
   padding: 10px;
+}
+
+.totalPrice {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--color-text);
+  margin-bottom: 10px;
 }
 </style>

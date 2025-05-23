@@ -1,7 +1,8 @@
 <script setup>
 import { formatMoney } from "@/utils/format";
+import { computed } from "vue";
 
-defineProps({
+const props = defineProps({
   items: Array,
 });
 
@@ -15,78 +16,48 @@ const headers = [
   { title: "Total Value", key: "total", align: "center" },
   { title: "", key: "actions", sortable: false, align: "center" },
 ];
+
+const groupedItems = computed(() => {
+  const rows = [];
+  if (!props.items) return rows;
+
+  for (let i = 0; i < props.items.length; i += 3) {
+    rows.push(props.items.slice(i, i + 3));
+  }
+  return rows;
+});
 </script>
 
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="items"
-    :hide-default-footer="items.length < 11"
-    hide-default-header
-    class="table"
-  >
-    <template v-slot:item.price="{ item }"> R$ {{ formatMoney(item.price) }} </template>
+  <v-row>
+    <template v-for="(row, rowIndex) in groupedItems" :key="rowIndex">
+      <v-col v-for="(item, index) in row" :key="index" cols="12" sm="2" md="2">
+        <v-card color="bgCard">
+          <v-card-title>
+            <v-icon icon="mdi-cart" size="1.5rem" class="mr-2" color="primary"></v-icon>
+            {{ item.name }}
+          </v-card-title>
 
-    <template v-slot:item.total="{ item }">
-      R$ {{ formatMoney(item.price * item.amount) }}
-    </template>
+          <v-card-text>
+            <v-icon icon="mdi-currency-brl" size="1.5rem" class="mr-2" color="primary"></v-icon>
+            {{ formatMoney(item.price) }}
+          </v-card-text>
 
-    <template v-slot:item.actions="{ item }">
-      <div class="d-flex ga-2 justify-end">
-        <v-tooltip text="Excluir" location="top">
-          <template #activator="{ props }">
-            <v-icon
-              color="text"
-              icon="mdi-delete"
-              size="small"
-              @click="$emit('remove-item', item.dishId)"
-              v-bind="props"
-            ></v-icon>
-          </template>
-        </v-tooltip>
-      </div>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red" icon @click="$emit('remove-item', item.dishId)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
     </template>
-
-    <template #bottom>
-      <v-toolbar class="footer-table">
-        Total: R$
-        {{ formatMoney(items.reduce((sum, i) => sum + i.price * i.amount, 0)) }}
-      </v-toolbar>
-    </template>
-  </v-data-table>
+  </v-row>
 </template>
 
 <style scoped>
-.table {
-  flex: 1;
-  display: flex;
-  background-color: transparent;
-  color: var(--color-text);
-}
-
-.full-height-table {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.full-height-table :v-deep(.v-data-table__wrapper) {
-  flex: 1;
-}
-
-.header-table,
-.footer-table {
-  background-color: transparent;
-  color: var(--color-text);
-}
-
-.header-table {
-  text-align: center;
-}
-
-.footer-table {
-  text-align: center;
-  font-weight: 200;
-  font-size: 1.5em;
+.no-horizontal-scroll {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
 }
 </style>
