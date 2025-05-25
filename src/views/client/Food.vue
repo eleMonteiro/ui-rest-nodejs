@@ -1,8 +1,9 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { CATEGORY_OPTIONS } from "@/constants/category";
 import { formatMoney } from "@/utils/format";
+import { encryptCart, decryptCart } from "@/utils/crypto";
 import Cookies from "js-cookie";
 
 const errorCache = ref({});
@@ -10,8 +11,12 @@ const loading = ref({});
 const page = ref(1);
 const pagination = ref({});
 const dishes = ref([]);
+const show = ref({});
 
 const store = useStore();
+
+const user = computed(() => store.getters["user/user"]);
+const userId = computed(() => user.value?.id);
 
 onMounted(async () => {
   await fetchDishes();
@@ -79,7 +84,9 @@ const buyDish = (dishId) => {
 };
 
 const addToCart = (dish) => {
-  let cart = JSON.parse(Cookies.get("cart") || "[]");
+  const cartKey = `cart_${userId?.value}`;
+  const raw = Cookies.get(cartKey);
+  let cart = decryptCart(raw || "");
 
   const existing = cart.find((item) => item.dishId === dish.id);
 
@@ -96,7 +103,7 @@ const addToCart = (dish) => {
     });
   }
 
-  Cookies.set("cart", JSON.stringify(cart), { expires: 7 });
+  Cookies.set(cartKey, encryptCart(cart), { expires: 7 });
 };
 
 const handleImageError = (dishId) => {
@@ -158,13 +165,32 @@ const handleImageError = (dishId) => {
                 {{ formatMoney(dish?.price) }}
               </v-chip>
               <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                class="text-button"
-                icon="mdi-cart-outline"
-                @click="buyDish(dish.id)"
-              ></v-btn>
+              <v-tooltip text="Comprar" location="top">
+                <template v-slot:activator="{ props }">
+                  <v-btn v-bind="props" class="text-button" icon @click="buyDish(dish.id)">
+                    <v-icon>mdi-cart-outline</v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
+              <v-spacer></v-spacer>
+
+              <v-tooltip text="Descrição" location="top">
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    :icon="show[dish.id] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                    @click="show[dish.id] = !show[dish.id]"
+                  ></v-btn>
+                </template>
+              </v-tooltip>
             </v-card-actions>
+
+            <v-expand-transition>
+              <div v-show="show[dish.id]">
+                <v-divider></v-divider>
+                <v-card-text> {{ dish.description }} </v-card-text>
+              </div>
+            </v-expand-transition>
           </v-card>
         </v-col>
       </v-row>

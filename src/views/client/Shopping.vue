@@ -3,6 +3,7 @@ import { ref, onMounted, computed, reactive } from "vue";
 import { useStore } from "vuex";
 import { FORM_PAYMENT } from "@/constants/formPayment";
 import { formatMoney } from "@/utils/format";
+import { encryptCart, decryptCart } from "@/utils/crypto";
 import ItensTable from "@/views/client/shopping/ItensTable.vue";
 import AddressForm from "@/views/client/shopping/AddressForm.vue";
 import Cookies from "js-cookie";
@@ -49,8 +50,6 @@ const payment = reactive({
 
 const step = ref(1);
 const cartItems = ref([]);
-const isLoadingCep = ref(false);
-const disabledFields = ref(true);
 const isPaymentValid = ref(false);
 
 onMounted(() => {
@@ -81,11 +80,12 @@ const user = computed(() => store.getters["user/user"]);
 const userId = computed(() => user.value?.id);
 
 const loadCart = () => {
-  const cookieCart = Cookies.get("cart");
+  const cartKey = `cart_${userId?.value}`;
+  const cookieCart = Cookies.get(cartKey);
   let parsed = [];
 
   try {
-    parsed = JSON.parse(cookieCart);
+    parsed = decryptCart(cookieCart);
     if (!Array.isArray(parsed)) parsed = [];
   } catch {
     parsed = [];
@@ -99,14 +99,16 @@ const loadCart = () => {
 const removeItem = (dishId) => {
   const name = cartItems.value.find((item) => item.dishId === dishId)?.name;
   cartItems.value = cartItems.value.filter((item) => item.dishId !== dishId);
-  Cookies.set("cart", JSON.stringify(cartItems.value), { expires: 7 });
+
+  const cartKey = `cart_${userId?.value}`;
+  Cookies.set(cartKey, encryptCart(cartItems.value), { expires: 7 });
 
   DEFAULT_DEMAND.items = cartItems.value;
   DEFAULT_DEMAND.total = cartItems.value.reduce((sum, item) => sum + item.totalPrice, 0);
 
   showMessage({
     success: true,
-    message: `Dish ${name} remove to the cart!`,
+    message: `Dish ${name} removed from the cart!`,
   });
 };
 
@@ -167,47 +169,28 @@ const reset = () => {
 
   Object.assign(address.value, RECORD_DEFAULT);
   cartItems.value = [];
-  Cookies.set("cart", JSON.stringify([]), { expires: 7 });
+  Cookies.set(`cart_${userId?.value}`, encryptCart([]), { expires: 7 });
   step.value = 1;
 };
 
-const handleCepBlur = async () => {
-  isLoadingCep.value = true;
-  if (!address.value.cep) {
-    Object.assign(address.value, RECORD_DEFAULT);
+const handleCepSelect = async (data) => {
+  if (!data) {
+    address.value = { ...RECORD_DEFAULT };
     DEFAULT_DEMAND.addressId = null;
-    isLoadingCep.value = false;
     return;
   }
-
-  try {
-    const response = await store.dispatch("cep/getAddressByFilter", {
-      cep: address.value.cep,
-      userId: userId.value,
-    });
-
-    if (response?.success) {
-      const data = store.getters["cep/address"];
-      address.value.id = data?.id;
-      address.value.road = data?.road;
-      address.value.neighborhood = data?.neighborhood;
-      address.value.city = data?.city;
-      address.value.uf = data?.uf;
-      address.value.complement = data?.complement;
-      address.value.number = data?.number;
-      DEFAULT_DEMAND.addressId = data?.id;
-    } else {
-      showMessage({ success: false, message: "Endereço não cadastrado" });
-    }
-  } catch {
-    showMessage({ success: false, message: "Erro ao buscar endereço pelo CEP e Usuário" });
-  } finally {
-    isLoadingCep.value = false;
-  }
+  address.value = {
+    ...address.value,
+    cep: data.cep,
+    road: data.road,
+    neighborhood: data.neighborhood,
+    city: data.city,
+    uf: data.uf,
+  };
+  DEFAULT_DEMAND.addressId = data.id || null;
 };
 
 const handleFinished = (val) => {
-  console.log("handleFinished", val);
   isPaymentValid.value = val?.value || false;
 };
 </script>
@@ -229,12 +212,7 @@ const handleFinished = (val) => {
         </v-window-item>
 
         <v-window-item :value="2" class="window-item-full">
-          <AddressForm
-            :address="address"
-            :disabled-fields="disabledFields"
-            :is-loading-cep="isLoadingCep"
-            @cep-blur="handleCepBlur"
-          />
+          <AddressForm :address="address" @cep-select="handleCepSelect" />
         </v-window-item>
 
         <v-window-item :value="3" class="window-item-full">

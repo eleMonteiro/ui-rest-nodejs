@@ -9,6 +9,7 @@ const apiExterna = axios.create({
 
 const state = {
   address: null,
+  addresses: [],
 };
 
 const actions = {
@@ -36,17 +37,39 @@ const actions = {
       return handleApiError(error, "Error fetching address");
     }
   },
+
+  async getAddressesByFilter({ commit }, filter) {
+    try {
+      const response = await api.post(`/addresses/search/`, {
+        filter: { ...filter },
+      });
+
+      commit("UPDATE_ADDRESSES", response?.data?.data || []);
+      return handleApiResponse(response?.data, "Addresses fetched successfully");
+    } catch (error) {
+      commit("UPDATE_ADDRESSES", []);
+      return handleApiError(error, "Error fetching addresses");
+    }
+  },
 };
 
 const getters = {
   address(state) {
     return state.address || null;
   },
+
+  addresses(state) {
+    return state.addresses || [];
+  },
 };
 
 const mutations = {
-  UPDATE_ADDRESS: (state, addressData) => {
-    state.address = addressData;
+  UPDATE_ADDRESS: (state, data) => {
+    state.address = data;
+  },
+
+  UPDATE_ADDRESSES: (state, data) => {
+    state.addresses = data;
   },
 };
 

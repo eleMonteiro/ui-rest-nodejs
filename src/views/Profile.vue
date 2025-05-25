@@ -80,8 +80,8 @@ const save = async () => {
   try {
     const response = await store.dispatch("user/updateUser", {
       ...user.value,
-      cpf: user.value.cpf.replace(/\D/g, ""),
-      dateOfBirth: user.value.dateOfBirth,
+      cpf: user?.value?.cpf?.replace(/\D/g, ""),
+      dateOfBirth: user?.value?.dateOfBirth,
     });
     if (response?.success) {
       store.dispatch("snackbar/showSnackbar", {
