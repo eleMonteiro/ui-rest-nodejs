@@ -19,6 +19,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  userLogadoId: {
+    type: Number,
+    default: null,
+  },
 });
 
 const emit = defineEmits(["add", "edit", "delete", "reset", "update-table", "filter"]);
@@ -86,6 +90,7 @@ const fetchFilter = (filter) => {
         <v-tooltip text="Editar" location="top">
           <template #activator="{ props }">
             <v-icon
+              :disabled="item.id === userLogadoId"
               color="text"
               icon="mdi-pencil"
               size="small"
@@ -97,6 +102,7 @@ const fetchFilter = (filter) => {
         <v-tooltip text="Excluir" location="top">
           <template #activator="{ props }">
             <v-icon
+              :disabled="item.id === userLogadoId"
               color="text"
               icon="mdi-delete"
               size="small"

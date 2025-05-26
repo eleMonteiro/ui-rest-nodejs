@@ -4,6 +4,9 @@ import { useStore } from "vuex";
 import { FORM_PAYMENT } from "@/constants/formPayment";
 import { formatMoney, formatDate } from "@/utils/format";
 import Dialog from "@/views/client/placed/PlacedDialog.vue";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const loading = ref({});
 const page = ref(1);
@@ -40,17 +43,6 @@ const fetchDemands = async () => {
   } catch (error) {
     showMessage(error);
   }
-};
-
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
 };
 
 const viewRequest = (demand) => {

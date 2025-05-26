@@ -1,6 +1,9 @@
 <script setup>
 import { ref, reactive, computed, watch } from "vue";
 import { useStore } from "vuex";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const store = useStore();
 
@@ -186,15 +189,6 @@ const downloadSlip = () => {
   setTimeout(() => {
     emit("confirm");
   }, 1000);
-};
-
-const showMessage = (response) => {
-  store.dispatch("snackbar/showSnackbar", {
-    text:
-      response?.message ||
-      (response?.success ? "Operação realizada com sucesso!" : "Erro ao realizar operação!"),
-    color: response?.success ? "success" : "error",
-  });
 };
 </script>
 

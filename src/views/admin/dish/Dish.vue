@@ -5,6 +5,9 @@ import { filterFIQL } from "@/utils/fiql";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
 import Table from "@/views/admin/dish/Table.vue";
 import Form from "@/views/admin/dish/Form.vue";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const store = useStore();
 
@@ -172,17 +175,6 @@ const save = async () => {
   } catch (error) {
     showMessage(error);
   }
-};
-
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
 };
 
 const closeDialogForm = () => {

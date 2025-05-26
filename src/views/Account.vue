@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const store = useStore();
 const router = useRouter();
@@ -46,17 +49,6 @@ const create = async () => {
       message: "Preencha todos os campos corretamente.",
     });
   }
-};
-
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
 };
 
 const redirectLogin = () => {

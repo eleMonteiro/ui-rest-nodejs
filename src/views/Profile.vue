@@ -166,6 +166,7 @@ const save = async () => {
             <v-col cols="12">
               <div class="address-container">
                 <Address
+                  is-profile="true"
                   :itens="user.addresses"
                   @update:itens="updateAddresses"
                   class="address-container"

@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const props = defineProps({
   to: String,
@@ -65,17 +68,6 @@ const showPassword = ref(false);
 
 const resetPassword = () => {
   router.push("/forgot");
-};
-
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
 };
 </script>
 

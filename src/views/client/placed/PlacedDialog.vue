@@ -2,6 +2,9 @@
 import { ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { formatMoney, formatDateLong } from "@/utils/format";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const props = defineProps({
   dialog: {
@@ -43,17 +46,6 @@ const fetchItens = async () => {
   } catch (error) {
     showMessage(error);
   }
-};
-
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
 };
 
 const close = () => {

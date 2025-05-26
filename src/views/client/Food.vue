@@ -5,6 +5,9 @@ import { CATEGORY_OPTIONS } from "@/constants/category";
 import { formatMoney } from "@/utils/format";
 import { encryptCart, decryptCart } from "@/utils/crypto";
 import Cookies from "js-cookie";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const errorCache = ref({});
 const loading = ref({});
@@ -15,8 +18,8 @@ const show = ref({});
 
 const store = useStore();
 
-const user = computed(() => store.getters["user/user"]);
-const userId = computed(() => user.value?.id);
+const user = computed(() => store.getters["auth/user"]);
+const userId = computed(() => user.value?.userId);
 
 onMounted(async () => {
   await fetchDishes();
@@ -57,17 +60,6 @@ const fetchDishes = async () => {
   } catch (error) {
     showMessage(error);
   }
-};
-
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
 };
 
 const buyDish = (dishId) => {

@@ -4,10 +4,13 @@ import { useStore } from "vuex";
 import { FORM_PAYMENT } from "@/constants/formPayment";
 import { formatMoney } from "@/utils/format";
 import { encryptCart, decryptCart } from "@/utils/crypto";
-import ItensTable from "@/views/client/shopping/ItensTable.vue";
-import AddressForm from "@/views/client/shopping/AddressForm.vue";
+import Itens from "@/views/client/shopping/Itens.vue";
+import Address from "@/views/client/shopping/Address.vue";
 import Cookies from "js-cookie";
-import PaymentForm from "@/views/client/shopping/PaymentForm.vue";
+import Payment from "@/views/client/shopping/Payment.vue";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const store = useStore();
 
@@ -76,8 +79,8 @@ const canProceed = computed(() => {
 
 const nextButtonText = computed(() => ["", "Dados de Entrega", "Dados de Pagamento"][step.value]);
 const backButtonText = computed(() => ["", "", "Itens", "Dados de Entrega"][step.value]);
-const user = computed(() => store.getters["user/user"]);
-const userId = computed(() => user.value?.id);
+const user = computed(() => store.getters["auth/user"]);
+const userId = computed(() => user.value?.userId);
 
 const loadCart = () => {
   const cartKey = `cart_${userId?.value}`;
@@ -132,15 +135,6 @@ const finishBuy = async () => {
   } catch (error) {
     showMessage(error);
   }
-};
-
-const showMessage = (response) => {
-  store.dispatch("snackbar/showSnackbar", {
-    text:
-      response?.message ||
-      (response?.success ? "Operação realizada com sucesso!" : "Erro ao realizar operação!"),
-    color: response?.success ? "success" : "error",
-  });
 };
 
 const reset = () => {
@@ -208,15 +202,15 @@ const handleFinished = (val) => {
           <span class="totalPrice">
             Total: R$ {{ formatMoney(cartItems.reduce((sum, i) => sum + i.price * i.amount, 0)) }}
           </span>
-          <ItensTable :items="cartItems" @remove-item="removeItem" />
+          <Itens :items="cartItems" @remove-item="removeItem" />
         </v-window-item>
 
         <v-window-item :value="2" class="window-item-full">
-          <AddressForm :address="address" @cep-select="handleCepSelect" />
+          <Address :address="address" @cep-select="handleCepSelect" />
         </v-window-item>
 
         <v-window-item :value="3" class="window-item-full">
-          <PaymentForm
+          <Payment
             :userId="userId"
             :card="card"
             :payment="payment"

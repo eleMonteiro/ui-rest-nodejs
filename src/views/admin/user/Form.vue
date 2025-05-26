@@ -3,6 +3,9 @@ import { ref, computed, watch } from "vue";
 import { validateDate } from "@/utils/validate";
 import { useStore } from "vuex";
 import Address from "@/views/address/Address.vue";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const props = defineProps({
   dialog: Boolean,
@@ -132,6 +135,22 @@ const isStep1Valid = computed(() => {
   );
 });
 
+const textBtnPrev = computed(() => {
+  return currentStep.value === 2 ? "Voltar" : "Cancelar";
+});
+
+const iconBtnPrev = computed(() => {
+  return currentStep.value === 2 ? "mdi-arrow-left" : "mdi-close";
+});
+
+const textBtnNext = computed(() => {
+  return currentStep.value === 1 ? "Próximo" : "Salvar";
+});
+
+const iconBtnNext = computed(() => {
+  return currentStep.value === 1 ? "mdi-arrow-right" : "mdi-content-save";
+});
+
 watch(
   () => props.record,
   (newVal) => {
@@ -158,27 +177,16 @@ watch(
   },
   { deep: true }
 );
-
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
-};
 </script>
 
 <template>
   <v-dialog
     v-model="dialogVisible"
-    max-width="1000"
+    width="70vw"
+    height="70vh"
     scrollable
     persistent
     aria-labelledby="userFormTitle"
-    content-class="full-dialog"
   >
     <v-card
       :title="`${isEditing ? 'Editar' : 'Adicionar'} usuário`"
@@ -196,106 +204,91 @@ const showMessage = (response) => {
           hide-actions
         >
           <template #item.1>
-            <v-form ref="form" @submit.prevent="currentStep = 2" class="mb-4">
-              <v-row>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="localRecord.cpf"
-                    label="CPF"
-                    :rules="[rules.required, rules.cpf]"
-                    hint="Formato: 000.000.000-00"
-                    required
-                    maxlength="14"
-                    prepend-inner-icon="mdi-card-account-details"
-                    clearable
-                    aria-label="CPF do usuário"
-                    aria-required="true"
-                    v-mask="'###.###.###-##'"
-                    class="custom-text-field"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="localRecord.name"
-                    label="Nome"
-                    :rules="[rules.required, rules.name]"
-                    required
-                    prepend-inner-icon="mdi-account"
-                    counter
-                    maxlength="100"
-                    class="custom-text-field"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="localRecord.dateOfBirth"
-                    label="Data de Nascimento"
-                    :rules="[rules.required, rules.date]"
-                    prepend-inner-icon="mdi-calendar"
-                    placeholder="DD/MM/AAAA"
-                    v-mask="'##/##/####'"
-                    class="custom-text-field"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="localRecord.email"
-                    label="Email"
-                    :rules="[rules.required, rules.email]"
-                    prepend-inner-icon="mdi-email"
-                    clearable
-                    autocomplete="email"
-                    class="custom-text-field"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="localRecord.password"
-                    :rules="isEditing ? [] : [rules.required, rules.min, rules.password]"
-                    type="password"
-                    label="Senha"
-                    prepend-inner-icon="mdi-lock"
-                    hint="Deve conter: 8 caracteres, maiúscula, minúscula e número"
-                    counter
-                    autocomplete="current-password"
-                    class="custom-text-field"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-select
-                    placeholder="Select..."
-                    v-model="localRecord.role"
-                    :items="roles"
-                    label="Perfil"
-                    :rules="[rules.required]"
-                    required
-                    aria-label="Perfil do usuário"
-                    aria-required="true"
-                    class="custom-text-field"
-                  >
-                  </v-select>
-                </v-col>
-              </v-row>
-            </v-form>
-
-            <v-card-actions class="mt-4">
-              <v-btn color="secondary" variant="flat" @click="closeDialog">
-                <v-icon start>mdi-close</v-icon>
-                Cancelar
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                variant="flat"
-                @click="validateStep1"
-                :disabled="!isStep1Valid"
-              >
-                Próximo
-                <v-icon end>mdi-arrow-right</v-icon>
-              </v-btn>
-            </v-card-actions>
+            <div class="form-container">
+              <v-form ref="form" @submit.prevent="currentStep = 2" class="mb-4">
+                <v-row>
+                  <v-col cols="4">
+                    <v-text-field
+                      v-model="localRecord.cpf"
+                      label="CPF"
+                      :rules="[rules.required, rules.cpf]"
+                      hint="Formato: 000.000.000-00"
+                      required
+                      maxlength="14"
+                      prepend-inner-icon="mdi-card-account-details"
+                      clearable
+                      aria-label="CPF do usuário"
+                      aria-required="true"
+                      v-mask="'###.###.###-##'"
+                      class="custom-text-field"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field
+                      v-model="localRecord.name"
+                      label="Nome"
+                      :rules="[rules.required, rules.name]"
+                      required
+                      prepend-inner-icon="mdi-account"
+                      counter
+                      maxlength="100"
+                      class="custom-text-field"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field
+                      v-model="localRecord.dateOfBirth"
+                      label="Data de Nascimento"
+                      :rules="[rules.required, rules.date]"
+                      prepend-inner-icon="mdi-calendar"
+                      placeholder="DD/MM/AAAA"
+                      v-mask="'##/##/####'"
+                      class="custom-text-field"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="4">
+                    <v-text-field
+                      v-model="localRecord.email"
+                      label="Email"
+                      :rules="[rules.required, rules.email]"
+                      prepend-inner-icon="mdi-email"
+                      clearable
+                      autocomplete="email"
+                      class="custom-text-field"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field
+                      v-model="localRecord.password"
+                      :rules="isEditing ? [] : [rules.required, rules.min, rules.password]"
+                      type="password"
+                      label="Senha"
+                      prepend-inner-icon="mdi-lock"
+                      hint="Deve conter: 8 caracteres, maiúscula, minúscula e número"
+                      counter
+                      autocomplete="current-password"
+                      class="custom-text-field"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-select
+                      placeholder="Select..."
+                      v-model="localRecord.role"
+                      :items="roles"
+                      label="Perfil"
+                      :rules="[rules.required]"
+                      required
+                      aria-label="Perfil do usuário"
+                      aria-required="true"
+                      class="custom-text-field"
+                    >
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </v-form>
+            </div>
           </template>
 
           <template #item.2>
@@ -305,27 +298,41 @@ const showMessage = (response) => {
               class="address-container"
             >
             </Address>
+          </template>
 
-            <v-card-actions class="mt-4">
-              <v-btn color="secondary" variant="flat" @click="currentStep = 1">
-                <v-icon start>mdi-arrow-left</v-icon>
-                Voltar
+          <v-stepper-actions class="stepper-actions">
+            <template #prev>
+              <v-btn
+                v-if="currentStep === 2"
+                color="secondary"
+                variant="flat"
+                @click="currentStep = 1"
+              >
+                <v-icon start>{{ iconBtnPrev }}</v-icon>
+                {{ textBtnPrev }}
               </v-btn>
+            </template>
 
-              <v-spacer></v-spacer>
+            <template #next>
+              <v-btn v-if="currentStep === 1" color="secondary" variant="flat" @click="closeDialog">
+                <v-icon start>{{ iconBtnPrev }}</v-icon>
+                {{ textBtnPrev }}
+              </v-btn>
 
               <v-btn
                 color="primary"
                 variant="flat"
-                @click="save"
-                :disabled="localRecord.addresses.length === 0"
-                :loading="loading"
+                @click="currentStep === 1 ? validateStep1() : save()"
+                :disabled="currentStep === 1 ? !isStep1Valid : localRecord.addresses.length === 0"
+                :loading="loading && currentStep === 2"
               >
-                <v-icon start>mdi-content-save</v-icon>
-                Salvar
+                {{ textBtnNext }}
+                <v-icon end>
+                  {{ iconBtnNext }}
+                </v-icon>
               </v-btn>
-            </v-card-actions>
-          </template>
+            </template>
+          </v-stepper-actions>
         </v-stepper>
       </v-card-text>
     </v-card>
@@ -333,30 +340,26 @@ const showMessage = (response) => {
 </template>
 
 <style scoped>
-.full-dialog {
-  height: 95vh;
-}
-
-.full-height-card {
-  display: flex;
-  flex-direction: column;
-  height: 90vh;
-}
-
-.card-content {
+.full-height-stepper {
   flex: 1;
-  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-background-card);
   display: flex;
   flex-direction: column;
-  padding: 0;
 }
 
 .full-height-stepper {
   flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  width: 100%;
   background-color: var(--color-background-card);
+}
+
+.card-content {
+  flex: 1;
+  height: 100%;
+  width: 100%;
 }
 
 .v-stepper__content {
@@ -370,6 +373,11 @@ const showMessage = (response) => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.form-container {
+  min-height: 300px;
+  max-height: 50vh;
 }
 
 .v-row {
@@ -420,6 +428,10 @@ const showMessage = (response) => {
 
 .custom-text-field :deep(.v-messages__message) {
   color: var(--color-text-input);
+}
+
+.stepper-actions {
+  margin-top: auto;
 }
 
 @media (max-width: 960px) {

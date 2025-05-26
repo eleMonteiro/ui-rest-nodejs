@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
+import useSnackbar from "@/composables/useSnackbar";
 import { useStore } from "vuex";
+
+const { showMessage } = useSnackbar();
 
 const props = defineProps({
   address: {
@@ -74,6 +77,7 @@ const fetchAddresses = async () => {
     showMessage({ success: false, message: "Erro ao buscar endereço pelo CEP e Usuário" });
   } finally {
     isLoadingCep.value = false;
+    showMessage({ success: true, message: "Endereços carregados com sucesso!" });
   }
 };
 
@@ -86,15 +90,6 @@ const groupedItems = computed(() => {
   }
   return rows;
 });
-
-const showMessage = (response) => {
-  store.dispatch("snackbar/showSnackbar", {
-    text:
-      response?.message ||
-      (response?.success ? "Operação realizada com sucesso!" : "Erro ao realizar operação!"),
-    color: response?.success ? "success" : "error",
-  });
-};
 </script>
 
 <template>
@@ -104,11 +99,12 @@ const showMessage = (response) => {
         <v-card color="bgCard" :key="item.id">
           <v-card-title class="title-card">
             <v-icon icon="mdi-map-marker" size="1.5rem" class="mr-2" color="primary"></v-icon>
-            {{ item.road }}
+            {{ `Endereço ${index}` }}
           </v-card-title>
 
           <v-card-text class="subtitle-card">
-            {{ item.number }} - {{ item.neighborhood }}, {{ item.city }} - {{ item.uf }}
+            {{ item.road }} - {{ item.number }} - {{ item.neighborhood }}, {{ item.city }} -
+            {{ item.uf }}
           </v-card-text>
 
           <v-card-actions>
@@ -136,7 +132,7 @@ const showMessage = (response) => {
 }
 
 .title-card {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
   text-wrap: break-word;
   white-space: normal;

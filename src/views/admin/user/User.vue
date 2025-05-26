@@ -5,6 +5,10 @@ import Table from "@/views/admin/user/Table.vue";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
 import Form from "@/views/admin/user/Form.vue";
 import { filterFIQL } from "@/utils/fiql";
+import useSnackbar from "@/composables/useSnackbar";
+import { computed } from "vue";
+
+const { showMessage } = useSnackbar();
 
 const store = useStore();
 
@@ -26,6 +30,8 @@ const dialogDelete = ref(false);
 const valid = ref(true);
 
 const recordId = ref(null);
+const userLogado = computed(() => store.getters["auth/user"]);
+const userLogadoId = computed(() => userLogado.value?.userId);
 
 const headers = [
   { title: "ID", key: "id", align: "center" },
@@ -163,17 +169,6 @@ const reset = () => {
   valid.value = true;
 };
 
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
-};
-
 const closeDialogForm = () => {
   dialogForm.value = false;
 };
@@ -185,6 +180,7 @@ const closeDialogForm = () => {
       :itens="itens"
       :headers="headers"
       :pagination="pagination"
+      :user-logado-id="userLogadoId"
       @add="add"
       @edit="edit"
       @delete="del"

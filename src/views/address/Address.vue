@@ -2,6 +2,9 @@
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const store = useStore();
 
@@ -11,6 +14,10 @@ const props = defineProps({
     required: true,
   },
   loading: {
+    type: Boolean,
+    default: false,
+  },
+  isProfile: {
     type: Boolean,
     default: false,
   },
@@ -182,17 +189,6 @@ const validateForm = () => {
 
   formValid.value = requiredFieldsValid;
 };
-
-const showMessage = (response) => {
-  const message = response?.success
-    ? "Operação realizada com sucesso!"
-    : "Erro ao realizar operação!";
-
-  store.dispatch("snackbar/showSnackbar", {
-    text: response?.message || message,
-    color: response?.success ? "success" : "error",
-  });
-};
 </script>
 
 <template>
@@ -208,14 +204,17 @@ const showMessage = (response) => {
         no-data-text="Nenhum endereço cadastrado"
         fixed-header
         class="address-table"
+        :class="{ profile: isProfile }"
       >
         <template #top>
           <v-toolbar class="address-toolbar" density="comfortable">
-            <v-toolbar-title class="address-title">Endereços</v-toolbar-title>
+            <v-toolbar-title class="address-title" :class="{ profile: isProfile }"
+              >Endereços</v-toolbar-title
+            >
             <v-spacer />
             <v-btn
               icon="mdi-plus"
-              color="text"
+              :color="isProfile ? 'text' : 'primary'"
               variant="tonal"
               @click="openDialog"
               aria-label="Adicionar novo endereço"
@@ -227,7 +226,7 @@ const showMessage = (response) => {
           <div class="address-actions">
             <v-btn
               icon="mdi-pencil"
-              color="text"
+              :color="isProfile ? 'text' : 'primary'"
               variant="text"
               size="small"
               @click="edit(item)"
@@ -235,7 +234,7 @@ const showMessage = (response) => {
             />
             <v-btn
               icon="mdi-delete"
-              color="text"
+              :color="isProfile ? 'text' : 'primary'"
               variant="text"
               size="small"
               @click="del(item)"
@@ -361,13 +360,12 @@ const showMessage = (response) => {
             :disabled="!formValid"
           >
             <v-icon start icon="mdi-content-save" />
-            Salvar
+            {{ isProfile ? "Cadastrar" : "Adicionar" }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <!-- Dialog de Confirmação de Exclusão -->
     <ConfirmDeleteDialog
       v-model:visible="dialogDelete"
       @confirm="deleteItem"
@@ -398,6 +396,10 @@ const showMessage = (response) => {
   flex: 1;
   min-height: 100px;
   background-color: transparent !important;
+  color: var(--color-text-input);
+}
+
+.address-table.profile {
   color: var(--color-text);
 }
 
@@ -410,6 +412,11 @@ const showMessage = (response) => {
 }
 
 .address-title {
+  font-weight: 500;
+  color: var(--color-text-input);
+}
+
+.address-title.profile {
   font-weight: 500;
   color: var(--color-text);
 }
