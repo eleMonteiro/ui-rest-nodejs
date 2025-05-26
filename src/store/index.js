@@ -7,6 +7,7 @@ import item from "@/store/modules/item";
 import cep from "@/store/modules/cep";
 import card from "@/store/modules/card";
 import payment from "@/store/modules/payment";
+import address from "@/store/modules/address";
 import snackbar from "@/store/modules/snackbar";
 
 const store = createStore({
@@ -20,6 +21,7 @@ const store = createStore({
     snackbar,
     card,
     payment,
+    address,
   },
 });
 
