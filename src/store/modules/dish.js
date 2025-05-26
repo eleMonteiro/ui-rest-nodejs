@@ -90,31 +90,25 @@ const actions = {
 };
 
 const mutations = {
-  SET_DISHES(state, dishes) {
+  SET_DISHES: (state, dishes) => {
     state.dishes = dishes;
   },
 
-  SET_DISH(state, dish) {
+  SET_DISH: (state, dish) => {
     state.dish = dish;
   },
 
-  SET_PAGINATION(state, pagination) {
+  SET_PAGINATION: (state, pagination) => {
     state.pagination = pagination;
   },
 };
 
 const getters = {
-  dishes(state) {
-    return state.dishes;
-  },
+  dishes: (state) => state.dishes,
 
-  dish(state) {
-    return state.dish;
-  },
+  dish: (state) => state.dish,
 
-  pagination(state) {
-    return state.pagination;
-  },
+  pagination: (state) => state.pagination,
 };
 
 export default {

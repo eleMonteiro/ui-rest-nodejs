@@ -65,23 +65,19 @@ const actions = {
 };
 
 const mutations = {
-  SET_CARD(state, card) {
+  SET_CARD: (state, card) => {
     state.card = card;
   },
 
-  SET_CARDS(state, cards) {
+  SET_CARDS: (state, cards) => {
     state.cards = cards;
   },
 };
 
 const getters = {
-  card(state) {
-    return state.card;
-  },
+  card: (state) => state.card,
 
-  cards(state) {
-    return state.cards;
-  },
+  cards: (state) => state.cards,
 };
 
 export default {

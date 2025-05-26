@@ -11,9 +11,9 @@ const actions = {
     try {
       const response = await api.post("/addresses/", data);
       commit("SET_ADDRESS", response?.data?.data);
-      return handleApiResponse(response, "Endereço criado com sucesso.");
+      return handleApiResponse(response, "Address created successfully.");
     } catch (error) {
-      return handleApiError(error, "Erro ao criar endereço.");
+      return handleApiError(error, "Error creating address.");
     }
   },
 
@@ -21,18 +21,18 @@ const actions = {
     try {
       const response = await api.put(`/addresses/${id}`, data);
       commit("SET_ADDRESS", response?.data?.data);
-      return handleApiResponse(response, "Endereço atualizado com sucesso.");
+      return handleApiResponse(response, "Address updated successfully.");
     } catch (error) {
-      return handleApiError(error, "Erro ao atualizar endereço.");
+      return handleApiError(error, "Error updating address.");
     }
   },
 
   async deleteAddress({ commit }, id) {
     try {
       const response = await api.delete(`/addresses/${id}`);
-      return handleApiResponse(response, "Endereço excluído com sucesso.");
+      return handleApiResponse(response, "Address deleted successfully.");
     } catch (error) {
-      return handleApiError(error, "Erro ao excluir endereço.");
+      return handleApiError(error, "Error deleting address.");
     }
   },
 
@@ -43,10 +43,10 @@ const actions = {
       });
 
       commit("SET_ADDRESSES", response?.data?.data || []);
-      return handleApiResponse(response?.data, "Addresses fetched successfully");
+      return handleApiResponse(response?.data, "Addresses fetched successfully.");
     } catch (error) {
       commit("SET_ADDRESSES", []);
-      return handleApiError(error, "Error fetching addresses");
+      return handleApiError(error, "Error fetching addresses.");
     }
   },
 
@@ -54,32 +54,28 @@ const actions = {
     try {
       const response = await api.get(`/addresses/${id}`);
       commit("SET_ADDRESS", response?.data?.data);
-      return handleApiResponse(response, "Endereço carregado com sucesso.");
+      return handleApiResponse(response, "Address loaded successfully.");
     } catch (error) {
       commit("SET_ADDRESS", {});
-      return handleApiError(error, "Erro ao carregar endereço.");
+      return handleApiError(error, "Error loading address.");
     }
   },
 };
 
 const mutations = {
-  SET_ADDRESS(state, address) {
+  SET_ADDRESS: (state, address) => {
     state.addresses.push(address);
   },
 
-  SET_ADDRESSES(state, addresses) {
+  SET_ADDRESSES: (state, addresses) => {
     state.addresses = addresses;
   },
 };
 
 const getters = {
-  addresses: (state) => {
-    return state.addresses;
-  },
+  addresses: (state) => state.addresses,
 
-  address: (state) => {
-    return state.address;
-  },
+  address: (state) => state.address,
 };
 
 export default {

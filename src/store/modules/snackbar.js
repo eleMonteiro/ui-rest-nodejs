@@ -14,26 +14,23 @@ const actions = {
 };
 
 const mutations = {
-  SHOW_MESSAGE(state, { text, color = "success" }) {
+  SHOW_MESSAGE: (state, { text, color = "success" }) => {
     state.show = true;
     state.text = text ? text : "No message provided";
     state.color = color;
   },
-  HIDE_MESSAGE(state) {
+
+  HIDE_MESSAGE: (state) => {
     state.show = false;
   },
 };
 
 const getters = {
-  isSnackbarVisible(state) {
-    return state.show;
-  },
-  snackbarText(state) {
-    return state.text;
-  },
-  snackbarColor(state) {
-    return state.color;
-  },
+  isSnackbarVisible: (state) => state.show,
+
+  snackbarText: (state) => state.text,
+
+  snackbarColor: (state) => state.color,
 };
 
 export default {

@@ -66,31 +66,25 @@ const actions = {
 };
 
 const mutations = {
-  SET_DEMANDS(state, demands) {
+  SET_DEMANDS: (state, demands) => {
     state.demands = demands;
   },
 
-  SET_DEMAND(state, demand) {
+  SET_DEMAND: (state, demand) => {
     state.demand = demand;
   },
 
-  SET_PAGINATION(state, pagination) {
+  SET_PAGINATION: (state, pagination) => {
     state.pagination = pagination;
   },
 };
 
 const getters = {
-  demands(state) {
-    return state.demands;
-  },
+  demands: (state) => state.demands,
 
-  demand(state) {
-    return state.demand;
-  },
+  demand: (state) => state.demand,
 
-  pagination(state) {
-    return state.pagination;
-  },
+  pagination: (state) => state.pagination,
 };
 
 export default {

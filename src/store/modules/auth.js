@@ -89,28 +89,6 @@ const actions = {
   },
 };
 
-const getters = {
-  isAuthenticated(state) {
-    return state.user !== null;
-  },
-
-  roleUser(state) {
-    return state.role || null;
-  },
-
-  user(state) {
-    return state.user || null;
-  },
-
-  nameUser(state) {
-    return state.name || null;
-  },
-
-  tokenValid(state) {
-    return state.tokenValid;
-  },
-};
-
 const mutations = {
   UPDATE_USER: (state, data) => {
     state.user = data;
@@ -128,6 +106,18 @@ const mutations = {
     state.tokenValid = valid;
     state.email = email;
   },
+};
+
+const getters = {
+  isAuthenticated: (state) => state.user !== null,
+
+  roleUser: (state) => state.role || null,
+
+  user: (state) => state.user || null,
+
+  nameUser: (state) => state.name || null,
+
+  tokenValid: (state) => state.tokenValid,
 };
 
 export default {

@@ -87,31 +87,25 @@ const actions = {
 };
 
 const mutations = {
-  SET_USERS(state, users) {
+  SET_USERS: (state, users) => {
     state.users = users;
   },
 
-  SET_USER(state, user) {
+  SET_USER: (state, user) => {
     state.user = user;
   },
 
-  SET_PAGINATION(state, pagination) {
+  SET_PAGINATION: (state, pagination) => {
     state.pagination = pagination;
   },
 };
 
 const getters = {
-  users(state) {
-    return state.users;
-  },
+  users: (state) => state.users,
 
-  user(state) {
-    return state.user;
-  },
+  user: (state) => state.user,
 
-  pagination(state) {
-    return state.pagination;
-  },
+  pagination: (state) => state.pagination,
 };
 
 export default {

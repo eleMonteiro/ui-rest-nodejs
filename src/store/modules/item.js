@@ -62,23 +62,19 @@ const actions = {
 };
 
 const mutations = {
-  SET_ITEMS(state, items) {
+  SET_ITEMS: (state, items) => {
     state.items = items;
   },
 
-  SET_ITEM(state, item) {
+  SET_ITEM: (state, item) => {
     state.item = item;
   },
 };
 
 const getters = {
-  item(state) {
-    return state.item;
-  },
+  item: (state) => state.item,
 
-  items(state) {
-    return state.items;
-  },
+  items: (state) => state.items,
 };
 
 export default {

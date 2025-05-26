@@ -53,16 +53,6 @@ const actions = {
   },
 };
 
-const getters = {
-  address(state) {
-    return state.address || null;
-  },
-
-  addresses(state) {
-    return state.addresses || [];
-  },
-};
-
 const mutations = {
   UPDATE_ADDRESS: (state, data) => {
     state.address = data;
@@ -71,6 +61,12 @@ const mutations = {
   UPDATE_ADDRESSES: (state, data) => {
     state.addresses = data;
   },
+};
+
+const getters = {
+  address: (state) => state.address || null,
+
+  addresses: (state) => state.addresses || [],
 };
 
 export default {
