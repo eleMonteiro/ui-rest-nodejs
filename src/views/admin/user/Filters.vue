@@ -9,7 +9,7 @@ const localFilter = ref({
   id: null,
   name: null,
   cpf: null,
-  perfil: null,
+  role: null,
 });
 
 const localFilterIsValid = () => {
@@ -19,7 +19,7 @@ const localFilterIsValid = () => {
     (filter.id !== null && String(filter.id).trim() !== "") ||
     (filter.name !== null && filter.name.trim() !== "") ||
     (filter.cpf !== null && filter.cpf.trim() !== "") ||
-    (filter.perfil !== null && filter.perfil !== "")
+    (filter.role !== null && filter.role !== "")
   );
 };
 
@@ -29,7 +29,7 @@ const clearFilters = () => {
     id: null,
     name: null,
     cpf: null,
-    perfil: null,
+    role: null,
   };
   localFilter.value = clearedFilter;
   if (isValidFilter) emit("filter", clearedFilter);
@@ -55,7 +55,7 @@ const applyFilters = () => {
     />
 
     <v-select
-      v-model="localFilter.perfil"
+      v-model="localFilter.role"
       label="Perfil"
       :items="roles"
       class="custom-text-field"
