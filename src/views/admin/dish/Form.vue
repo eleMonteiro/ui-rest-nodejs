@@ -199,23 +199,20 @@ const closeDialog = () => {
       </template>
 
       <v-card-actions>
-        <v-btn
-          text="Cancelar"
-          color="primary"
-          variant="flat"
-          @click="closeDialog"
-          class="mr-2"
-        ></v-btn>
+        <v-btn color="primary" variant="flat" @click="closeDialog" class="mr-2">
+          <v-icon icon="mdi mdi-cancel" start /> Cancelar</v-btn
+        >
 
         <v-spacer></v-spacer>
 
         <v-btn
-          text="Salvar"
           color="secondary"
           variant="flat"
           @click="save"
           :disabled="!record.name || !record.description || !record.price"
-        ></v-btn>
+        >
+          <v-icon start icon="mdi-content-save" /> Salvar</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

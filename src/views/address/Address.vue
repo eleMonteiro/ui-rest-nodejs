@@ -5,10 +5,10 @@ import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog.vue";
 import useSnackbar from "@/composables/useSnackbar";
 
 const { showMessage } = useSnackbar();
-
 const store = useStore();
 
 const props = defineProps({
+  userId: Number,
   itens: {
     type: Array,
     required: true,
@@ -23,15 +23,17 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:itens"]);
+const emit = defineEmits(["update:itens", "update:addresses"]);
 
-const dialog = ref(false);
-const isEditing = ref(false);
-const editedIndex = ref(-1);
-const isLoadingCep = ref(false);
-const formValid = ref(false);
-const dialogDelete = ref(false);
-const recordItem = ref(null);
+const RECORD_DEFAULT = {
+  cep: "",
+  road: "",
+  neighborhood: "",
+  city: "",
+  uf: "",
+  complement: "",
+  number: "",
+};
 
 const headers = [
   { title: "ID", key: "id", align: "center" },
@@ -45,29 +47,20 @@ const headers = [
   { title: "Ações", key: "actions", sortable: false, align: "center" },
 ];
 
-const RECORD_DEFAULT = {
-  cep: "",
-  road: "",
-  neighborhood: "",
-  city: "",
-  uf: "",
-  complement: "",
-  number: "",
-};
-
+const dialog = ref(false);
+const isEditing = ref(false);
+const editedIndex = ref(-1);
+const isLoadingCep = ref(false);
+const formValid = ref(false);
+const dialogDelete = ref(false);
+const recordItem = ref(null);
 const editedItem = ref({ ...RECORD_DEFAULT });
 
-const formTitle = computed(() => {
-  return isEditing.value ? "Editar Endereço" : "Novo Endereço";
-});
+const formTitle = computed(() => (isEditing.value ? "Editar Endereço" : "Novo Endereço"));
 
 const localItens = computed({
   get: () => (Array.isArray(props.itens) ? props.itens : []),
-  set: (value) => {
-    if (Array.isArray(value)) {
-      emit("update:itens", value);
-    }
-  },
+  set: (value) => Array.isArray(value) && emit("update:itens", value),
 });
 
 const openDialog = () => {
@@ -77,100 +70,119 @@ const openDialog = () => {
 
 const closeDialog = () => {
   dialog.value = false;
-  setTimeout(() => {
-    editedItem.value = { ...RECORD_DEFAULT };
-    editedIndex.value = -1;
-    isEditing.value = false;
-    formValid.value = false;
-  }, 300);
+  setTimeout(resetForm, 300);
 };
 
-const edit = (item) => {
+const resetForm = () => {
+  editedItem.value = { ...RECORD_DEFAULT };
+  editedIndex.value = -1;
+  isEditing.value = false;
+  formValid.value = false;
+};
+
+const prepareEdit = (item) => {
   isEditing.value = true;
   editedIndex.value = props.itens.indexOf(item);
   editedItem.value = { ...item };
   dialog.value = true;
-  setTimeout(() => validateForm(), 100);
+  setTimeout(validateForm, 100);
 };
 
-const del = (item) => {
+const prepareDelete = (item) => {
   recordItem.value = item;
   dialogDelete.value = true;
 };
 
 const deleteItem = async () => {
-  const index = props.itens.indexOf(recordItem.value);
-  if (index === -1) return;
-  localItens.value.splice(index, 1);
-  showMessage({
-    success: true,
-    message: "Endereço removido da grid com sucesso!",
-  });
+  props.isProfile ? await handleProfileDelete() : handleLocalDelete();
 };
 
-const save = () => {
+const handleProfileDelete = async () => {
+  try {
+    const response = await store.dispatch("address/deleteAddress", recordItem.value.id);
+    showMessage(response);
+    response?.success && emit("update:addresses");
+  } catch {
+    showMessage({ success: false, message: "Erro ao remover endereço" });
+  }
+};
+
+const handleLocalDelete = () => {
+  const index = props.itens.indexOf(recordItem.value);
+  if (index === -1) return;
+
+  localItens.value.splice(index, 1);
+  showMessage({ success: true, message: "Endereço removido da grid com sucesso!" });
+};
+
+const save = async () => {
   if (!formValid.value) return;
-  if (!isEditing.value && existAddress(editedItem.value)) {
-    showMessage({
-      success: false,
-      message: "Endereço já cadastrado!",
-    });
-    return;
+
+  if (shouldConvertToEdit()) {
+    convertToEdit();
   }
 
-  const updatedItems = [...localItens.value];
-  if (isEditing.value) {
-    updatedItems[editedIndex.value] = { ...editedItem.value };
-    showMessage({
-      success: true,
-      message: "Endereço atualizado na grid com sucesso!",
-    });
-  } else {
-    updatedItems.push({ ...editedItem.value });
-    showMessage({
-      success: true,
-      message: "Endereço adicionado na grid com sucesso!",
-    });
-  }
+  props.isProfile ? await handleProfileSave() : handleLocalSave();
 
-  emit("update:itens", updatedItems);
   closeDialog();
 };
 
-const existAddress = (address) => {
-  const existingAddress = localItens.value.find(
-    (item) => item.cep === address.cep.replace(/\D/g, "")
-  );
-  return existingAddress !== undefined;
+const shouldConvertToEdit = () => {
+  return !isEditing.value && existAddress(editedItem.value);
 };
 
-const fetchAddressByCep = async () => {
-  isLoadingCep.value = true;
-  try {
-    const cepFormatted = editedItem.value.cep.replace(/\D/g, "");
-    await store.dispatch("cep/getAddressByCep", cepFormatted);
-    const data = store.getters["cep/address"];
+const convertToEdit = () => {
+  const cepDigits = sanitizeCep(editedItem.value.cep);
 
-    if (data) {
-      editedItem.value.road = data.logradouro || "";
-      editedItem.value.neighborhood = data.bairro || "";
-      editedItem.value.city = data.localidade || "";
-      editedItem.value.uf = data.uf || "";
-    } else {
-      showMessage({
-        success: false,
-        message: "CEP não encontrado",
-      });
-    }
-  } catch (error) {
-    showMessage({
-      success: false,
-      message: "Erro ao buscar endereço pelo CEP",
-    });
-  } finally {
-    isLoadingCep.value = false;
+  if (props.isProfile) {
+    editedItem.value.id = findMatchingItemId(cepDigits);
+    editedItem.value.userId = props.userId;
+  } else {
+    editedIndex.value = findEditedIndex(cepDigits);
   }
+
+  isEditing.value = true;
 };
+
+const handleProfileSave = async () => {
+  const action = isEditing.value ? "address/updateAddress" : "address/createAddress";
+
+  const payload = isEditing.value
+    ? { id: editedItem.value.id, data: editedItem.value }
+    : { ...editedItem.value, userId: props.userId };
+
+  const response = await store.dispatch(action, payload);
+  showMessage(response);
+  response?.success && emit("update:addresses");
+};
+
+const handleLocalSave = () => {
+  const updatedItems = [...localItens.value];
+  editedItem.value.cep = sanitizeCep(editedItem.value.cep);
+
+  if (isEditing.value) {
+    updatedItems[editedIndex.value] = { ...editedItem.value };
+    showMessage({ success: true, message: "Endereço atualizado na grid com sucesso!" });
+  } else {
+    updatedItems.push({ ...editedItem.value });
+    showMessage({ success: true, message: "Endereço adicionado na grid com sucesso!" });
+  }
+
+  emit("update:itens", updatedItems);
+};
+
+const existAddress = (address) => {
+  const cepDigits = sanitizeCep(address.cep);
+  return localItens.value.some((item) => sanitizeCep(item.cep) === cepDigits);
+};
+
+const sanitizeCep = (cep) => cep.replace(/\D/g, "");
+
+const findMatchingItemId = (cepDigits) =>
+  props.itens.find((item) => sanitizeCep(item.cep) === cepDigits)?.id;
+
+const findEditedIndex = (cepDigits) =>
+  localItens.value.findIndex((item) => sanitizeCep(item.cep) === cepDigits);
 
 const handleCepBlur = async () => {
   if (editedItem.value.cep.length === 10) {
@@ -178,21 +190,39 @@ const handleCepBlur = async () => {
   }
 };
 
-const validateForm = () => {
-  const requiredFieldsValid =
-    editedItem.value.cep?.length === 10 &&
-    !!editedItem.value.road &&
-    !!editedItem.value.number &&
-    !!editedItem.value.neighborhood &&
-    !!editedItem.value.city &&
-    editedItem.value.uf?.length === 2;
+const fetchAddressByCep = async () => {
+  isLoadingCep.value = true;
+  try {
+    const cepFormatted = sanitizeCep(editedItem.value.cep);
+    await store.dispatch("cep/getAddressByCep", cepFormatted);
+    const data = store.getters["cep/address"];
 
-  formValid.value = requiredFieldsValid;
+    if (data?.cep) {
+      updateAddressFields(data);
+    }
+  } catch {
+    showMessage({ success: false, message: "Erro ao buscar endereço pelo CEP" });
+  } finally {
+    isLoadingCep.value = false;
+  }
+};
+
+const updateAddressFields = (data) => {
+  editedItem.value.road = data.logradouro || "";
+  editedItem.value.neighborhood = data.bairro || "";
+  editedItem.value.city = data.localidade || "";
+  editedItem.value.uf = data.uf || "";
+};
+
+const validateForm = () => {
+  const { cep, road, number, neighborhood, city, uf } = editedItem.value;
+  formValid.value =
+    cep?.length === 10 && !!road && !!number && !!neighborhood && !!city && uf?.length === 2;
 };
 </script>
 
 <template>
-  <div class="address-container">
+  <div class="address-container" :class="{ profile: isProfile }">
     <v-card class="address-card" elevation="2">
       <v-data-table
         :key="itens?.length"
@@ -207,7 +237,7 @@ const validateForm = () => {
         :class="{ profile: isProfile }"
       >
         <template #top>
-          <v-toolbar class="address-toolbar" density="comfortable">
+          <v-toolbar class="address-toolbar" :class="{ profile: isProfile }" density="comfortable">
             <v-toolbar-title class="address-title" :class="{ profile: isProfile }"
               >Endereços</v-toolbar-title
             >
@@ -229,7 +259,7 @@ const validateForm = () => {
               :color="isProfile ? 'text' : 'primary'"
               variant="text"
               size="small"
-              @click="edit(item)"
+              @click="prepareEdit(item)"
               aria-label="Editar endereço"
             />
             <v-btn
@@ -237,14 +267,14 @@ const validateForm = () => {
               :color="isProfile ? 'text' : 'primary'"
               variant="text"
               size="small"
-              @click="del(item)"
+              @click="prepareDelete(item)"
               aria-label="Excluir endereço"
             />
           </div>
         </template>
 
         <template #item.cep="{ item }">
-          {{ item.cep }}
+          {{ item?.cep }}
         </template>
       </v-data-table>
     </v-card>
@@ -275,7 +305,7 @@ const validateForm = () => {
                     v-mask="'##.###-###'"
                     prepend-inner-icon="mdi-map-marker"
                     persistent-hint
-                    hint="Digite o CEP para autocompletar"
+                    :hint="isEditing ? '' : 'Digite o CEP para auto completar'"
                     class="custom-text-field"
                   />
                 </v-col>
@@ -350,7 +380,9 @@ const validateForm = () => {
         <v-divider />
 
         <v-card-actions class="dialog-actions">
-          <v-btn color="primary" variant="flat" @click="closeDialog"> Cancelar </v-btn>
+          <v-btn color="primary" variant="flat" @click="closeDialog">
+            <v-icon icon="mdi mdi-cancel" start /> Cancelar
+          </v-btn>
           <v-spacer />
           <v-btn
             color="secondary"
@@ -376,7 +408,7 @@ const validateForm = () => {
 </template>
 
 <style scoped>
-.address-container {
+.address-container.profile {
   display: flex;
   flex-direction: column;
   height: 100px;
@@ -395,7 +427,14 @@ const validateForm = () => {
 .address-table {
   flex: 1;
   min-height: 100px;
-  background-color: transparent !important;
+  background-color: var(--color-background-card) !important;
+  color: var(--color-text-input);
+}
+
+.address-table.profile {
+  flex: 1;
+  min-height: 100px;
+  background-color: var(--color-primary) !important;
   color: var(--color-text-input);
 }
 
@@ -404,11 +443,19 @@ const validateForm = () => {
 }
 
 .address-table :deep(.v-data-table__td) {
-  background-color: transparent !important;
+  background-color: var(--color-background-card) !important;
+}
+
+.address-table.profile :deep(.v-data-table__td) {
+  background-color: var(--color-primary) !important;
 }
 
 .address-toolbar {
-  background-color: transparent !important;
+  background-color: var(--color-background-card) !important;
+}
+
+.address-toolbar.profile {
+  background-color: var(--color-primary) !important;
 }
 
 .address-title {

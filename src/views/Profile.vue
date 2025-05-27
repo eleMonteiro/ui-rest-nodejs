@@ -2,6 +2,9 @@
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import Address from "@/views/address/Address.vue";
+import useSnackbar from "@/composables/useSnackbar";
+
+const { showMessage } = useSnackbar();
 
 const store = useStore();
 const user = ref({
@@ -27,8 +30,24 @@ const rules = {
   email: (v) => /.+@.+\..+/.test(v) || "E-mail inválido",
 };
 
-const updateAddresses = (newAddresses) => {
-  user.value.addresses = newAddresses;
+const updateAddresses = () => {
+  fetchAddress();
+};
+
+const fetchAddress = async () => {
+  try {
+    const response = await store.dispatch("address/getAddressesByFilter", {
+      userId: userId.value,
+    });
+
+    if (response?.success) {
+      user.value.addresses = store.getters["address/addresses"];
+    } else {
+      showMessage(response);
+    }
+  } catch (error) {
+    showMessage(error);
+  }
 };
 
 const fetchUser = async (id) => {
@@ -166,9 +185,10 @@ const save = async () => {
             <v-col cols="12">
               <div class="address-container">
                 <Address
+                  :userId="userId"
                   is-profile="true"
                   :itens="user.addresses"
-                  @update:itens="updateAddresses"
+                  @update:addresses="updateAddresses"
                   class="address-container"
                 >
                 </Address>

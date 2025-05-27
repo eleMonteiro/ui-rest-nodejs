@@ -140,7 +140,7 @@ const textBtnPrev = computed(() => {
 });
 
 const iconBtnPrev = computed(() => {
-  return currentStep.value === 2 ? "mdi-arrow-left" : "mdi-close";
+  return currentStep.value === 2 ? "mdi-arrow-left" : "mdi mdi-cancel";
 });
 
 const textBtnNext = computed(() => {

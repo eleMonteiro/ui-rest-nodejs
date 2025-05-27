@@ -72,7 +72,7 @@ const redirectLogin = () => {
 
           <v-card-actions>
             <v-btn size="large" color="primary" variant="flat" @click="redirectLogin">
-              Cancelar
+              <v-icon icon="mdi mdi-cancel" start />Cancelar
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
