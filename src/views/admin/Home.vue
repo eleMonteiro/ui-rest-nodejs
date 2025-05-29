@@ -5,6 +5,7 @@ import HomeLayout from "@/components/Layout.vue";
 import Dish from "@/views/admin/dish/Dish.vue";
 import Profile from "@/views/Profile.vue";
 import User from "@/views/admin/user/User.vue";
+import Placed from "@/views/admin/placed/Placed.vue";
 import { useStore } from "vuex";
 import router from "@/router";
 
@@ -30,6 +31,11 @@ const menu = ref({
       dialog: false,
       isEditing: false,
     },
+  },
+  placed: {
+    name: "placed",
+    icon: "mdi mdi-tray-full",
+    component: markRaw(Placed),
   },
   logout: {
     name: "logout",

@@ -70,7 +70,7 @@ const close = () => {
           </v-col>
           <v-col cols="12">
             <v-icon icon="mdi-map-marker" size="1.5rem" class="mr-2" color="primary"></v-icon>
-            <span>{{ `${record?.address}` }}</span>
+            <span>{{ `${record?.address || "Retirada na Loja"}` }}</span>
           </v-col>
         </v-row>
         <v-row>

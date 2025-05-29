@@ -22,6 +22,7 @@ const DEFAULT_DEMAND = reactive({
   addressId: null,
   userId: null,
   items: [],
+  deliveryMethod: "RETIRADA",
 });
 
 const RECORD_DEFAULT = {
@@ -71,7 +72,12 @@ const canProceed = computed(() => {
     case 1:
       return cartItems.value.length > 0;
     case 2:
-      return DEFAULT_DEMAND.addressId !== null;
+      if (DEFAULT_DEMAND.deliveryMethod === "ENTREGA") {
+        return DEFAULT_DEMAND.addressId !== null;
+      } else if (DEFAULT_DEMAND.deliveryMethod === "RETIRADA") {
+        return true;
+      }
+      return false;
     default:
       return true;
   }
@@ -184,6 +190,11 @@ const handleCepSelect = async (data) => {
   DEFAULT_DEMAND.addressId = data.id || null;
 };
 
+const handleDeliveryMethodChange = (method) => {
+  console.log("handleDeliveryMethodChange", method);
+  DEFAULT_DEMAND.deliveryMethod = method;
+};
+
 const handleFinished = (val) => {
   isPaymentValid.value = val?.value || false;
 };
@@ -206,7 +217,11 @@ const handleFinished = (val) => {
         </v-window-item>
 
         <v-window-item :value="2" class="window-item-full">
-          <Address :address="address" @cep-select="handleCepSelect" />
+          <Address
+            :address="address"
+            @cep-select="handleCepSelect"
+            @delivery-method-change="handleDeliveryMethodChange"
+          />
         </v-window-item>
 
         <v-window-item :value="3" class="window-item-full">

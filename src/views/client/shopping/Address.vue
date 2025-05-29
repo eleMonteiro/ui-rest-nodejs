@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import useSnackbar from "@/composables/useSnackbar";
+import { DEMAND_DELIVERY_METHOD } from "@/constants/demand";
 import { useStore } from "vuex";
 
 const { showMessage } = useSnackbar();
@@ -28,12 +29,9 @@ const userId = computed(() => user.value?.id);
 const addresses = ref([]);
 const isLoadingCep = ref(props.isLoadingCep);
 const selectedAddressId = ref(null);
+const deliveryMethod = ref("RETIRADA");
 
-onMounted(() => {
-  fetchAddresses();
-});
-
-const emit = defineEmits(["cep-select"]);
+const emit = defineEmits(["cep-select", "delivery-method-change"]);
 
 const isSelected = (address) => {
   return selectedAddressId.value === address.id;
@@ -90,9 +88,32 @@ const groupedItems = computed(() => {
   }
   return rows;
 });
+
+watch(deliveryMethod, (newMethod) => {
+  emit("delivery-method-change", newMethod);
+
+  if (newMethod === "ENTREGA") {
+    fetchAddresses();
+  } else {
+    addresses.value = [];
+    selectedAddressId.value = null;
+    emit("cep-select", null);
+  }
+});
 </script>
 
 <template>
+  <v-row>
+    <v-col cols="12">
+      <v-radio-group v-model="deliveryMethod" inline>
+        <v-radio v-for="method in DEMAND_DELIVERY_METHOD" :key="method.value" :value="method.value">
+          <template #label>
+            {{ method.label }}
+          </template>
+        </v-radio>
+      </v-radio-group>
+    </v-col>
+  </v-row>
   <v-row>
     <template v-for="(row, rowIndex) in groupedItems" :key="rowIndex">
       <v-col v-for="(item, index) in row" :key="index" cols="12" sm="2" md="2">

@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { FORM_PAYMENT } from "@/constants/formPayment";
+import { DEMAND_STATUS } from "@/constants/demand";
 import { formatMoney, formatDate } from "@/utils/format";
 import Dialog from "@/views/client/placed/PlacedDialog.vue";
 import useSnackbar from "@/composables/useSnackbar";
@@ -63,6 +64,18 @@ const formPayment = (demand) => {
     }
   );
 };
+
+const status = (status) => {
+  const value = status;
+  console.log(value);
+
+  return (
+    DEMAND_STATUS.find((option) => option.value === value) || {
+      label: "Não identificado",
+      icon: "mdi-help-circle",
+    }
+  );
+};
 </script>
 
 <template>
@@ -85,6 +98,16 @@ const formPayment = (demand) => {
               <v-icon icon="mdi-cart" size="1.5rem" class="mr-2" color="primary"></v-icon>
               Pedido
             </v-card-title>
+
+            <v-card-text class="demand-text">
+              <v-icon
+                :icon="status(demand?.status).icon"
+                size="1.5rem"
+                class="mr-2"
+                color="primary"
+              ></v-icon>
+              {{ status(demand?.status).label }}
+            </v-card-text>
 
             <v-card-subtitle class="demand-text">
               <v-icon icon="mdi-tag" size="1.5rem" class="mr-2" color="primary"></v-icon>
@@ -161,7 +184,7 @@ const formPayment = (demand) => {
 }
 
 .card-row .v-col {
-  max-width: 300px;
+  max-width: 350px;
 }
 
 .card-demand {
@@ -171,7 +194,7 @@ const formPayment = (demand) => {
   flex-direction: column;
 
   width: 250px;
-  height: 250px;
+  height: 300px;
 }
 
 .card-demand .v-card-title,
