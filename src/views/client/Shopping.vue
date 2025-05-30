@@ -191,7 +191,6 @@ const handleCepSelect = async (data) => {
 };
 
 const handleDeliveryMethodChange = (method) => {
-  console.log("handleDeliveryMethodChange", method);
   DEFAULT_DEMAND.deliveryMethod = method;
 };
 

@@ -69,13 +69,18 @@ const fetchAddresses = async () => {
       const data = store.getters["cep/addresses"];
       addresses.value = data || [];
     } else {
-      showMessage({ success: false, message: "Endereços não cadastrado" });
+      showMessage(response);
     }
-  } catch {
-    showMessage({ success: false, message: "Erro ao buscar endereço pelo CEP e Usuário" });
+
+    if (addresses.value.length > 0) {
+      showMessage(response);
+    } else {
+      showMessage({ message: "Address not found.", success: false });
+    }
+  } catch (error) {
+    showMessage(error);
   } finally {
     isLoadingCep.value = false;
-    showMessage({ success: true, message: "Endereços carregados com sucesso!" });
   }
 };
 

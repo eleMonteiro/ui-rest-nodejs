@@ -52,6 +52,15 @@ const actions = {
     }
   },
 
+  async updateDemand({ dispatch }, demandData) {
+    try {
+      const response = await api.put(`/demands/${demandData.id}`, demandData);
+      return handleApiResponse(response, "User updated successfully");
+    } catch (error) {
+      return handleApiError(error, "Error updating user");
+    }
+  },
+
   async deleteDemand({ dispatch }, id) {
     try {
       const response = await api.delete(`/demands/${id}`);

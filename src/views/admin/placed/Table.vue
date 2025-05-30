@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { DEMAND_STATUS, DEMAND_DELIVERY_METHOD } from "@/constants/demand";
-import { formatMoney, formatDate } from "@/utils/format";
+import { formatDate } from "@/utils/format";
 import Filters from "@/views/admin/placed/Filters.vue";
 
 const props = defineProps({
@@ -23,7 +23,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["reset", "update-table", "filter"]);
+const emit = defineEmits(["edit", "reset", "update-table", "filter"]);
 
 const filter = ref({
   id: null,
@@ -31,6 +31,14 @@ const filter = ref({
   deliveryMethod: null,
   status: null,
 });
+
+const edit = (id) => {
+  emit("edit", id);
+};
+
+const view = (id) => {
+  emit("view", id);
+};
 
 const reset = () => {
   emit("reset");
@@ -73,14 +81,39 @@ const fetchFilter = (filter) => {
     </template>
 
     <template v-slot:item.status="{ item }">
-      <v-select
-        chips
-        v-model="item.status"
-        :items="DEMAND_STATUS"
-        :model-value="item.status"
-        item-title="label"
-        item-value="value"
-      ></v-select>
+      {{ DEMAND_STATUS.find((option) => option.value === item.status)?.label }}
+    </template>
+
+    <template v-slot:item.actions="{ item }">
+      <div
+        v-if="item.status !== 'ENTREGUE' && item.status !== 'CANCELADO'"
+        class="d-flex ga-2 justify-end"
+      >
+        <v-tooltip text="Editar" location="top">
+          <template #activator="{ props }">
+            <v-icon
+              color="text"
+              icon="mdi-pencil"
+              size="small"
+              @click="edit(item.id)"
+              v-bind="props"
+            ></v-icon>
+          </template>
+        </v-tooltip>
+      </div>
+      <div v-else class="d-flex ga-2 justify-end">
+        <v-tooltip text="Visualizar" location="top">
+          <template #activator="{ props }">
+            <v-icon
+              color="text"
+              icon="mdi-eye"
+              size="small"
+              @click="view(item.id)"
+              v-bind="props"
+            ></v-icon>
+          </template>
+        </v-tooltip>
+      </div>
     </template>
 
     <template v-slot:no-data>
