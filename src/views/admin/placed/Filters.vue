@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { DEMAND_STATUS, DEMAND_DELIVERY_METHOD } from "@/constants/demand";
+import { formatDate } from "@/utils/format";
 
 const emit = defineEmits(["filter"]);
 
@@ -15,24 +16,12 @@ const date = ref(null);
 
 watch(date, (newDate) => {
   if (newDate) {
-    localFilter.value.dateOfDemand = newDate.toISOString().substring(0, 10);
+    localFilter.value.dateOfDemand = formatDate(newDate);
   }
 });
 
-watch(
-  () => localFilter.value.dateOfDemand,
-  (val) => {
-    if (val) {
-      date.value = new Date(val);
-    } else {
-      date.value = null;
-    }
-  }
-);
-
 const localFilterIsValid = () => {
   const filter = localFilter.value;
-  console.log("localFilterIsValid", filter);
   return (
     (filter.id !== null && String(filter.id).trim() !== "") ||
     (filter.dateOfDemand !== null && filter.dateOfDemand.trim() !== "") ||

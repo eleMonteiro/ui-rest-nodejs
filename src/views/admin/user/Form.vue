@@ -4,6 +4,7 @@ import { validateDate } from "@/utils/validate";
 import { useStore } from "vuex";
 import Address from "@/views/address/Address.vue";
 import useSnackbar from "@/composables/useSnackbar";
+import { formatDate } from "@/utils/format";
 
 const { showMessage } = useSnackbar();
 
@@ -50,6 +51,8 @@ const localRecord = ref({
 const loading = ref(false);
 const currentStep = ref(1);
 const form = ref(null);
+const picker = ref(false);
+const date = ref(null);
 
 const dialogVisible = computed({
   get: () => props.dialog,
@@ -177,6 +180,17 @@ watch(
   },
   { deep: true }
 );
+
+watch(
+  () => date.value,
+  (newDate) => {
+    if (newDate) {
+      localRecord.value.dateOfBirth = formatDate(newDate);
+    } else {
+      localRecord.value.dateOfBirth = "";
+    }
+  }
+);
 </script>
 
 <template>
@@ -242,9 +256,16 @@ watch(
                       :rules="[rules.required, rules.date]"
                       prepend-inner-icon="mdi-calendar"
                       placeholder="DD/MM/AAAA"
-                      v-mask="'##/##/####'"
+                      readonly
+                      @click="picker = true"
                       class="custom-text-field"
                     ></v-text-field>
+
+                    <v-dialog v-model="picker" width="auto">
+                      <v-card>
+                        <v-date-picker v-model="date" @update:model-value="picker = false" />
+                      </v-card>
+                    </v-dialog>
                   </v-col>
                 </v-row>
                 <v-row>

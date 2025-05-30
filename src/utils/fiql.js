@@ -21,8 +21,9 @@ export const filterFIQL = (filter = {}) => {
         return null;
       }
 
-      if (!isNaN(new Date(value))) {
-        return `${key}==${value}`;
+      const [day, month, year] = value.split("/");
+      if (!isNaN(new Date(`${year}-${month}-${day}`))) {
+        return `${key}==${year}-${month}-${day}`;
       }
 
       if (typeof value === "string") {
