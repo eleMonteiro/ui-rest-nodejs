@@ -8,11 +8,22 @@ const state = {
 };
 
 const actions = {
-  async getDemands({ commit }) {
+  async getDemands(
+    { commit },
+    { page = 1, pageSize = 10, sort = { field: "id", order: "asc" }, filter = "" }
+  ) {
     try {
-      const response = await api.get("/demands");
+      const response = await api.get("/demands", {
+        params: {
+          page,
+          pageSize,
+          sort,
+          filter,
+        },
+      });
       const { data } = response?.data;
-      commit("SET_DEMANDS", data);
+      commit("SET_DEMANDS", data?.demands);
+      commit("SET_PAGINATION", data?.pagination);
       return handleApiResponse(response, "Demands fetched successfully");
     } catch (error) {
       commit("SET_DEMANDS", []);

@@ -21,6 +21,10 @@ export const filterFIQL = (filter = {}) => {
         return null;
       }
 
+      if (!isNaN(new Date(value))) {
+        return `${key}==${value}`;
+      }
+
       if (typeof value === "string") {
         const safeValue = value.trim();
         return safeValue ? `${key}=like=${safeValue}` : null;
