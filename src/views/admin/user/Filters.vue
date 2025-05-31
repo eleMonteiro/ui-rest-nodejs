@@ -14,7 +14,6 @@ const localFilter = ref({
 
 const localFilterIsValid = () => {
   const filter = localFilter.value;
-
   return (
     (filter.id !== null && String(filter.id).trim() !== "") ||
     (filter.name !== null && filter.name.trim() !== "") ||
@@ -24,7 +23,6 @@ const localFilterIsValid = () => {
 };
 
 const clearFilters = () => {
-  const isValidFilter = localFilterIsValid();
   const clearedFilter = {
     id: null,
     name: null,
@@ -32,12 +30,13 @@ const clearFilters = () => {
     role: null,
   };
   localFilter.value = clearedFilter;
-  if (isValidFilter) emit("filter", clearedFilter);
+  emit("filter", clearedFilter);
 };
 
 const applyFilters = () => {
-  const isValidFilter = localFilterIsValid();
-  if (isValidFilter) emit("filter", localFilter.value);
+  if (localFilterIsValid()) {
+    emit("filter", localFilter.value);
+  }
 };
 </script>
 
@@ -54,12 +53,7 @@ const applyFilters = () => {
       class="custom-text-field"
     />
 
-    <v-select
-      v-model="localFilter.role"
-      label="Perfil"
-      :items="roles"
-      class="custom-text-field"
-    />
+    <v-select v-model="localFilter.role" label="Perfil" :items="roles" class="custom-text-field" />
 
     <v-btn
       color="secondary"

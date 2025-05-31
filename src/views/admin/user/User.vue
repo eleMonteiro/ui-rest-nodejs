@@ -60,15 +60,25 @@ onMounted(async () => {
   reset();
 });
 
-const updateTable = (options, filter) => {
-  const { page, itemsPerPage, sortBy } = options;
+const handleUpdateTable = ({ page, itemsPerPage, sortBy, filter }) => {
   pagination.value.page = page;
   pagination.value.pageSize = itemsPerPage;
-  pagination.value.filter = { ...filter };
-  pagination.value.sort = {
-    field: sortBy && sortBy.length > 0 ? sortBy[0].key : "id",
-    order: sortBy && sortBy.length > 0 ? sortBy[0].order : "asc",
-  };
+  pagination.value.filter = filter ? { ...filter } : {};
+
+  if (sortBy && sortBy.length > 0) {
+    pagination.value.sort = {
+      field: sortBy[0].key,
+      order: sortBy[0].order,
+    };
+  }
+
+  fetchUsers();
+};
+
+const handleFilter = ({ page, itemsPerPage, filter }) => {
+  pagination.value.page = page || 1;
+  pagination.value.pageSize = itemsPerPage || pagination.value.pageSize;
+  pagination.value.filter = filter ? { ...filter } : {};
   fetchUsers();
 };
 
@@ -185,8 +195,8 @@ const closeDialogForm = () => {
       @edit="edit"
       @delete="del"
       @reset="reset"
-      @update-table="updateTable"
-      @filter="updateTable"
+      @update-table="handleUpdateTable"
+      @filter="handleFilter"
     ></Table>
 
     <Form

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { CATEGORY_OPTIONS } from "@/constants/category";
 import { formatMoney } from "@/utils/format";
 import Filters from "@/views/admin/dish/Filters.vue";
@@ -30,8 +30,21 @@ const filter = ref({
   name: null,
   description: null,
   category: null,
-  price: null,
+  price: {
+    op: "",
+    value: null,
+  },
 });
+
+watch(
+  () => props.pagination.filter,
+  (newFilter) => {
+    if (newFilter) {
+      filter.value = { ...newFilter };
+    }
+  },
+  { immediate: true }
+);
 
 const add = () => {
   emit("add");
@@ -50,11 +63,19 @@ const reset = () => {
 };
 
 const updateTable = (options) => {
-  emit("update-table", options, filter);
+  emit("update-table", {
+    ...options,
+    filter: filter.value,
+  });
 };
 
-const fetchFilter = (filter) => {
-  emit("filter", props.pagination, filter);
+const fetchFilter = (newFilter) => {
+  filter.value = newFilter;
+  emit("filter", {
+    page: 1,
+    itemsPerPage: props.pagination.pageSize,
+    filter: newFilter,
+  });
 };
 </script>
 
