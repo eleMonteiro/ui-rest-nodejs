@@ -12,16 +12,6 @@ const localFilter = ref({
   role: null,
 });
 
-const localFilterIsValid = () => {
-  const filter = localFilter.value;
-  return (
-    (filter.id !== null && String(filter.id).trim() !== "") ||
-    (filter.name !== null && filter.name.trim() !== "") ||
-    (filter.cpf !== null && filter.cpf.trim() !== "") ||
-    (filter.role !== null && filter.role !== "")
-  );
-};
-
 const clearFilters = () => {
   const clearedFilter = {
     id: null,
@@ -34,9 +24,7 @@ const clearFilters = () => {
 };
 
 const applyFilters = () => {
-  if (localFilterIsValid()) {
-    emit("filter", localFilter.value);
-  }
+  emit("filter", localFilter.value);
 };
 </script>
 
@@ -77,6 +65,8 @@ const applyFilters = () => {
   gap: 1rem;
   align-items: center;
   justify-content: center;
+
+  height: 20%;
 }
 
 .custom-text-field :deep(.v-input__control) {

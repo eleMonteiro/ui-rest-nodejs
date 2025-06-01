@@ -20,18 +20,7 @@ watch(date, (newDate) => {
   }
 });
 
-const localFilterIsValid = () => {
-  const filter = localFilter.value;
-  return (
-    (filter.id !== null && String(filter.id).trim() !== "") ||
-    (filter.dateOfDemand !== null && filter.dateOfDemand.trim() !== "") ||
-    (filter.deliveryMethod !== null && filter.deliveryMethod.trim() !== "") ||
-    (filter.status !== null && filter.status !== "")
-  );
-};
-
 const clearFilters = () => {
-  const isValidFilter = localFilterIsValid();
   const clearedFilter = {
     id: null,
     dateOfDemand: null,
@@ -40,12 +29,11 @@ const clearFilters = () => {
   };
   picker.value = false;
   localFilter.value = clearedFilter;
-  if (isValidFilter) emit("filter", clearedFilter);
+  emit("filter", clearedFilter);
 };
 
 const applyFilters = () => {
-  const isValidFilter = localFilterIsValid();
-  if (isValidFilter) emit("filter", localFilter.value);
+  emit("filter", localFilter.value);
 };
 </script>
 
@@ -107,6 +95,8 @@ const applyFilters = () => {
   gap: 1rem;
   align-items: center;
   justify-content: center;
+
+  height: 20%;
 }
 
 .custom-text-field :deep(.v-input__control) {

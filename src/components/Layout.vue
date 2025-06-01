@@ -14,7 +14,10 @@ const props = defineProps({
 
 const itemMenu = ref(Object.keys(props.menuItems)[0]);
 
-const activeComponent = computed(() => props.menuItems[itemMenu.value]);
+const activeComponent = computed(() => {
+  console.log("Active component:", itemMenu.value);
+  return props.menuItems[itemMenu.value]
+});
 
 const handleMenuClick = (key) => {
   if (key === "logout") {

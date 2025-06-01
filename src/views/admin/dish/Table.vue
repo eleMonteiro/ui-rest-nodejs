@@ -149,7 +149,7 @@ const fetchFilter = (newFilter) => {
 <style scoped>
 .table {
   width: 100%;
-  height: 90%;
+  height: 80%;
 
   background-color: transparent;
   color: var(--color-text);

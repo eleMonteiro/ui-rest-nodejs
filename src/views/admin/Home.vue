@@ -14,7 +14,7 @@ const store = useStore();
 const menu = ref({
   home: {
     name: "home",
-    icon: "mdi mdi-home",
+    icon: "mdi mdi-account",
     component: markRaw(Profile),
   },
   food: {

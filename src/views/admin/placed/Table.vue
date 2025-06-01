@@ -45,11 +45,19 @@ const reset = () => {
 };
 
 const updateTable = (options) => {
-  emit("update-table", options, filter);
+  emit("update-table", {
+    ...options,
+    filter: filter.value,
+  });
 };
 
 const fetchFilter = (filter) => {
-  emit("filter", props.pagination, filter);
+  filter.value = newFilter;
+  emit("filter", {
+    page: 1,
+    itemsPerPage: props.pagination.pageSize,
+    filter: newFilter,
+  });
 };
 </script>
 
@@ -131,7 +139,7 @@ const fetchFilter = (filter) => {
 <style scoped>
 .table {
   width: 100%;
-  height: 90%;
+  height: 80%;
 
   background-color: transparent;
   color: var(--color-text);

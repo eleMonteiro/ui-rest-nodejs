@@ -277,7 +277,7 @@ const handleFinished = (val) => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 100%;
 
   background-color: transparent;
   color: var(--color-text);

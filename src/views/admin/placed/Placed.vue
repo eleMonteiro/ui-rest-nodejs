@@ -12,9 +12,9 @@ const store = useStore();
 
 const headers = [
   { title: "ID", key: "id", align: "start", sortable: true },
-  { title: "Data do Pedido", key: "dateOfDemand", align: "center", sortable: true },
-  { title: "Método de Entrega", key: "deliveryMethod", align: "center", sortable: true },
-  { title: "Status", key: "status", align: "center", sortable: false },
+  { title: "Data do Pedido", key: "dateOfDemand", align: "start", sortable: true },
+  { title: "Método de Entrega", key: "deliveryMethod", align: "start", sortable: true },
+  { title: "Status", key: "status", align: "start", sortable: false },
   { title: "", key: "actions", align: "center", sortable: false },
 ];
 
@@ -51,15 +51,25 @@ onMounted(async () => {
   reset();
 });
 
-const updateTable = (options, filter) => {
-  const { page, itemsPerPage, sortBy } = options;
+const handleUpdateTable = ({ page, itemsPerPage, sortBy, filter }) => {
   pagination.value.page = page;
   pagination.value.pageSize = itemsPerPage;
-  pagination.value.filter = { ...filter };
-  pagination.value.sort = {
-    field: sortBy && sortBy.length > 0 ? sortBy[0].key : "id",
-    order: sortBy && sortBy.length > 0 ? sortBy[0].order : "asc",
-  };
+  pagination.value.filter = filter ? { ...filter } : {};
+
+  if (sortBy && sortBy.length > 0) {
+    pagination.value.sort = {
+      field: sortBy[0].key,
+      order: sortBy[0].order,
+    };
+  }
+
+  fetchDemands();
+};
+
+const handleFilter = ({ page, itemsPerPage, filter }) => {
+  pagination.value.page = page || 1;
+  pagination.value.pageSize = itemsPerPage || pagination.value.pageSize;
+  pagination.value.filter = filter ? { ...filter } : {};
   fetchDemands();
 };
 
@@ -155,8 +165,8 @@ const reset = () => {
       @edit="edit"
       @view="view"
       @reset="reset"
-      @update-table="updateTable"
-      @filter="updateTable"
+      @update-table="handleUpdateTable"
+      @filter="handleFilter"
     ></Table>
 
     <Form

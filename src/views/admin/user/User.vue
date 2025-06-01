@@ -34,11 +34,11 @@ const userLogado = computed(() => store.getters["auth/user"]);
 const userLogadoId = computed(() => userLogado.value?.userId);
 
 const headers = [
-  { title: "ID", key: "id", align: "center" },
-  { title: "Nome", key: "name", align: "center" },
-  { title: "CPF", key: "cpf", align: "center" },
-  { title: "Data de Nascimento", key: "dateOfBirth", align: "center" },
-  { title: "Email", key: "email", align: "center" },
+  { title: "ID", key: "id", align: "start" },
+  { title: "Nome", key: "name", align: "start" },
+  { title: "CPF", key: "cpf", align: "start" },
+  { title: "Data de Nascimento", key: "dateOfBirth", align: "start" },
+  { title: "Email", key: "email", align: "start" },
   { title: "", key: "actions", sortable: false, align: "center" },
 ];
 

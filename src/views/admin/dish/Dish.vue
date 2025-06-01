@@ -53,11 +53,11 @@ const dialogDelete = ref(false);
 
 const headers = [
   { title: "ID", key: "id", align: "start" },
-  { title: "Nome", key: "name" },
-  { title: "Descrição", key: "description" },
-  { title: "Categoria", key: "category" },
-  { title: "Preço", key: "price" },
-  { title: "", key: "actions", align: "end", sortable: false },
+  { title: "Nome", key: "name", align: "start" },
+  { title: "Descrição", key: "description", align: "start" },
+  { title: "Categoria", key: "category", align: "start" },
+  { title: "Preço", key: "price", align: "start" },
+  { title: "", key: "actions", align: "center", sortable: false },
 ];
 
 onMounted(async () => {

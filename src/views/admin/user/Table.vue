@@ -104,11 +104,10 @@ const fetchFilter = (newFilter) => {
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <div class="d-flex ga-2 justify-end">
+      <div class="d-flex ga-2 justify-end" v-if="item.id !== userLogadoId">
         <v-tooltip text="Editar" location="top">
           <template #activator="{ props }">
             <v-icon
-              :disabled="item.id === userLogadoId"
               color="text"
               icon="mdi-pencil"
               size="small"
@@ -120,7 +119,6 @@ const fetchFilter = (newFilter) => {
         <v-tooltip text="Excluir" location="top">
           <template #activator="{ props }">
             <v-icon
-              :disabled="item.id === userLogadoId"
               color="text"
               icon="mdi-delete"
               size="small"
@@ -147,7 +145,7 @@ const fetchFilter = (newFilter) => {
 <style scoped>
 .table {
   width: 100%;
-  height: 90%;
+  height: 80%;
 
   background-color: transparent;
   color: var(--color-text);

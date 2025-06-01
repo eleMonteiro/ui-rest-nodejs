@@ -17,9 +17,9 @@ const menu = ref({
     icon: "mdi mdi-account",
     component: markRaw(Profile),
   },
-  home: {
-    name: "home",
-    icon: "mdi mdi-home",
+  placed: {
+    name: "placed",
+    icon: "mdi mdi-tray-full",
     component: markRaw(Placed),
   },
   food: {

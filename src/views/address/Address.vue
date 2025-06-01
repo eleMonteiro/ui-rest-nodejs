@@ -36,14 +36,14 @@ const RECORD_DEFAULT = {
 };
 
 const headers = [
-  { title: "ID", key: "id", align: "center" },
-  { title: "CEP", key: "cep", align: "center" },
-  { title: "Rua", key: "road", align: "center" },
-  { title: "Número", key: "number", align: "center" },
-  { title: "Complemento", key: "complement", align: "center" },
-  { title: "Bairro", key: "neighborhood", align: "center" },
-  { title: "Cidade", key: "city", align: "center" },
-  { title: "UF", key: "uf", align: "center" },
+  { title: "ID", key: "id", align: "start" },
+  { title: "CEP", key: "cep", align: "start" },
+  { title: "Rua", key: "road", align: "start" },
+  { title: "Número", key: "number", align: "start" },
+  { title: "Complemento", key: "complement", align: "start" },
+  { title: "Bairro", key: "neighborhood", align: "start" },
+  { title: "Cidade", key: "city", align: "start" },
+  { title: "UF", key: "uf", align: "start" },
   { title: "Ações", key: "actions", sortable: false, align: "center" },
 ];
 
