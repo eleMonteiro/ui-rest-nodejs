@@ -24,7 +24,7 @@ const menu = ref({
   },
   users: {
     name: "users",
-    icon: "mdi mdi-account",
+    icon: "mdi mdi-account-group",
     component: markRaw(User),
     props: {
       record: null,
@@ -42,7 +42,9 @@ const menu = ref({
     icon: "mdi mdi-logout",
     action: async () => {
       await store.dispatch("auth/logout");
-      router.push("/login");
+      if (store.getters["auth/isAuthenticated"]) {
+        router.push("/login");
+      }
     },
   },
 });
