@@ -16,7 +16,7 @@ const itemMenu = ref(Object.keys(props.menuItems)[0]);
 
 const activeComponent = computed(() => {
   console.log("Active component:", itemMenu.value);
-  return props.menuItems[itemMenu.value]
+  return props.menuItems[itemMenu.value];
 });
 
 const handleMenuClick = (key) => {
@@ -165,6 +165,9 @@ nav ul li.active {
   padding: 20px;
   overflow: auto;
   box-sizing: border-box;
+
+  height: 100%;
+  width: calc(100% - 80px);
 }
 
 @media (max-width: 768px) {
@@ -175,11 +178,13 @@ nav ul li.active {
 
   .content {
     flex-direction: column;
-    height: auto;
+    height: 100%;
   }
 
   .content-body {
     padding: 10px;
+    height: calc(100vh - 60px);
+    width: 100%;
   }
 
   .sidebar {
