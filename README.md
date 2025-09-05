@@ -1,35 +1,66 @@
-# ui-rest-nodejs
+# 🍽️ UI Rest Node.js
 
-This template should help get you started developing with Vue 3 in Vite.
+Frontend desenvolvido em **Vue 3** com **Vite**, que consome a API Rest para cadastro e gerenciamento de pratos, usuários e demandas.  
+Este projeto complementa o backend [api-rest-nodejs](https://github.com/seu-usuario/api-rest-nodejs) 🚀
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🚀 Tecnologias
 
-## Customize configuration
+- [Vue 3](https://vuejs.org/)  
+- [Vite](https://vitejs.dev/)  
+- [Vuetify](https://vuetifyjs.com/)  
+- [Vue Router](https://router.vuejs.org/)  
+- [Vuex](https://vuex.vuejs.org/)  
+- [Axios](https://axios-http.com/)  
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## 📦 Instalação e Uso
 
-```sh
+Clone o repositório:
+
+```bash
+git clone https://github.com/seu-usuario/ui-rest-nodejs.git
+cd ui-rest-nodejs
+```
+
+Instale as dependências:
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+Rodar em desenvolvimento:
 
-```sh
+```bash
 npm run dev
 ```
 
-### Compile and Minify for Production
+Gerar build para produção:
 
-```sh
+```bash
 npm run build
-```
+``` 
 
-### Lint with [ESLint](https://eslint.org/)
+Rodar lint:
 
-```sh
+```bash
 npm run lint
 ```
+---
+
+## 🛠️ Requisitos
+
+> [Node.js 18+](https://nodejs.org/pt)
+> 
+> [npm](https://www.npmjs.com)
+> 
+---
+
+## 🤝 Contribuição
+
+> Contribuições são bem-vindas!
+> 
+> Faça um fork do projeto, crie uma branch com sua feature ou correção e abra um PR.
+
